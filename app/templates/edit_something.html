@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block title %}Flasky - Edit {{ ptype }}{% endblock %}
+
+{% block page_content %}
+<div class="page-header">
+	{% if ptype == "Profile" %}
+			{% if current_user.is_administrator() %}
+				{% if user.name == current_user %}
+					<h1>Edit your {{ ptype }}</h1>
+				{% else %}
+				<h1>Edit {{ user.name }} Profile <span class="label label-danger">Admin View</span></h1>		
+				{% endif %}	
+			{% else %}
+			<h1>Edit your {{ ptype }}</h1>
+		    {% endif %}
+	{% elif ptype == "Project" %}
+		{% if current_user.is_administrator() %}
+		<h1>Edit {{ post.title }} Project <span class="label label-danger">Admin View</span></h1>
+		{% else %}
+	    <h1>Edit your {{ ptype }}</h1>
+	    {% endif %}
+	{% endif %}
+</div>
+<div class="col-md-12">
+    {{ wtf.quick_form(form) }}
+</div>
+{% endblock %}
+
+
+{% block scripts %}
+{{ super() }}
+{{ moment.include_moment() }}
+
+<script>
+$( document ).ready(function() {
+    $.ajax({
+        url: '{{ url_for(".researchersjson") }}'
+        }).done(function (data) {
+            var names = data.json_list
+                $.each(names, function(key, val){
+                	$("#researchers").attr("disabled", true)
+                    $("#researchers").after('<div class="authortag">' + val + '</div>')                
+                });
+
+            $('.authortag').click(function(){
+                $('#researchers').append(
+                     ($(this).text()) + '; '
+                )
+            });
+        });
+
+    
+});
+</script>
+
+{% endblock %}

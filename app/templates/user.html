@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% import "_macros.html" as macros %}
+
+{% block title %}Life Cycle - Researchers - {{ user.username }}{% endblock %}
+
+{% block page_content %}
+<div class="page-header">
+    <img class="img-circle profile-thumbnail" src="{{ user.gravatar(size=250) }}">
+    <div class="profile-header">
+        <h1>{{ user.name }}</h1>
+        {% if user.jobtitle %}
+        <h3>{{ user.jobtitle }}</h3>
+        {% endif %}
+        {% if user.website %}
+        <p>
+            <a href="{{user.website}}">{{user.website}}</a>
+        </p>
+        {% endif %}
+        {% if user.pub_email or user.twitter or user.linkedin or user.google %}
+            {% if user.pub_email %}
+                <a href = "mailto: {{user.pub_email}}"><span class="socicon">1</span></a> &nbsp;
+                {% else %}
+                <a href = "mailto: {{user.email}}"><span class="socicon">1</span></a> &nbsp;
+            {% endif %}
+            {% if user.twitter %}
+                <a href = "{{ user.twitter }}"><span class="socicon">a</span></a> &nbsp;
+            {% endif %}
+            {% if user.linkedin %}
+                <a href = "{{ user.linkedin }}"><span class="socicon">j</span></a> &nbsp;
+            {% endif %}
+            {% if user.google %}
+                <a href = "{{ user.google }}"><span class="socicon">c</span></a> &nbsp;
+            {% endif %}
+
+        {% endif %}
+        {% if current_user.is_administrator() %}
+        <p><a class= "badge" href="mailto:{{ user.email }}">{{ user.email }}</a><br>
+        <span class="badge">Last seen {{ moment(user.last_seen).fromNow() }}.</span>
+        {% endif %}
+
+        {% if user.posts %}
+        <p>Involved in <a class= "badge" href="#">{{ user.posts.count() }}</a> Projects</p>
+        {% endif %}
+        <p>
+            {% if user == current_user %}
+            <a class="btn btn-default" href="{{ url_for('.edit_profile') }}">Edit Profile</a>
+            {% endif %}
+            {% if current_user.is_administrator() %}
+            <a class="btn btn-danger" href="{{ url_for('.edit_profile_admin', id=user.id) }}">Edit Profile [Admin]</a>
+            {% endif %}
+        </p>
+    </div>
+</div>
+
+<div class="row">
+    {% if user.about_me %}
+    <div class="col-sm-6">
+        <h2>Bio</h2>
+        <p>{% if user.about_me %}{{ user.about_me }}{% endif %}</p>
+    </div>
+    {% endif %}
+
+</div>
+
+<!-- <h3>Posts by {{ user.username }}</h3>
+{% include '_posts.html' %}
+{% if pagination %}
+<div class="pagination">
+    {{ macros.pagination_widget(pagination, '.user', username=user.username) }}
+</div>
+{% endif %} -->
+{% endblock %}

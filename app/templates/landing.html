@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+{% import "_macros.html" as macros %}
+
+{% block title %}Flasky{% endblock %}
+
+{% block page_content %}
+<div class="page-header">
+	<img class="img-circle profile-thumbnail" src="{{ current_user.gravatar(size=250) }}">
+	<div class="profile-header">
+		<h1>Hello, {% if current_user.is_authenticated() %}{{ current_user.name }}{% else %}Stranger{% endif %}!</h1>
+		<p>Welcome to Life Cycle. This is your Dashboard.</p>
+		<a class="btn btn-default" href="{{ url_for('.user', username=current_user.username) }}">View Profile</a>
+		<a class="btn btn-default" href="{{ url_for('.edit_profile', username=current_user.username) }}">Edit Profile</a></p>
+		<p>You are currently involved in <a class= "badge" href="#">{{ current_user.posts.count() }}</a> Projects</p>
+	</div>
+</div>
+
+<h3>Recently Posted by all users</h3>
+{% include '_posts.html' %}
+{% if pagination %}
+<div class="pagination">
+    {{ macros.pagination_widget(pagination, '.index') }}
+</div>
+{% endif %}
+{% endblock %}
