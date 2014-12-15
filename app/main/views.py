@@ -11,7 +11,9 @@ from jinja2 import evalcontextfilter, Markup, escape
 
 @main.route('/')
 def index():
-    return render_template('index.html')
+    users = User.query.all()
+    projects = Project.query.all()
+    return render_template('index.html', researchers=users, projects=projects)
 
 
 @main.route('/projects/')
@@ -21,8 +23,10 @@ def projectpage():
         page, per_page=current_app.config['FLASKY_POSTS_PER_PAGE'],
         error_out=False)
     posts = pagination.items
+    users = User.query.all()
+    projects = Project.query.all()
     return render_template('projects.html', posts=posts,
-                           pagination=pagination)
+                           pagination=pagination, projects=projects, researchers=users)
 
 @main.route('/user/<user>/projects')
 def user_projects(user):
@@ -38,8 +42,10 @@ def user_projects(user):
         error_out=False)
     posts = pagination.items
 
+    users = User.query.all()
+    projects = Project.query.all()
     ptype = "Project"
-    return render_template('projects.html', user=user, posts=posts, ptype=ptype)
+    return render_template('projects.html', user=user, researchers=users, posts=posts, projects=projects, ptype=ptype)
 
 
 @main.route('/projects/edit/<int:id>', methods=['GET', 'POST']) 
@@ -51,6 +57,7 @@ def edit_project(id):
     form = ProjectPostForm()
     if form.validate_on_submit():
         post.title = form.title.data
+        post.urlname = form.urlname.data
         post.full_title = form.full_title.data
         post.brief_synopsis = post.brief_synopsis.data
         post.synopsis = form.synopsis.data 
@@ -61,6 +68,7 @@ def edit_project(id):
         flash('The post has been updated.')
         return redirect(url_for('.index', id=post.id))
     form.title.data = post.title
+    form.urlname.data = post.urlname
     form.full_title.data = post.full_title
     form.brief_synopsis.data = post.brief_synopsis
     form.synopsis.data = post.synopsis
@@ -69,14 +77,18 @@ def edit_project(id):
     form.facebook.data = post.facebook
 
     ptype = "Project"
-    return render_template('edit_something.html', post=post, form=form, ptype=ptype, user=user)
+    users = User.query.all()
+    projects = Project.query.all()
+    return render_template('edit_something.html', id=id, post=post, researchers=users, projects=projects, form=form, ptype=ptype, user=user)
 
 
 @main.route('/project/<int:id>') 
 @login_required
 def projpage(id):
     post = Project.query.get_or_404(id)
-    return render_template('project.html', post=post, id=id)
+    users = User.query.all()
+    projects = Project.query.all()
+    return render_template('project.html', researchers=users, projects=projects, post=post, id=id)
 
 
 
@@ -88,8 +100,10 @@ def landing():
         page, per_page=current_app.config['FLASKY_POSTS_PER_PAGE'],
         error_out=False)
     posts = pagination.items
+    users = User.query.all()
+    projects = Project.query.all()
     return render_template('landing.html', posts=posts,
-                           pagination=pagination)
+                           pagination=pagination, researchers=users, projects=projects)
 
 
 @main.route('/projects/post', methods=['GET', 'POST'])
@@ -100,6 +114,7 @@ def postproject():
             form.validate_on_submit():
             
         post = Project(title=form.title.data,
+                        urlname=form.urlname.data,
                         full_title=form.full_title.data,
                         brief_synopsis=form.brief_synopsis.data,
                         synopsis=form.synopsis.data,
@@ -115,8 +130,10 @@ def postproject():
         error_out=False)
     posts = pagination.items
     ptype = "Project"
-    return render_template('post_something.html', form=form, posts=posts,
-                           pagination=pagination, ptype=ptype)
+    users = User.query.all()
+    projects = Project.query.all()
+    return render_template('post_something.html', form=form, researchers=users, posts=posts,
+                           pagination=pagination, ptype=ptype, projects=projects)
 
 
 @main.route('/user/<username>')
@@ -127,8 +144,10 @@ def user(username):
         page, per_page=current_app.config['FLASKY_POSTS_PER_PAGE'],
         error_out=False)
     posts = pagination.items
-    return render_template('user.html', user=user, posts=posts,
-                           pagination=pagination)
+    users = User.query.all()
+    projects = Project.query.all()
+    return render_template('user.html', user=user, researchers=users, posts=posts,
+                           pagination=pagination, projects=projects)
 
 
 @main.route('/edit-profile', methods=['GET', 'POST'])
@@ -162,7 +181,9 @@ def edit_profile():
 
     ptype = "Profile"
     user = current_user.name
-    return render_template('edit_something.html', user=user, form=form, ptype=ptype)
+    users = User.query.all()
+    projects = Project.query.all()
+    return render_template('edit_something.html', researchers=users, user=user, form=form, ptype=ptype, projects=projects)
 
 
 @main.route('/edit-profile/<int:id>', methods=['GET', 'POST'])
@@ -205,7 +226,9 @@ def edit_profile_admin(id):
     form.google.data = user.google
 
     ptype = "Profile"
-    return render_template('edit_something.html', form=form, user=user, ptype=ptype)
+    users = User.query.all()
+    projects = Project.query.all()
+    return render_template('edit_something.html', researchers=users, form=form, user=user, ptype=ptype, projects=projects)
 
 
 @main.route('/researchersjson')

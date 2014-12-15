@@ -28,12 +28,12 @@ class Role(db.Model):
         roles = {
             'User': (Permission.FOLLOW |
                      Permission.COMMENT |
-                     Permission.WRITE_ARTICLES, True),
+                     Permission.WRITE_ARTICLES, False),
             'Moderator': (Permission.FOLLOW |
                           Permission.COMMENT |
                           Permission.WRITE_ARTICLES |
                           Permission.MODERATE_COMMENTS, False),
-            'Administrator': (0xff, False)
+            'Administrator': (0xff, True)
         }
         for r in roles:
             role = Role.query.filter_by(name=r).first()
@@ -215,6 +215,7 @@ class Project(db.Model):
     __tablename__ = 'projects'
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(100))
+    urlname = db.Column(db.String(100))
     full_title = db.Column(db.String(300))
     brief_synopsis = db.Column(db.Text)
     synopsis = db.Column(db.Text)
@@ -249,5 +250,8 @@ class CoAuthor(db.Model):
     us = db.Column(db.Integer, db.ForeignKey('users.id'))
     project_id = db.Column(db.Integer, db.ForeignKey('projects.id'))
 
-
+# tags = db.Table('tags',
+#     db.Column('tag_id', db.Integer, db.ForeignKey('tag.id')),
+#     db.Column('page_id', db.Integer, db.ForeignKey('page.id'))
+# )
 # Trying to set up Many to Many relationship
