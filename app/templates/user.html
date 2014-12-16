@@ -38,8 +38,11 @@
         <span class="badge">Last seen {{ moment(user.last_seen).fromNow() }}.</span>
         {% endif %}
 
-        {% if user.posts %}
-        <p>Involved in <a class= "badge" href="#">{{ user.posts.count() }}</a> Projects</p>
+        {% if user.projects %}
+        <p>Involved in <a class= "badge" href="#">{{ user.projects.count() }}</a> Projects:<br/>
+        {% for project in current_user.projects %}
+        <a class= "badge">{{ project.title }}</a>
+        {% endfor %}</p>
         {% endif %}
         <p>
             {% if user == current_user %}

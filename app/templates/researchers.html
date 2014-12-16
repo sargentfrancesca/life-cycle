@@ -3,10 +3,10 @@
 
 {% block page_content %}
 
-<h2>All Projects</h2>
+<h2>All Researchers</h2>
 
 
-{% include '_posts.html' %}
+{% include '_researchers.html' %}
 {% if pagination %}
 <div class="pagination">
     {{ macros.pagination_widget(pagination, '.index') }}
@@ -14,4 +14,3 @@
 {% endif %}
 
 {% endblock %}
-

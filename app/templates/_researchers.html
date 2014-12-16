@@ -1,0 +1,56 @@
+<ul class="posts">
+    {% for researcher in researchers %}
+    <li class="post">
+        <div class="post-content">
+             <h1>{{ researcher.name }}</h1>
+        {% if researcher.jobtitle %}
+        <h3>{{ researcher.jobtitle }}</h3>
+        {% endif %}
+        {% if researcher.website %}
+        <p>
+            <a href="{{researcher.website}}">{{researcher.website}}</a>
+        </p>
+        {% endif %}
+        {% if researcher.pub_email or researcher.twitter or researcher.linkedin or researcher.google %}
+            {% if researcher.pub_email %}
+                <a href = "mailto: {{researcher.pub_email}}"><span class="socicon">1</span></a> &nbsp;
+                {% else %}
+                <a href = "mailto: {{researcher.email}}"><span class="socicon">1</span></a> &nbsp;
+            {% endif %}
+            {% if researcher.twitter %}
+                <a href = "{{ researcher.twitter }}"><span class="socicon">a</span></a> &nbsp;
+            {% endif %}
+            {% if researcher.linkedin %}
+                <a href = "{{ researcher.linkedin }}"><span class="socicon">j</span></a> &nbsp;
+            {% endif %}
+            {% if researcher.google %}
+                <a href = "{{ researcher.google }}"><span class="socicon">c</span></a> &nbsp;
+            {% endif %}
+
+        {% endif %}
+        {% if current_user.is_administrator() %}
+        <p><a class= "badge" href="mailto:{{ researcher.email }}">{{ researcher.email }}</a><br>
+        <span class="badge">Last seen {{ moment(researcher.last_seen).fromNow() }}.</span>
+        {% endif %}
+
+        {% if researcher.projects %}
+        <p>Involved in <a class= "badge" href="#">{{ researcher.projects.count() }}</a> Projects:<br/>
+        {% for project in current_user.projects %}
+        <a href="{{ url_for('.projpage', id=project.id) }}" class= "badge">{{ project.title }}</a>
+        {% endfor %}</p>
+        {% endif %}
+        <p>
+            {% if researcher == current_user %}
+            <a class="btn btn-default" href="{{ url_for('.edit_profile') }}">Edit Profile</a>
+            {% endif %}
+            {% if current_user.is_administrator() %}
+            <a class="btn btn-danger" href="{{ url_for('.edit_profile_admin', id=researcher.id) }}">Edit Profile [Admin]</a>
+            {% endif %}
+        </p>
+           
+           
+            </div>
+             </p>
+        </li>
+        {% endfor %}
+</ul>

@@ -1,6 +1,6 @@
 from flask.ext.wtf import Form
 from wtforms import StringField, TextAreaField, BooleanField, SelectField,\
-    SubmitField
+    SubmitField, IntegerField
 from wtforms.validators import Required, Length, Email, Regexp
 from wtforms import ValidationError
 from ..models import Role, User
@@ -74,3 +74,14 @@ class ProjectPostForm(Form):
     facebook = StringField('Project Facebook', validators=[Length(0,64)])
     submit = SubmitField('Submit')
 
+class ProjectEditForm(Form):
+    title = StringField('Project Title', default="Brief title for display purposes, for example Demography or Lobsters", validators=[Required(), Length(0,100)])
+    urlname = StringField('Url Name', default="One word descriptor for the project URL", validators=[Required(), Length(0,100)])
+    full_title = StringField('Project Full Title', validators=[Length(0,300)])
+    brief_synopsis = TextAreaField('Brief Synopsis', default="Quick synopsis of project, summed up in around 100 words for quick reference")
+    synopsis = TextAreaField("Full Synopsis of project", validators=[Required()])
+    website = StringField('Project Website', validators=[Length(0,64)])
+    twitter = StringField('Project Twitter', validators=[Length(0,64)])
+    facebook = StringField('Project Facebook', validators=[Length(0,64)])
+    researchers = StringField('Other Researchers Involved')
+    submit = SubmitField('Submit')

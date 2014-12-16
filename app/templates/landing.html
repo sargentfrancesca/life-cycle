@@ -12,7 +12,11 @@
 		<p>Welcome to Life Cycle. This is your Dashboard.</p>
 		<a class="btn btn-default" href="{{ url_for('.user', username=current_user.username) }}">View Profile</a>
 		<a class="btn btn-default" href="{{ url_for('.edit_profile', username=current_user.username) }}">Edit Profile</a></p>
-		<p>You are currently involved in <a class= "badge" href="#">{{ current_user.posts.count() }}</a> Projects</p>
+		<p>You are currently involved in <a class= "badge" href="#">{{ current_user.projects.count() }}</a> Projects:<br/>
+		{% for project in current_user.projects %}
+		<a href="{{ url_for('.projpage', id=project.id) }}" class= "badge">{{ project.title }}</a>
+		{% endfor %}
+		</p>
 	</div>
 </div>
 

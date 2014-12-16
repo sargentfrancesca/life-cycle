@@ -2,7 +2,7 @@ from flask import render_template, redirect, url_for, abort, flash, request,\
     current_app, jsonify
 from flask.ext.login import login_required, current_user
 from . import main
-from .forms import EditProfileForm, EditProfileAdminForm, ProjectPostForm
+from .forms import EditProfileForm, EditProfileAdminForm, ProjectPostForm, ProjectEditForm
 from .. import db
 from ..models import Permission, Role, User, Project
 from ..decorators import admin_required
@@ -28,7 +28,19 @@ def projectpage():
     return render_template('projects.html', posts=posts,
                            pagination=pagination, projects=projects, researchers=users)
 
-@main.route('/user/<user>/projects')
+@main.route('/researchers/')
+def researcherpage():
+    page = request.args.get('page', 1, type=int)
+    pagination = User.query.order_by(User.name.desc()).paginate(
+        page, per_page=current_app.config['FLASKY_POSTS_PER_PAGE'],
+        error_out=False)
+    posts = pagination.items
+    users = User.query.all()
+    projects = Project.query.all()
+    return render_template('researchers.html', posts=posts,
+                           pagination=pagination, projects=projects, researchers=users)
+
+@main.route('/researchers/<user>/projects')
 def user_projects(user):
     user = User.query.filter_by(username=user).first() 
     if user is None:
@@ -52,18 +64,26 @@ def user_projects(user):
 @login_required
 def edit_project(id):
     post = Project.query.get_or_404(id)
-    if current_user != post.author and \
+    if current_user != post.researcher and \
         not current_user.can(Permission.ADMINISTER): abort(403)
-    form = ProjectPostForm()
+    form = ProjectEditForm()
     if form.validate_on_submit():
         post.title = form.title.data
         post.urlname = form.urlname.data
         post.full_title = form.full_title.data
-        post.brief_synopsis = post.brief_synopsis.data
+        post.brief_synopsis = ''
         post.synopsis = form.synopsis.data 
         post.website = form.website.data
         post.twitter = form.twitter.data
         post.facebook = form.facebook.data
+
+        researchers = [x.strip() for x in form.researchers.data.split(',')]
+        for researcher in researchers:
+            extend_researchers = [User.query.filter(User.name == researcher).first()]
+            post.researchers.extend(extend_researchers)
+
+        # extend_researchers = [User.query.filter(User.name == form.researchers.data).first()]
+        
         db.session.add(post)
         flash('The post has been updated.')
         return redirect(url_for('.index', id=post.id))
@@ -75,6 +95,7 @@ def edit_project(id):
     form.website.data = post.website
     form.twitter.data = post.twitter
     form.facebook.data = post.facebook
+    form.researchers.data = ''
 
     ptype = "Project"
     users = User.query.all()
@@ -82,7 +103,7 @@ def edit_project(id):
     return render_template('edit_something.html', id=id, post=post, researchers=users, projects=projects, form=form, ptype=ptype, user=user)
 
 
-@main.route('/project/<int:id>') 
+@main.route('/projects/<int:id>') 
 @login_required
 def projpage(id):
     post = Project.query.get_or_404(id)
@@ -121,7 +142,7 @@ def postproject():
                         website=form.website.data,
                         twitter=form.twitter.data,
                         facebook=form.facebook.data,
-                    author=current_user._get_current_object())
+                        researchers = [current_user._get_current_object()])
         db.session.add(post)
         return redirect(url_for('.index'))
     page = request.args.get('page', 1, type=int)
@@ -136,7 +157,7 @@ def postproject():
                            pagination=pagination, ptype=ptype, projects=projects)
 
 
-@main.route('/user/<username>')
+@main.route('/researchers/<username>')
 def user(username):
     user = User.query.filter_by(username=username).first_or_404()
     page = request.args.get('page', 1, type=int)

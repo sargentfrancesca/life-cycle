@@ -28,6 +28,7 @@
                         Researchers <b class="caret"></b>
                     </a>
                     <ul class="dropdown-menu">
+                        <li><a href="{{ url_for('main.researcherpage') }}">All</a></li>
                         {% for researcher in researchers %}
                         <li><a href="{{ url_for('main.user', username=researcher.username) }}">{{ researcher.name }}</a></li>
                         {% endfor %}
@@ -88,5 +89,31 @@
 
 {% block scripts %}
 {{ super() }}
+<script>
+$( document ).ready(function() {
+    $("#researchers").val('');
+    $.ajax({
+        url: '{{ url_for("main.researchersjson") }}'
+        }).done(function (data) {
+            
+            var names = data.json_list
+                $.each(names, function(key, val){
+                    $("#researchers").attr("disabled", false)
+                    $("#researchers").after('<div class="authortag">' + val + '</div>')                
+                });
+
+            $('.authortag').click(function(){
+                var txt = $(this).text()
+                console.log(txt)
+                $('#researchers').val(function(i,val) { 
+                     return val + (!val ? '' : ', ') + txt;
+                });
+            });
+        });
+
+    
+});
+
+</script>
 {{ moment.include_moment() }}
 {% endblock %}

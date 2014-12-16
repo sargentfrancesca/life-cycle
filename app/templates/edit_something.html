@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% import "bootstrap/wtf.html" as wtf %}
 
-{% block title %}Flasky - Edit {{ ptype }}{% endblock %}
+{% block title %}Life Cycle - Edit {{ ptype }}{% endblock %}
 
 {% block page_content %}
 <div class="page-header">
@@ -33,26 +33,5 @@
 {{ super() }}
 {{ moment.include_moment() }}
 
-<script>
-$( document ).ready(function() {
-    $.ajax({
-        url: '{{ url_for(".researchersjson") }}'
-        }).done(function (data) {
-            var names = data.json_list
-                $.each(names, function(key, val){
-                	$("#researchers").attr("disabled", true)
-                    $("#researchers").after('<div class="authortag">' + val + '</div>')                
-                });
-
-            $('.authortag').click(function(){
-                $('#researchers').append(
-                     ($(this).text()) + '; '
-                )
-            });
-        });
-
-    
-});
-</script>
 
 {% endblock %}

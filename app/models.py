@@ -47,6 +47,10 @@ class Role(db.Model):
     def __repr__(self):
         return '<Role %r>' % self.name
 
+coauthors = db.Table('coauthors',
+    db.Column('user_name', db.Integer, db.ForeignKey('users.name')),
+    db.Column('project_id', db.Integer, db.ForeignKey('projects.id'))
+)
 
 class User(UserMixin, db.Model):
     __tablename__ = 'users'
@@ -70,7 +74,8 @@ class User(UserMixin, db.Model):
     linkedin = db.Column(db.String(64))
     google = db.Column(db.String(64))
 
-    posts = db.relationship('Project', backref='author', lazy='dynamic')
+    posts = db.relationship('Project', backref='researcher', lazy='dynamic')
+
 
     @staticmethod
     def generate_fake(count=100):
@@ -211,6 +216,7 @@ def load_user(user_id):
     return User.query.get(int(user_id))
 
 
+
 class Project(db.Model):
     __tablename__ = 'projects'
     id = db.Column(db.Integer, primary_key=True)
@@ -225,6 +231,7 @@ class Project(db.Model):
     # resarchers = db.Column(db.Text)
     timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
     researcher_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    researchers = db.relationship('User', secondary=coauthors, backref=db.backref('projects', lazy='dynamic'))
 
 
 
@@ -244,14 +251,5 @@ class Project(db.Model):
             db.session.add(p)
             db.session.commit()
 
-class CoAuthor(db.Model):
-    __tablename__ = 'CoAuthor'
-    id = db.Column(db.Integer, primary_key=True)
-    us = db.Column(db.Integer, db.ForeignKey('users.id'))
-    project_id = db.Column(db.Integer, db.ForeignKey('projects.id'))
 
-# tags = db.Table('tags',
-#     db.Column('tag_id', db.Integer, db.ForeignKey('tag.id')),
-#     db.Column('page_id', db.Integer, db.ForeignKey('page.id'))
-# )
 # Trying to set up Many to Many relationship
