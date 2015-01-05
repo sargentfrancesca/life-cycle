@@ -59,3 +59,14 @@ div.pagination {
     background: #05c9c0;
     margin: 5px;
 }
+
+.pubtag {
+    padding: 8px 5px;
+    display: inline-block;
+    background: #f1c40f;
+    margin: 5px;
+}
+
+.researcher_list {
+/*    visibility: hidden;*/
+}

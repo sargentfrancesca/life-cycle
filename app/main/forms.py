@@ -1,9 +1,10 @@
 from flask.ext.wtf import Form
 from wtforms import StringField, TextAreaField, BooleanField, SelectField,\
     SubmitField, IntegerField
+from wtforms.ext.sqlalchemy.fields import QuerySelectField
 from wtforms.validators import Required, Length, Email, Regexp
 from wtforms import ValidationError
-from ..models import Role, User
+from ..models import Role, User, Publication, Project
 
 
 class NameForm(Form):
@@ -84,4 +85,27 @@ class ProjectEditForm(Form):
     twitter = StringField('Project Twitter', validators=[Length(0,64)])
     facebook = StringField('Project Facebook', validators=[Length(0,64)])
     researchers = StringField('Other Researchers Involved')
+    submit = SubmitField('Submit')
+
+class PublicationPostForm(Form):
+    title = StringField('Publication Title', default="Brief title for display purposes, for example Demography or Lobsters, max 100", validators=[Required(), Length(0,100)])
+    urlname = StringField('Url Name', default="One word descriptor for the project URL", validators=[Required(), Length(0,100)])
+    full_title = StringField('Publication Full Title', validators=[Length(0,300)])
+    brief_synopsis = TextAreaField('Brief Synopsis', default="Quick synopsis of project, summed up in around 100 words for quick reference")
+    synopsis = TextAreaField("Full Synopsis of publication", validators=[Required()])
+    website = StringField('Publication Website', validators=[Length(0,64)])
+    citation = StringField('Citation')
+    project_name = StringField('Project Associated')
+    submit = SubmitField('Submit')
+
+class PublicationEditForm(Form):
+    title = StringField('Publication Title', default="Brief title for display purposes, for example Demography or Lobsters, max 100", validators=[Required(), Length(0,100)])
+    urlname = StringField('Url Name', default="One word descriptor for the project URL", validators=[Required(), Length(0,100)])
+    full_title = StringField('Publication Full Title', validators=[Length(0,300)])
+    brief_synopsis = TextAreaField('Brief Synopsis', default="Quick synopsis of project, summed up in around 100 words for quick reference")
+    synopsis = TextAreaField("Full Synopsis of publication", validators=[Required()])
+    website = StringField('Publication Website', validators=[Length(0,64)])
+    citation = StringField('Citation')
+    project_name = StringField('Project Associated')
+    researchers = StringField('Other Researchers Involved', default="<3")
     submit = SubmitField('Submit')

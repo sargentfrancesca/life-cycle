@@ -21,6 +21,14 @@
 		{% else %}
 	    <h1>Edit your {{ ptype }}</h1>
 	    {% endif %}
+	
+	{% elif ptype == "Publication" %}
+		{% if current_user.is_administrator() %}
+		<h1>Edit {{ post.title }} Project <span class="label label-danger">Admin View</span></h1>
+		{% else %}
+	    <h1>Edit your {{ ptype }}</h1>
+	    {% endif %}
+
 	{% endif %}
 </div>
 <div class="col-md-12">

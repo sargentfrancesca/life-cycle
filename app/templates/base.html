@@ -91,13 +91,15 @@
 {{ super() }}
 <script>
 $( document ).ready(function() {
-    $("#researchers").val('');
     $.ajax({
         url: '{{ url_for("main.researchersjson") }}'
         }).done(function (data) {
-            
+
             var names = data.json_list
+
                 $.each(names, function(key, val){
+
+
                     $("#researchers").attr("disabled", false)
                     $("#researchers").after('<div class="authortag">' + val + '</div>')                
                 });
@@ -108,6 +110,23 @@ $( document ).ready(function() {
                 $('#researchers').val(function(i,val) { 
                      return val + (!val ? '' : ', ') + txt;
                 });
+            });
+        });
+
+    $.ajax({
+        url: '{{ url_for("main.projectsjson") }}'
+        }).done(function (data) {
+            
+            var names = data.json_list
+                $.each(names, function(key, val){
+                    $("#project_name").attr("disabled", false)
+                    $("#project_name").after('<div class="pubtag">' + val + '</div>')                
+                });
+
+            $('.pubtag').click(function(){
+                var txt = $(this).text()
+                console.log(txt)
+                $('#project_name').val(txt);
             });
         });
 

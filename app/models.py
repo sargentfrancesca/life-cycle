@@ -52,6 +52,11 @@ coauthors = db.Table('coauthors',
     db.Column('project_id', db.Integer, db.ForeignKey('projects.id'))
 )
 
+copubauthors = db.Table('copubauthors',
+    db.Column('user_name', db.Integer, db.ForeignKey('users.name')),
+    db.Column('publication_id', db.Integer, db.ForeignKey('publications.id'))
+)
+
 class User(UserMixin, db.Model):
     __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key=True)
@@ -75,6 +80,7 @@ class User(UserMixin, db.Model):
     google = db.Column(db.String(64))
 
     posts = db.relationship('Project', backref='researcher', lazy='dynamic')
+    # publications = db.relationship('Publication', backref='researcher_pub', lazy='dynamic')
 
 
     @staticmethod
@@ -232,6 +238,7 @@ class Project(db.Model):
     timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
     researcher_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     researchers = db.relationship('User', secondary=coauthors, backref=db.backref('projects', lazy='dynamic'))
+    publications = db.relationship('Publication', backref='projects', lazy='dynamic')
 
 
 
@@ -251,5 +258,24 @@ class Project(db.Model):
             db.session.add(p)
             db.session.commit()
 
+
+
+class Publication(db.Model):
+    __tablename__ = 'publications'
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(100))
+    urlname = db.Column(db.String(100))
+    full_title = db.Column(db.String(300))
+    brief_synopsis = db.Column(db.Text)
+    synopsis = db.Column(db.Text)
+    website = db.Column(db.String(64))
+    twitter = db.Column(db.String(64))
+    facebook = db.Column(db.String(64))
+    timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
+    researcher_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    researchers = db.relationship('User', secondary=copubauthors, backref=db.backref('publications', lazy='dynamic')) 
+    project_id = db.Column(db.String(100), db.ForeignKey('roles.name'))
+    project_name = db.Column(db.String(100), db.ForeignKey('projects.urlname'))
+    citation = db.Column(db.Text)
 
 # Trying to set up Many to Many relationship
