@@ -48,12 +48,12 @@ class Role(db.Model):
         return '<Role %r>' % self.name
 
 coauthors = db.Table('coauthors',
-    db.Column('user_name', db.Integer, db.ForeignKey('users.name')),
+    db.Column('user_name', db.String(64), db.ForeignKey('users.name')),
     db.Column('project_id', db.Integer, db.ForeignKey('projects.id'))
 )
 
 copubauthors = db.Table('copubauthors',
-    db.Column('user_name', db.Integer, db.ForeignKey('users.name')),
+    db.Column('user_name', db.String(64), db.ForeignKey('users.name')),
     db.Column('publication_id', db.Integer, db.ForeignKey('publications.id'))
 )
 
@@ -65,7 +65,7 @@ class User(UserMixin, db.Model):
     role_id = db.Column(db.Integer, db.ForeignKey('roles.id'))
     password_hash = db.Column(db.String(128))
     confirmed = db.Column(db.Boolean, default=True)
-    name = db.Column(db.String(64))
+    name = db.Column(db.String(64), unique=True)
     location = db.Column(db.String(64))
     about_me = db.Column(db.Text())
     quals = db.Column(db.Text())
@@ -227,14 +227,13 @@ class Project(db.Model):
     __tablename__ = 'projects'
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(100))
-    urlname = db.Column(db.String(100))
+    urlname = db.Column(db.String(100), unique=True)
     full_title = db.Column(db.String(300))
     brief_synopsis = db.Column(db.Text)
     synopsis = db.Column(db.Text)
     website = db.Column(db.String(64))
     twitter = db.Column(db.String(64))
     facebook = db.Column(db.String(64))
-    # resarchers = db.Column(db.Text)
     timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
     researcher_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     researchers = db.relationship('User', secondary=coauthors, backref=db.backref('projects', lazy='dynamic'))
