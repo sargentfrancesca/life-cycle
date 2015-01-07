@@ -70,3 +70,16 @@ div.pagination {
 .researcher_list {
 /*    visibility: hidden;*/
 }
+
+.add {
+    background: #ecf0f1;
+    color: #333;
+}
+
+li.add a {
+    color: #333;
+}
+
+li.dropdown.add > a {
+    color: #333;
+}

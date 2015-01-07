@@ -75,6 +75,7 @@ class ProjectPostForm(Form):
     facebook = StringField('Project Facebook', validators=[Length(0,64)])
     submit = SubmitField('Submit')
 
+
 class ProjectEditForm(Form):
     title = StringField('Project Title', default="Brief title for display purposes, for example Demography or Lobsters", validators=[Required(), Length(0,100)])
     urlname = StringField('Url Name', default="One word descriptor for the project URL", validators=[Required(), Length(0,100)])
@@ -86,6 +87,8 @@ class ProjectEditForm(Form):
     facebook = StringField('Project Facebook', validators=[Length(0,64)])
     researchers = StringField('Other Researchers Involved')
     submit = SubmitField('Submit')
+
+
 
 class PublicationPostForm(Form):
     title = StringField('Publication Title', default="Brief title for display purposes, for example Demography or Lobsters, max 100", validators=[Required(), Length(0,100)])

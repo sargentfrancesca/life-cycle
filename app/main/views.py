@@ -13,21 +13,11 @@ from jinja2 import evalcontextfilter, Markup, escape
 def index():
     users = User.query.all()
     projects = Project.query.all()
-    return render_template('index.html', researchers=users, projects=projects)
+    publications = Publication.query.all()
+    return render_template('index.html', researchers=users, projects=projects, publications=publications)
 
 
-@main.route('/projects/')
-def projectpage():
-    page = request.args.get('page', 1, type=int)
-    pagination = Project.query.order_by(Project.timestamp.desc()).paginate(
-        page, per_page=current_app.config['FLASKY_POSTS_PER_PAGE'],
-        error_out=False)
-    posts = pagination.items
-    users = User.query.all()
-    projects = Project.query.all()
-    return render_template('projects.html', posts=posts,
-                           pagination=pagination, projects=projects, researchers=users)
-
+# Researchers
 @main.route('/researchers/')
 def researcherpage():
     page = request.args.get('page', 1, type=int)
@@ -37,8 +27,24 @@ def researcherpage():
     posts = pagination.items
     users = User.query.all()
     projects = Project.query.all()
+    publications = Publication.query.all()
     return render_template('researchers.html', posts=posts,
-                           pagination=pagination, projects=projects, researchers=users)
+                           pagination=pagination, projects=projects, researchers=users, publications=publications)
+
+@main.route('/researchers/<username>')
+def user(username):
+    user = User.query.filter_by(username=username).first_or_404()
+
+    posts = user.projects.order_by(Project.timestamp.desc())
+
+    pagination = ""
+
+    users = User.query.all()
+    projects = Project.query.all()
+    publications = user.publications.order_by(Publication.timestamp.desc())
+
+    return render_template('user.html', user=user, researchers=users, posts=posts,
+                           pagination=pagination, projects=projects, publications=publications)
 
 @main.route('/researchers/<user>/projects')
 def user_projects(user):
@@ -56,221 +62,12 @@ def user_projects(user):
 
     users = User.query.all()
     projects = Project.query.all()
+    publications = Publication.query.all()
     ptype = "Project"
-    return render_template('projects.html', user=user, researchers=users, posts=posts, projects=projects, ptype=ptype)
+    return render_template('projects.html', user=user, researchers=users, posts=posts, projects=projects, ptype=ptype, publications=publications)
 
 
-@main.route('/projects/edit/<urlname>', methods=['GET', 'POST']) 
-@login_required
-def edit_project(urlname):
-    
-    kwargs = {
-    'urlname' : urlname
-    }
-
-    post = Project.query.filter_by(**kwargs).first()
-
-    if current_user != post.researchers and \
-        not current_user.can(Permission.ADMINISTER): abort(403)
-    form = ProjectEditForm()
-    if form.validate_on_submit():
-        post.title = form.title.data
-        post.urlname = form.urlname.data
-        post.full_title = form.full_title.data
-        post.brief_synopsis = ''
-        post.synopsis = form.synopsis.data 
-        post.website = form.website.data
-        post.twitter = form.twitter.data
-        post.facebook = form.facebook.data
-
-        researchers = [x.strip() for x in form.researchers.data.split(',')]
-        for researcher in researchers:
-            extend_researchers = [User.query.filter(User.name == researcher).first()]
-            post.researchers.extend(extend_researchers)
-
-        # extend_researchers = [User.query.filter(User.name == form.researchers.data).first()]
-        
-        db.session.add(post)
-        flash('The post has been updated.')
-        return redirect(url_for('.index', id=post.id))
-    form.title.data = post.title
-    form.urlname.data = post.urlname
-    form.full_title.data = post.full_title
-    form.brief_synopsis.data = post.brief_synopsis
-    form.synopsis.data = post.synopsis
-    form.website.data = post.website
-    form.twitter.data = post.twitter
-    form.facebook.data = post.facebook
-    form.researchers.data = ''
-
-    ptype = "Project"
-    users = User.query.all()
-    projects = Project.query.all()
-    return render_template('edit_something.html', id=id, post=post, researchers=users, projects=projects, form=form, ptype=ptype, user=user)
-
-
-@main.route('/projects/<int:id>') 
-@login_required
-def projpage(id):
-    post = Project.query.get_or_404(id)
-    users = User.query.all()
-    projects = Project.query.all()
-    return render_template('project.html', researchers=users, projects=projects, post=post, id=id)
-
-@main.route('/projects/<urlname>') 
-@login_required
-def projnamepage(urlname):
-    kwargs = {
-    'urlname' : urlname
-    }
-
-    post = Project.query.filter_by(**kwargs).first()
-
-    users = User.query.all()
-    projects = Project.query.all()
-    return render_template('project.html', researchers=users, projects=projects, post=post, id=id)
-
-
-
-@main.route('/landing')
-@login_required
-def landing():  
-    page = request.args.get('page', 1, type=int)
-    pagination = Project.query.order_by(Project.timestamp.desc()).paginate(
-        page, per_page=current_app.config['FLASKY_POSTS_PER_PAGE'],
-        error_out=False)
-    posts = pagination.items
-    users = User.query.all()
-    projects = Project.query.all()
-    return render_template('landing.html', posts=posts,
-                           pagination=pagination, researchers=users, projects=projects)
-
-
-@main.route('/projects/post', methods=['GET', 'POST'])
-@login_required
-def postproject():
-    form = ProjectPostForm()
-    if current_user.can(Permission.WRITE_ARTICLES) and \
-            form.validate_on_submit():
-            
-        post = Project(title=form.title.data,
-                        urlname=form.urlname.data,
-                        full_title=form.full_title.data,
-                        brief_synopsis=form.brief_synopsis.data,
-                        synopsis=form.synopsis.data,
-                        website=form.website.data,
-                        twitter=form.twitter.data,
-                        facebook=form.facebook.data,
-                        researchers = [current_user._get_current_object()])
-        db.session.add(post)
-        return redirect(url_for('.index'))
-    page = request.args.get('page', 1, type=int)
-    pagination = Project.query.order_by(Project.timestamp.desc()).paginate(
-        page, per_page=current_app.config['FLASKY_POSTS_PER_PAGE'],
-        error_out=False)
-    posts = pagination.items
-    ptype = "Project"
-    users = User.query.all()
-    projects = Project.query.all()
-    return render_template('post_something.html', form=form, researchers=users, posts=posts,
-                           pagination=pagination, ptype=ptype, projects=projects)
-
-
-@main.route('/publications/post', methods=['GET', 'POST'])
-@login_required
-def postpublication():
-    form = PublicationPostForm(user=user)
-    if current_user.can(Permission.WRITE_ARTICLES) and \
-            form.validate_on_submit():
-        post = Publication(title=form.title.data,
-                        urlname=form.urlname.data,
-                        full_title=form.full_title.data,
-                        brief_synopsis=form.brief_synopsis.data,
-                        synopsis=form.synopsis.data,
-                        website=form.website.data,
-                        citation=form.citation.data,
-                        project_name = form.project_name.data,
-                        researchers = [current_user._get_current_object()])
-        db.session.add(post)
-        return redirect(url_for('.index'))
-    page = request.args.get('page', 1, type=int)
-    pagination = Publication.query.order_by(Publication.timestamp.desc()).paginate(
-        page, per_page=current_app.config['FLASKY_POSTS_PER_PAGE'],
-        error_out=False)
-    posts = pagination.items
-    ptype = "Publication"
-    users = User.query.all()
-    projects = Project.query.all()
-    return render_template('post_something.html', form=form, researchers=users, posts=posts,
-                           pagination=pagination, ptype=ptype, projects=projects)
-
-
-@main.route('/publications/<int:id>') 
-@login_required
-def pubpage(id):
-    post = Publication.query.get_or_404(id)
-    users = User.query.all()
-    projects = Project.query.all()
-    return render_template('publication.html', researchers=users, projects=projects, post=post, id=id)
-
-@main.route('/publications/edit/<int:id>', methods=['GET', 'POST']) 
-@login_required
-def edit_publication(id):
-    post = Publication.query.get_or_404(id)
-    if current_user != post.researchers and \
-        not current_user.can(Permission.ADMINISTER): abort(403)
-    form = PublicationEditForm()
-    if form.validate_on_submit():
-        post.title = form.title.data
-        post.urlname = form.urlname.data
-        post.full_title = form.full_title.data
-        post.synopsis = form.synopsis.data 
-        post.website = form.website.data
-        post.citation = form.citation.data
-        post.project_name = form.project_name.data
-
-        researchers = [x.strip() for x in form.researchers.data.split(',')]
-        for researcher in researchers:
-            extend_researchers = [User.query.filter(User.name == researcher).first()]
-            post.researchers.extend(extend_researchers)
-
-        # extend_researchers = [User.query.filter(User.name == form.researchers.data).first()]
-        
-        db.session.add(post)
-        print post
-        flash('The post has been updated.')
-        return redirect(url_for('.index', id=post.id))
-    form.title.data = post.title
-    form.urlname.data = post.urlname
-    form.full_title.data = post.full_title
-    form.brief_synopsis.data = post.brief_synopsis
-    form.synopsis.data = post.synopsis
-    form.website.data = post.website
-    form.project_name.data = post.project_name
-    form.citation.data = post.citation
-
-
-    ptype = "Publication"
-    users = User.query.all()
-    projects = Project.query.all()
-
-    return render_template('edit_something.html', id=id, post=post, researchers=users, projects=projects, form=form, ptype=ptype, user=user)
-
-
-@main.route('/researchers/<username>')
-def user(username):
-    user = User.query.filter_by(username=username).first_or_404()
-    page = request.args.get('page', 1, type=int)
-    pagination = user.posts.order_by(Project.timestamp.desc()).paginate(
-        page, per_page=current_app.config['FLASKY_POSTS_PER_PAGE'],
-        error_out=False)
-    posts = pagination.items
-    users = User.query.all()
-    projects = Project.query.all()
-    return render_template('user.html', user=user, researchers=users, posts=posts,
-                           pagination=pagination, projects=projects)
-
-
+# Profile Editing
 @main.route('/edit-profile', methods=['GET', 'POST'])
 @login_required
 def edit_profile():
@@ -304,7 +101,8 @@ def edit_profile():
     user = current_user.name
     users = User.query.all()
     projects = Project.query.all()
-    return render_template('edit_something.html', researchers=users, user=user, form=form, ptype=ptype, projects=projects)
+    publications = Publication.query.all()
+    return render_template('edit_something.html', researchers=users, user=user, form=form, ptype=ptype, projects=projects, publications=publications)
 
 
 @main.route('/edit-profile/<int:id>', methods=['GET', 'POST'])
@@ -349,12 +147,270 @@ def edit_profile_admin(id):
     ptype = "Profile"
     users = User.query.all()
     projects = Project.query.all()
-    return render_template('edit_something.html', researchers=users, form=form, user=user, ptype=ptype, projects=projects)
+    publications = Publication.query.all()
+    return render_template('edit_something.html', researchers=users, form=form, user=user, ptype=ptype, projects=projects, publications=publications)
+
+# Projects
+@main.route('/projects/')
+def projectpage():
+    page = request.args.get('page', 1, type=int)
+    pagination = Project.query.order_by(Project.timestamp.desc()).paginate(
+        page, per_page=current_app.config['FLASKY_POSTS_PER_PAGE'],
+        error_out=False)
+    posts = pagination.items
+    users = User.query.all()
+    projects = Project.query.all()
+    publications = Publication.query.all()
+    return render_template('projects.html', posts=posts,
+                           pagination=pagination, projects=projects, researchers=users, publications=publications)
+@main.route('/projects/<int:id>') 
+@login_required
+def projpage(id):
+    post = Project.query.get_or_404(id)
+    users = User.query.all()
+    projects = Project.query.all()
+    publications = Publication.query.all()
+    return render_template('project.html', researchers=users, projects=projects, post=post, id=id, publications=publications)
+
+@main.route('/projects/<urlname>') 
+@login_required
+def projnamepage(urlname):
+    kwargs = {
+    'urlname' : urlname
+    }
+
+    post = Project.query.filter_by(**kwargs).first()
+
+    users = User.query.all()
+    projects = Project.query.all()
+    publications = Publication.query.all()
+    return render_template('project.html', researchers=users, projects=projects, post=post, id=id, publications=publications)
 
 
+
+@main.route('/projects/post', methods=['GET', 'POST'])
+@login_required
+def postproject():
+    form = ProjectPostForm()
+    if current_user.can(Permission.WRITE_ARTICLES) and \
+            form.validate_on_submit():
+            
+        post = Project(title=form.title.data,
+                        urlname=form.urlname.data,
+                        full_title=form.full_title.data,
+                        brief_synopsis=form.brief_synopsis.data,
+                        synopsis=form.synopsis.data,
+                        website=form.website.data,
+                        twitter=form.twitter.data,
+                        facebook=form.facebook.data,
+                        researchers = [current_user._get_current_object()])
+        db.session.add(post)
+        return redirect(url_for('.index'))
+    page = request.args.get('page', 1, type=int)
+    pagination = Project.query.order_by(Project.timestamp.desc()).paginate(
+        page, per_page=current_app.config['FLASKY_POSTS_PER_PAGE'],
+        error_out=False)
+    posts = pagination.items
+    ptype = "Project"
+    users = User.query.all()
+    projects = Project.query.all()
+    publications = Publication.query.all()
+    return render_template('post_something.html', form=form, researchers=users, posts=posts,
+                           pagination=pagination, ptype=ptype, projects=projects, publications=publications)
+
+
+@main.route('/projects/edit/<urlname>', methods=['GET', 'POST']) 
+@login_required
+def edit_project(urlname):
+    
+    kwargs = {
+    'urlname' : urlname
+    }
+
+    post = Project.query.filter_by(**kwargs).first()
+
+    if current_user != post.researchers and \
+        not current_user.can(Permission.ADMINISTER): abort(403)
+    form = ProjectEditForm()
+    if form.validate_on_submit():
+        post.title = form.title.data
+        post.urlname = form.urlname.data
+        post.full_title = form.full_title.data
+        post.brief_synopsis = ''
+        post.synopsis = form.synopsis.data 
+        post.website = form.website.data
+        post.twitter = form.twitter.data
+        post.facebook = form.facebook.data
+        post.researchers 
+
+        researchers = [x.strip() for x in form.researchers.data.split(',')]
+        for researcher in researchers:
+            extend_researchers = [User.query.filter(User.name == researcher).first()]
+            post.researchers.extend(extend_researchers)
+        
+        db.session.add(post)
+        flash('The post has been updated.')
+        return redirect(url_for('.index', id=post.id))
+
+
+    form.title.data = post.title
+    form.urlname.data = post.urlname
+    form.full_title.data = post.full_title
+    form.brief_synopsis.data = post.brief_synopsis
+    form.synopsis.data = post.synopsis
+    form.website.data = post.website
+    form.twitter.data = post.twitter
+    form.facebook.data = post.facebook
+
+    form.researchers.data = ''
+
+    for person in post.researchers:
+        form.researchers.data += person.name + ", "
+
+
+    ptype = "Project"
+    users = User.query.all()
+    projects = Project.query.all()
+    publications = Publication.query.all()
+    return render_template('edit_something.html', id=id, post=post, researchers=users, projects=projects, form=form, ptype=ptype, user=user, publications=publications)
+
+
+
+@main.route('/landing')
+@login_required
+def landing():  
+    page = request.args.get('page', 1, type=int)
+    pagination = Project.query.order_by(Project.timestamp.desc()).paginate(
+        page, per_page=current_app.config['FLASKY_POSTS_PER_PAGE'],
+        error_out=False)
+    posts = pagination.items
+    users = User.query.all()
+    projects = Project.query.all()
+    publications = Publication.query.all()
+    return render_template('landing.html', posts=posts,
+                           pagination=pagination, researchers=users, projects=projects, publications=publications)
+
+
+
+# Publications   
+@main.route('/publications/')
+def publicationpage():
+    page = request.args.get('page', 1, type=int)
+    pagination = Publication.query.order_by(Publication.timestamp.desc()).paginate(
+        page, per_page=current_app.config['FLASKY_POSTS_PER_PAGE'],
+        error_out=False)
+    posts = pagination.items
+    users = User.query.all()
+    projects = Project.query.all()
+    publications = Publication.query.all()
+    return render_template('publications.html', posts=posts,
+                           pagination=pagination, projects=projects, researchers=users, publications=publications)
+
+@main.route('/publications/post', methods=['GET', 'POST'])
+@login_required
+def postpublication():
+    form = PublicationPostForm(user=user)
+    if current_user.can(Permission.WRITE_ARTICLES) and \
+            form.validate_on_submit():
+        post = Publication(title=form.title.data,
+                        urlname=form.urlname.data,
+                        full_title=form.full_title.data,
+                        brief_synopsis=form.brief_synopsis.data,
+                        synopsis=form.synopsis.data,
+                        website=form.website.data,
+                        citation=form.citation.data,
+                        project_name = form.project_name.data,
+                        researchers = [current_user._get_current_object()])
+        db.session.add(post)
+        return redirect(url_for('.index'))
+    page = request.args.get('page', 1, type=int)
+    pagination = Publication.query.order_by(Publication.timestamp.desc()).paginate(
+        page, per_page=current_app.config['FLASKY_POSTS_PER_PAGE'],
+        error_out=False)
+    posts = pagination.items
+    ptype = "Publication"
+    users = User.query.all()
+    projects = Project.query.all()
+    publications = Publication.query.all()
+    return render_template('post_something.html', form=form, researchers=users, posts=posts,
+                           pagination=pagination, ptype=ptype, projects=projects, publications=publications)
+
+
+@main.route('/publications/<int:id>') 
+@login_required
+def pubpage(id):
+    post = Publication.query.get_or_404(id)
+    users = User.query.all()
+    projects = Project.query.all()
+    publications = Publication.query.all()
+    return render_template('publication.html', researchers=users, projects=projects, post=post, id=id, publications=publications)
+
+@main.route('/publications/edit/<int:id>', methods=['GET', 'POST']) 
+@login_required
+def edit_publication(id):
+    post = Publication.query.get_or_404(id)
+    if current_user != post.researchers and \
+        not current_user.can(Permission.ADMINISTER): abort(403)
+    form = PublicationEditForm()
+    if form.validate_on_submit():
+        post.title = form.title.data
+        post.urlname = form.urlname.data
+        post.full_title = form.full_title.data
+        post.synopsis = form.synopsis.data 
+        post.website = form.website.data
+        post.citation = form.citation.data
+        post.project_name = form.project_name.data
+
+        researchers = [x.strip() for x in form.researchers.data.split(',')]
+        for researcher in researchers:
+            extend_researchers = [User.query.filter(User.name == researcher).first()]
+            post.researchers.extend(extend_researchers)
+
+        # extend_researchers = [User.query.filter(User.name == form.researchers.data).first()]
+        
+        db.session.add(post)
+        print post
+        flash('The post has been updated.')
+        return redirect(url_for('.index', id=post.id))
+    form.title.data = post.title
+    form.urlname.data = post.urlname
+    form.full_title.data = post.full_title
+    form.brief_synopsis.data = post.brief_synopsis
+    form.synopsis.data = post.synopsis
+    form.website.data = post.website
+    form.project_name.data = post.project_name
+    form.citation.data = post.citation
+
+
+    ptype = "Publication"
+    users = User.query.all()
+    projects = Project.query.all()
+    publications = Publication.query.all()
+
+    return render_template('edit_something.html', id=id, post=post, researchers=users, projects=projects, form=form, ptype=ptype, user=user, publications=publications)
+
+
+
+# JSON fun
 @main.route('/researchersjson')
 def researchersjson():
     researchers = [(u.name) for u in User.query.all()]
+    return jsonify(json_list=researchers) 
+
+@main.route('/json/<urlname>')
+def json(urlname):
+    kwargs = {
+        'urlname' : urlname
+    }
+    projects = Project.query.filter_by(**kwargs).first()
+    people = Project.query.filter_by(**kwargs).first()
+
+    researchers = []
+
+    for person in  people.researchers:
+        researchers.append(person.name+", ")
+
+
     return jsonify(json_list=researchers) 
 
 @main.route('/projectsjson')

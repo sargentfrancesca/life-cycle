@@ -3,7 +3,7 @@ from flask.ext.login import login_user, logout_user, login_required, \
     current_user
 from . import auth
 from .. import db
-from ..models import User, Project
+from ..models import User, Project, Publication
 from ..email import send_email
 from .forms import LoginForm, RegistrationForm, ChangePasswordForm,\
     PasswordResetRequestForm, PasswordResetForm, ChangeEmailForm
@@ -37,7 +37,8 @@ def login():
         flash('Invalid username or password.')
     users = User.query.all()
     projects = Project.query.all()
-    return render_template('auth/login.html', form=form, researchers=users, projects=projects)
+    publications = Publication.query.all()
+    return render_template('auth/login.html', form=form, researchers=users, projects=projects, publications=publications)
 
 
 @auth.route('/logout')
@@ -65,7 +66,8 @@ def register():
         return redirect(url_for('auth.login'))
     users = User.query.all()
     projects = Project.query.all()
-    return render_template('auth/register.html', form=form, researchers=users, projects=projects)
+    publications = Publication.query.all()
+    return render_template('auth/register.html', form=form, researchers=users, projects=projects, publications=publications)
 
 
 @auth.route('/confirm/<token>')
@@ -104,7 +106,8 @@ def change_password():
             flash('Invalid password.')
     users = User.query.all()
     projects = Project.query.all()
-    return render_template("auth/change_password.html", form=form, researchers=users, projects=projects)
+    publications = Publication.query.all()
+    return render_template("auth/change_password.html", form=form, researchers=users, projects=projects, publications=publications)
 
 
 @auth.route('/reset', methods=['GET', 'POST'])
@@ -125,7 +128,8 @@ def password_reset_request():
         return redirect(url_for('auth.login'))
     users = User.query.all()
     projects = Project.query.all()
-    return render_template('auth/reset_password.html', form=form, researchers=users, projects=projects)
+    publications = Publication.query.all()
+    return render_template('auth/reset_password.html', form=form, researchers=users, projects=projects, publications=publications)
 
 
 @auth.route('/reset/<token>', methods=['GET', 'POST'])
@@ -144,7 +148,8 @@ def password_reset(token):
             return redirect(url_for('main.index'))
     users = User.query.all()
     projects = Project.query.all()
-    return render_template('auth/reset_password.html', form=form, researchers=users, projects=projects)
+    publications = Publication.query.all()
+    return render_template('auth/reset_password.html', form=form, researchers=users, projects=projects, publications=publications)
 
 
 @auth.route('/change-email', methods=['GET', 'POST'])
@@ -165,6 +170,7 @@ def change_email_request():
             flash('Invalid email or password.')
     users = User.query.all()
     projects = Project.query.all()
+    publications = Publication.query.all()
     return render_template("auth/change_email.html", form=form, researchers=users, projects=projects)
 
 
