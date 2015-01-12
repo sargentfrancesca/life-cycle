@@ -59,8 +59,50 @@ $( document ).ready(function() {
         	$(namesout).each(function() {
         		$('#authorcontrol').append('<div class= "controlout">'+this.name+'</div>')
         	});
+        }, function(){
+        	$('div.controlout').bind('click', function() {        	
+        		var nameval = $(this).text();
+        		$.post('/add/', {
+        			id : {{post.id}},
+        			name : nameval
+        		}).done(function() {
+        			console.log("Success");
+
+        			var selectout = $('div.controlout').filter(function () {
+					    return $.trim($(this).text()) === nameval;
+					});
+
+        			$(selectout).removeClass('controlout');
+        			$(selectout).addClass('controlin');
+
+        		}).fail(function() {
+        			console.log("MASSIVE FAIL");
+        		})
+        	});
+        }, function() {
+        	$('div.controlin').bind('click', function() {        	
+        		var nameval = $(this).text();
+        		$.post('/delete/', {
+        			id : {{post.id}},
+        			name : nameval
+        		}).done(function() {
+        			console.log("Success");
+
+        			var selectin = $('div.controlin').filter(function () {
+					    return $.trim($(this).text()) === nameval;
+					});
+
+        			$(selectin).removeClass('controlin');
+        			$(selectin).addClass('controlout');
+
+        		}).fail(function() {
+        			console.log("MASSIVE FAIL");
+        		})
+        	});
         });
+
 });
+
 
 </script>
 {{ moment.include_moment() }}

@@ -277,10 +277,36 @@ def edit_project(urlname):
     return render_template('edit_something.html', id=id, post=post, researchers=users, projects=projects, form=form, ptype=ptype, user=user, publications=publications)
 
 
-@main.route('/delete/<int:id>/<name>')
+@main.route('/delete/', methods=['POST'])
 @login_required
-def delete_user(id, name):
+def delete_user():
 
+    id = request.form['id']
+    name = request.form['name']
+
+    stuff = {
+        'id' : id
+    }
+
+    kwargs = {
+        'name' : name,
+    }
+
+    project = Project.query.filter_by(**stuff).first()
+    oldpost = User.query.filter_by(**kwargs).first()
+    project.researchers.remove(oldpost)
+    db.session.commit()
+
+    return render_template('index.html')
+
+
+@main.route('/add/', methods=['POST'])
+@login_required
+def add_remove_coauthor():
+
+    id = request.form['id']
+    name = request.form['name']
+    
     stuff = {
         'id' : id
     }
@@ -292,10 +318,8 @@ def delete_user(id, name):
     print name
 
     project = Project.query.filter_by(**stuff).first()
-    print "---------------", project.title
-    oldpost = User.query.filter_by(**kwargs).first()
-    print "&&&&&&&&&&&", oldpost
-    project.researchers.remove(oldpost)
+    newpost = [User.query.filter_by(**kwargs).first()]
+    project.researchers.extend(newpost)
     db.session.commit()
 
     return render_template('index.html')
