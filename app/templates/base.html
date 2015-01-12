@@ -120,6 +120,7 @@
 {{ super() }}
 <script>
 $( document ).ready(function() {
+
     $.ajax({
         url: '{{ url_for("main.researchersjson") }}'
         }).done(function (data) {

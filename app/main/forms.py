@@ -85,7 +85,7 @@ class ProjectEditForm(Form):
     website = StringField('Project Website', validators=[Length(0,64)])
     twitter = StringField('Project Twitter', validators=[Length(0,64)])
     facebook = StringField('Project Facebook', validators=[Length(0,64)])
-    researchers = StringField('Other Researchers Involved')
+    # researchers = StringField('Other Researchers Involved')
     submit = SubmitField('Submit')
 
 

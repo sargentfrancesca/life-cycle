@@ -83,3 +83,23 @@ li.add a {
 li.dropdown.add > a {
     color: #333;
 }
+
+div.controlin,
+div.controlout {
+    display: inline-block;
+    padding: 10px;
+    cursor: pointer;
+    font-size: 1.2em;
+    margin: 5px;
+    -webkit-box-shadow: 7px 7px 0px 0px rgba(236, 240, 241, 0.75);
+    -moz-box-shadow:    7px 7px 0px 0px rgba(236, 240, 241, 0.75);
+    box-shadow:         7px 7px 0px 0px rgba(236, 240, 241, 0.75);
+}
+
+div.controlin {
+    background: #2ecc71;
+}
+
+div.controlout {
+    background: #e74c3c;
+}

@@ -39,5 +39,29 @@
 
 {% block scripts %}
 {{ super() }}
+<script>
+$( document ).ready(function() {
+
+    $('#facebook').after('<div id="authorcontrol"></div>');
+
+    $.ajax({
+        url: '{{ url_for("main.json", urlname=post.urlname) }}'
+        }).done(function (data) {
+
+        	var namesin = data.researchers["in"];
+        	var namesout = data.researchers["out"];
+
+        	$(namesin).each(function() {
+        		console.log(this.name);
+        		$('#authorcontrol').append('<div class= "controlin">'+this.name+'</div>')
+        	});
+
+        	$(namesout).each(function() {
+        		$('#authorcontrol').append('<div class= "controlout">'+this.name+'</div>')
+        	});
+        });
+});
+
+</script>
 {{ moment.include_moment() }}
 {% endblock %}

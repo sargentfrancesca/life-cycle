@@ -4,10 +4,12 @@ from flask.ext.login import login_required, current_user
 from . import main
 from .forms import EditProfileForm, EditProfileAdminForm, ProjectPostForm, ProjectEditForm, PublicationPostForm, PublicationEditForm
 from .. import db
-from ..models import Permission, Role, User, Project, Publication
+from ..models import Permission, Role, User, Project, Publication, coauthors
 from ..decorators import admin_required
 import re
 from jinja2 import evalcontextfilter, Markup, escape
+from sqlalchemy import *
+from sqlalchemy.ext.declarative import declarative_base
 
 @main.route('/')
 def index():
@@ -241,12 +243,12 @@ def edit_project(urlname):
         post.website = form.website.data
         post.twitter = form.twitter.data
         post.facebook = form.facebook.data
-        post.researchers 
+        # post.researchers 
 
-        researchers = [x.strip() for x in form.researchers.data.split(',')]
-        for researcher in researchers:
-            extend_researchers = [User.query.filter(User.name == researcher).first()]
-            post.researchers.extend(extend_researchers)
+        # researchers = [x.strip() for x in form.researchers.data.split(',')]
+        # for researcher in researchers:
+        #     extend_researchers = [User.query.filter(User.name == researcher).first()]
+        #     post.researchers.extend(extend_researchers)
         
         db.session.add(post)
         flash('The post has been updated.')
@@ -262,10 +264,10 @@ def edit_project(urlname):
     form.twitter.data = post.twitter
     form.facebook.data = post.facebook
 
-    form.researchers.data = ''
+    # form.researchers.data = ''
 
-    for person in post.researchers:
-        form.researchers.data += person.name + ", "
+    # for person in post.researchers:
+    #     form.researchers.data += person.name + ", "
 
 
     ptype = "Project"
@@ -274,6 +276,29 @@ def edit_project(urlname):
     publications = Publication.query.all()
     return render_template('edit_something.html', id=id, post=post, researchers=users, projects=projects, form=form, ptype=ptype, user=user, publications=publications)
 
+
+@main.route('/delete/<int:id>/<name>')
+@login_required
+def delete_user(id, name):
+
+    stuff = {
+        'id' : id
+    }
+
+    kwargs = {
+        'name' : name,
+    }
+
+    print name
+
+    project = Project.query.filter_by(**stuff).first()
+    print "---------------", project.title
+    oldpost = User.query.filter_by(**kwargs).first()
+    print "&&&&&&&&&&&", oldpost
+    project.researchers.remove(oldpost)
+    db.session.commit()
+
+    return render_template('index.html')
 
 
 @main.route('/landing')
@@ -402,16 +427,51 @@ def json(urlname):
     kwargs = {
         'urlname' : urlname
     }
+
     projects = Project.query.filter_by(**kwargs).first()
     people = Project.query.filter_by(**kwargs).first()
+    alls = User.query.all()
 
-    researchers = []
+    inproject = []
 
-    for person in  people.researchers:
-        researchers.append(person.name+", ")
+    rs = people.researchers
+
+    for research in rs:
+        inproject.append(research.name) 
+
+    print inproject
+
+    researchers = {
+    'in' : [],
+    'out' : []
+    }
+
+    allresearchers = []
+
+    for researcher in alls:
+        allresearchers.append(researcher.name)
 
 
-    return jsonify(json_list=researchers) 
+    print allresearchers
+
+    for researcher in alls:
+        print researcher.name
+        if researcher.name in inproject:
+            ins = {
+            'name' : researcher.name
+            }
+
+            researchers["in"].append(ins)
+        if researcher.name not in inproject:
+            out = {
+            'name' : researcher.name
+            }
+
+            print out
+            researchers["out"].append(out)
+
+
+    return jsonify(researchers=researchers) 
 
 @main.route('/projectsjson')
 def projectsjson():
