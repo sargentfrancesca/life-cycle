@@ -347,6 +347,7 @@ def add_remove_coauthor():
     project.researchers.extend(newpost)
     db.session.commit()
 
+    
     return render_template('index.html')
 
 

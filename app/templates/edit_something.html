@@ -74,7 +74,10 @@ $( document ).ready(function() {
 					});
 
         			$(selectout).removeClass('controlout');
-        			$(selectout).addClass('controlin');
+        			$(selectout).addClass('added');
+
+                    $(selectout).html('<span class="glyphicon glyphicon-ok" aria-hidden="true"></span>&nbsp;' + nameval + ' added');
+                    $(selectout).animate({'visibility' : 'hidden'})
 
         		}).fail(function() {
         			console.log("MASSIVE FAIL");
@@ -94,7 +97,10 @@ $( document ).ready(function() {
 					});
 
         			$(selectin).removeClass('controlin');
-        			$(selectin).addClass('controlout');
+        			$(selectin).addClass('deleted');
+                    $(selectin).html('<span class="glyphicon glyphicon-remove" aria-hidden="true"></span>&nbsp;' + nameval + ' removed');
+                    $(selectin).animate({'visibility' : 'hidden'})
+
 
         		}).fail(function() {
         			console.log("MASSIVE FAIL");
@@ -131,7 +137,10 @@ $( document ).ready(function() {
                     });
 
                     $(selectout).removeClass('controlout');
-                    $(selectout).addClass('controlin');
+                    $(selectout).addClass('added');
+
+                    $(selectout).html('<span class="glyphicon glyphicon-ok" aria-hidden="true"></span>&nbsp;' + nameval + ' added');
+                    $(selectout).animate({'visibility' : 'hidden'})
 
                 }).fail(function() {
                     console.log("MASSIVE FAIL");
@@ -151,7 +160,10 @@ $( document ).ready(function() {
                     });
 
                     $(selectin).removeClass('controlin');
-                    $(selectin).addClass('controlout');
+                    $(selectin).addClass('deleted');
+
+                    $(selectin).html('<span class="glyphicon glyphicon-remove" aria-hidden="true"></span>&nbsp;' + nameval + ' removed');
+                    $(selectin).animate({'visibility' : 'hidden'})
 
                 }).fail(function() {
                     console.log("MASSIVE FAIL");

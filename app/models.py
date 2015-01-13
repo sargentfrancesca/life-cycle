@@ -48,7 +48,6 @@ class Role(db.Model):
         return '<Role %r>' % self.name
 
 coauthors = db.Table('coauthors',
-
     db.Column('user_name', db.String(64), db.ForeignKey('users.name')),
     db.Column('project_id', db.Integer, db.ForeignKey('projects.id'))
 )

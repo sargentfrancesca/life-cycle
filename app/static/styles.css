@@ -85,7 +85,10 @@ li.dropdown.add > a {
 }
 
 div.controlin,
-div.controlout {
+div.controlout,
+div.controldisabled,
+div.added,
+div.deleted {
     display: inline-block;
     padding: 10px;
     cursor: pointer;
@@ -96,10 +99,17 @@ div.controlout {
     box-shadow:         7px 7px 0px 0px rgba(236, 240, 241, 0.75);
 }
 
-div.controlin {
+div.controlin,
+div.added {
     background: #2ecc71;
 }
 
-div.controlout {
+div.controlout,
+div.deleted {
     background: #e74c3c;
+}
+
+div.controldisabled {
+    background: #ecf0f1;
+    cursor: default;
 }
