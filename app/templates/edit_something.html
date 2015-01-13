@@ -42,8 +42,8 @@
 <script>
 $( document ).ready(function() {
 
-    $('#facebook').after('<div id="authorcontrol"></div>');
-    $('#project_name').after('<div id="pubauthorcontrol"></div>')
+    $('#facebook').after('</div><p><div class="form-group"><label class="control-label"><b>Researchers Involved</b></label><div id="authorcontrol"></div></div>');
+    $('#project_name').after('</div><p><div class="form-group"><label class="control-label"><b>Researchers Involved</b></label><div id="pubauthorcontrol"></div></div>')
 
     $.ajax({
         url: '{{ url_for("main.json", urlname=post.urlname) }}'
@@ -53,7 +53,6 @@ $( document ).ready(function() {
         	var namesout = data.researchers["out"];
 
         	$(namesin).each(function() {
-        		console.log(this.name);
         		$('#authorcontrol').append('<div class= "controlin">'+this.name+'</div>')
         	});
 
@@ -80,7 +79,7 @@ $( document ).ready(function() {
                     $(selectout).animate({'visibility' : 'hidden'})
 
         		}).fail(function() {
-        			console.log("MASSIVE FAIL");
+        			console.log("Error - possibly duplicate entry");
         		})
         	});
         }, function() {
@@ -90,7 +89,6 @@ $( document ).ready(function() {
         			id : {{post.id}},
         			name : nameval
         		}).done(function() {
-        			console.log("Success");
 
         			var selectin = $('div.controlin').filter(function () {
 					    return $.trim($(this).text()) === nameval;
@@ -103,7 +101,7 @@ $( document ).ready(function() {
 
 
         		}).fail(function() {
-        			console.log("MASSIVE FAIL");
+        			console.log("Error - Possible duplicate entry");
         		})
         	});
         });
@@ -116,7 +114,6 @@ $( document ).ready(function() {
             var namesout = data.researchers["out"];
 
             $(namesin).each(function() {
-                console.log(this.name);
                 $('#pubauthorcontrol').append('<div class= "controlin">'+this.name+'</div>')
             });
 
@@ -130,7 +127,6 @@ $( document ).ready(function() {
                     id : {{post.id}},
                     name : nameval
                 }).done(function() {
-                    console.log("Success");
 
                     var selectout = $('div.controlout').filter(function () {
                         return $.trim($(this).text()) === nameval;
@@ -143,7 +139,7 @@ $( document ).ready(function() {
                     $(selectout).animate({'visibility' : 'hidden'})
 
                 }).fail(function() {
-                    console.log("MASSIVE FAIL");
+                    console.log("Error- Possible duplicate entry");
                 })
             });
         }, function() {
@@ -166,7 +162,7 @@ $( document ).ready(function() {
                     $(selectin).animate({'visibility' : 'hidden'})
 
                 }).fail(function() {
-                    console.log("MASSIVE FAIL");
+                    console.log("Error - Possible duplicate entry");
                 })
             });
         });
