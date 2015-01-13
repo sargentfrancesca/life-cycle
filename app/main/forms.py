@@ -110,5 +110,5 @@ class PublicationEditForm(Form):
     website = StringField('Publication Website', validators=[Length(0,64)])
     citation = StringField('Citation')
     project_name = StringField('Project Associated')
-    researchers = StringField('Other Researchers Involved', default="<3")
+    # researchers = StringField('Other Researchers Involved', default="<3")
     submit = SubmitField('Submit')

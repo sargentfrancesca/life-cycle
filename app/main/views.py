@@ -299,6 +299,31 @@ def delete_user():
 
     return render_template('index.html')
 
+@main.route('/delete/publication', methods=['POST'])
+@login_required
+def delete_user_pub():
+
+    id = request.form['id']
+    name = request.form['name']
+
+    stuff = {
+        'id' : id
+    }
+
+    kwargs = {
+        'name' : name,
+    }
+
+    publication = Publication.query.filter_by(**stuff).first()
+    oldpost = User.query.filter_by(**kwargs).first()
+    publication.researchers.remove(oldpost)
+    
+    num = db.session.query(Publication).join(Publication.researchers).filter(User.name==name).count()
+
+    db.session.commit()
+
+    return render_template('index.html')
+
 
 @main.route('/add/', methods=['POST'])
 @login_required
@@ -320,6 +345,31 @@ def add_remove_coauthor():
     project = Project.query.filter_by(**stuff).first()
     newpost = [User.query.filter_by(**kwargs).first()]
     project.researchers.extend(newpost)
+    db.session.commit()
+
+    return render_template('index.html')
+
+
+@main.route('/add/publication', methods=['POST'])
+@login_required
+def add_remove_coauthor_pub():
+
+    id = request.form['id']
+    name = request.form['name']
+    
+    stuff = {
+        'id' : id
+    }
+
+    kwargs = {
+        'name' : name,
+    }
+
+    print name
+
+    publication = Publication.query.filter_by(**stuff).first()
+    newpost = [User.query.filter_by(**kwargs).first()]
+    publication.researchers.extend(newpost)
     db.session.commit()
 
     return render_template('index.html')
@@ -410,10 +460,10 @@ def edit_publication(id):
         post.citation = form.citation.data
         post.project_name = form.project_name.data
 
-        researchers = [x.strip() for x in form.researchers.data.split(',')]
-        for researcher in researchers:
-            extend_researchers = [User.query.filter(User.name == researcher).first()]
-            post.researchers.extend(extend_researchers)
+        # researchers = [x.strip() for x in form.researchers.data.split(',')]
+        # for researcher in researchers:
+        #     extend_researchers = [User.query.filter(User.name == researcher).first()]
+        #     post.researchers.extend(extend_researchers)
 
         # extend_researchers = [User.query.filter(User.name == form.researchers.data).first()]
         
@@ -454,6 +504,57 @@ def json(urlname):
 
     projects = Project.query.filter_by(**kwargs).first()
     people = Project.query.filter_by(**kwargs).first()
+    alls = User.query.all()
+
+    inproject = []
+
+    rs = people.researchers
+
+    for research in rs:
+        inproject.append(research.name) 
+
+    print inproject
+
+    researchers = {
+    'in' : [],
+    'out' : []
+    }
+
+    allresearchers = []
+
+    for researcher in alls:
+        allresearchers.append(researcher.name)
+
+
+    print allresearchers
+
+    for researcher in alls:
+        print researcher.name
+        if researcher.name in inproject:
+            ins = {
+            'name' : researcher.name
+            }
+
+            researchers["in"].append(ins)
+        if researcher.name not in inproject:
+            out = {
+            'name' : researcher.name
+            }
+
+            print out
+            researchers["out"].append(out)
+
+
+    return jsonify(researchers=researchers) 
+
+@main.route('/jsonpub/<int:id>')
+def jsonpub(id):
+    kwargs = {
+        'id' : id
+    }
+
+    publications = Publication.query.filter_by(**kwargs).first()
+    people = Publication.query.filter_by(**kwargs).first()
     alls = User.query.all()
 
     inproject = []

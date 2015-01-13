@@ -43,6 +43,7 @@
 $( document ).ready(function() {
 
     $('#facebook').after('<div id="authorcontrol"></div>');
+    $('#project_name').after('<div id="pubauthorcontrol"></div>')
 
     $.ajax({
         url: '{{ url_for("main.json", urlname=post.urlname) }}'
@@ -99,6 +100,63 @@ $( document ).ready(function() {
         			console.log("MASSIVE FAIL");
         		})
         	});
+        });
+
+    $.ajax({
+        url: '{{ url_for("main.jsonpub", id=post.id) }}'
+        }).done(function (data) {
+
+            var namesin = data.researchers["in"];
+            var namesout = data.researchers["out"];
+
+            $(namesin).each(function() {
+                console.log(this.name);
+                $('#pubauthorcontrol').append('<div class= "controlin">'+this.name+'</div>')
+            });
+
+            $(namesout).each(function() {
+                $('#pubauthorcontrol').append('<div class= "controlout">'+this.name+'</div>')
+            });
+        }, function(){
+            $('div.controlout').bind('click', function() {          
+                var nameval = $(this).text();
+                $.post('/add/publication', {
+                    id : {{post.id}},
+                    name : nameval
+                }).done(function() {
+                    console.log("Success");
+
+                    var selectout = $('div.controlout').filter(function () {
+                        return $.trim($(this).text()) === nameval;
+                    });
+
+                    $(selectout).removeClass('controlout');
+                    $(selectout).addClass('controlin');
+
+                }).fail(function() {
+                    console.log("MASSIVE FAIL");
+                })
+            });
+        }, function() {
+            $('div.controlin').bind('click', function() {           
+                var nameval = $(this).text();
+                $.post('/delete/publication', {
+                    id : {{post.id}},
+                    name : nameval
+                }).done(function() {
+                    console.log("Success");
+
+                    var selectin = $('div.controlin').filter(function () {
+                        return $.trim($(this).text()) === nameval;
+                    });
+
+                    $(selectin).removeClass('controlin');
+                    $(selectin).addClass('controlout');
+
+                }).fail(function() {
+                    console.log("MASSIVE FAIL");
+                })
+            });
         });
 
 });
