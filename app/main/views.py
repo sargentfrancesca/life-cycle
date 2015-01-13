@@ -196,6 +196,12 @@ def postproject():
     form = ProjectPostForm()
     if current_user.can(Permission.WRITE_ARTICLES) and \
             form.validate_on_submit():
+
+        def replacement(match):
+            return match.group(1).lower()
+
+        url = re.sub(r'(^[a-z]+$)', replacement, form.urlname.data)
+        urlname = url.lower()
             
         post = Project(title=form.title.data,
                         urlname=form.urlname.data,
@@ -347,7 +353,7 @@ def add_remove_coauthor():
     project.researchers.extend(newpost)
     db.session.commit()
 
-    
+
     return render_template('index.html')
 
 
@@ -412,6 +418,13 @@ def postpublication():
     form = PublicationPostForm(user=user)
     if current_user.can(Permission.WRITE_ARTICLES) and \
             form.validate_on_submit():
+
+        def replacement(match):
+            return match.group(1).lower()
+
+        url = re.sub(r'(^[a-z]+$)', replacement, form.urlname.data)
+        urlname = url.lower()
+
         post = Publication(title=form.title.data,
                         urlname=form.urlname.data,
                         full_title=form.full_title.data,
@@ -422,7 +435,7 @@ def postpublication():
                         project_name = form.project_name.data,
                         researchers = [current_user._get_current_object()])
         db.session.add(post)
-        return redirect(url_for('.index'))
+        return redirect(url_for('.pubpage', id=post.id))
     page = request.args.get('page', 1, type=int)
     pagination = Publication.query.order_by(Publication.timestamp.desc()).paginate(
         page, per_page=current_app.config['FLASKY_POSTS_PER_PAGE'],
@@ -453,6 +466,7 @@ def edit_publication(id):
         not current_user.can(Permission.ADMINISTER): abort(403)
     form = PublicationEditForm()
     if form.validate_on_submit():
+
         post.title = form.title.data
         post.urlname = form.urlname.data
         post.full_title = form.full_title.data
@@ -471,7 +485,7 @@ def edit_publication(id):
         db.session.add(post)
         print post
         flash('The post has been updated.')
-        return redirect(url_for('.index', id=post.id))
+        return redirect(url_for('.pubpage', id=post.id))
     form.title.data = post.title
     form.urlname.data = post.urlname
     form.full_title.data = post.full_title

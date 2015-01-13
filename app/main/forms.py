@@ -66,7 +66,8 @@ class EditProfileAdminForm(Form):
 
 class ProjectPostForm(Form):
     title = StringField('Project Title', default="Brief title for display purposes, for example Demography or Lobsters", validators=[Required(), Length(0,100)])
-    urlname = StringField('Url Name', default="One word descriptor for the project URL", validators=[Required(), Length(0,100)])
+    urlname = StringField('Url Name', default="One word descriptor for the project URL", validators=[Required(), Length(0,100), Regexp('^[a-z]+$', 0,
+                                          'Lowercase letters only')])
     full_title = StringField('Project Full Title', validators=[Length(0,300)])
     brief_synopsis = TextAreaField('Brief Synopsis', default="Quick synopsis of project, summed up in around 100 words for quick reference")
     synopsis = TextAreaField("Full Synopsis of project", validators=[Required()])
@@ -78,7 +79,8 @@ class ProjectPostForm(Form):
 
 class ProjectEditForm(Form):
     title = StringField('Project Title', default="Brief title for display purposes, for example Demography or Lobsters", validators=[Required(), Length(0,100)])
-    urlname = StringField('Url Name', default="One word descriptor for the project URL", validators=[Required(), Length(0,100)])
+    urlname = StringField('Url Name', default="One word descriptor for the project URL", validators=[Required(), Length(0,100), Regexp('^[a-z]+$', 0,
+                                          'Lowercase letters only')])
     full_title = StringField('Project Full Title', validators=[Length(0,300)])
     brief_synopsis = TextAreaField('Brief Synopsis', default="Quick synopsis of project, summed up in around 100 words for quick reference")
     synopsis = TextAreaField("Full Synopsis of project", validators=[Required()])
@@ -92,7 +94,8 @@ class ProjectEditForm(Form):
 
 class PublicationPostForm(Form):
     title = StringField('Publication Title', default="Brief title for display purposes, for example Demography or Lobsters, max 100", validators=[Required(), Length(0,100)])
-    urlname = StringField('Url Name', default="One word descriptor for the project URL", validators=[Required(), Length(0,100)])
+    urlname = StringField('Url Name', default="One word descriptor for the project URL", validators=[Required(), Length(0,100), Regexp('^[a-z]+$', 0,
+                                          'Lowercase letters only')])
     full_title = StringField('Publication Full Title', validators=[Length(0,300)])
     brief_synopsis = TextAreaField('Brief Synopsis', default="Quick synopsis of project, summed up in around 100 words for quick reference")
     synopsis = TextAreaField("Full Synopsis of publication", validators=[Required()])
@@ -103,7 +106,8 @@ class PublicationPostForm(Form):
 
 class PublicationEditForm(Form):
     title = StringField('Publication Title', default="Brief title for display purposes, for example Demography or Lobsters, max 100", validators=[Required(), Length(0,100)])
-    urlname = StringField('Url Name', default="One word descriptor for the project URL", validators=[Required(), Length(0,100)])
+    urlname = StringField('Url Name', default="One word descriptor for the project URL", validators=[Required(), Length(0,100), Regexp('^[a-z]+$', 0,
+                                          'Lowercase letters only')])
     full_title = StringField('Publication Full Title', validators=[Length(0,300)])
     brief_synopsis = TextAreaField('Brief Synopsis', default="Quick synopsis of project, summed up in around 100 words for quick reference")
     synopsis = TextAreaField("Full Synopsis of publication", validators=[Required()])
