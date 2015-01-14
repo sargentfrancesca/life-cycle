@@ -76,6 +76,7 @@ class User(UserMixin, db.Model):
     pub_email = db.Column(db.String(64))
     website = db.Column(db.String(50))
     twitter = db.Column(db.String(64))
+    twitter_name = db.Column(db.String(64))
     linkedin = db.Column(db.String(64))
     google = db.Column(db.String(64))
 
@@ -233,6 +234,7 @@ class Project(db.Model):
     synopsis = db.Column(db.Text)
     website = db.Column(db.String(64))
     twitter = db.Column(db.String(64))
+    twitter_name = db.Column(db.String(64))
     facebook = db.Column(db.String(64))
     timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
     researcher_id = db.Column(db.Integer, db.ForeignKey('users.id'))
@@ -263,7 +265,7 @@ class Publication(db.Model):
     __tablename__ = 'publications'
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(100))
-    urlname = db.Column(db.String(100))
+    urlname = db.Column(db.String(15))
     full_title = db.Column(db.String(300))
     brief_synopsis = db.Column(db.Text)
     synopsis = db.Column(db.Text)

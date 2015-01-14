@@ -20,7 +20,7 @@ class EditProfileForm(Form):
     quals = TextAreaField('Your Qualifications')
     pub_email = StringField('Public Email', validators=[Length(0, 64)])
     website = StringField('Website', validators=[Length(0, 50)])
-    twitter = StringField('Twitter Profile', validators=[Length(0, 64)])
+    twitter = StringField('Twitter Handle', default="@", validators=[Length(0, 64)])
     linkedin = StringField('LinkedIn Profile', validators=[Length(0, 64)])
     google = StringField('Google Profile', validators=[Length(0, 64)])
     submit = SubmitField('Submit')
@@ -66,13 +66,13 @@ class EditProfileAdminForm(Form):
 
 class ProjectPostForm(Form):
     title = StringField('Project Title', default="Brief title for display purposes, for example Demography or Lobsters", validators=[Required(), Length(0,100)])
-    urlname = StringField('Url Name', default="One word descriptor for the project URL", validators=[Required(), Length(0,100), Regexp('^[a-z]+$', 0,
+    urlname = StringField('Url Name', default="One word descriptor for the project URL", validators=[Required(), Length(0,15), Regexp('^[a-z]+$', 0,
                                           'Lowercase letters only')])
     full_title = StringField('Project Full Title', validators=[Length(0,300)])
     brief_synopsis = TextAreaField('Brief Synopsis', default="Quick synopsis of project, summed up in around 100 words for quick reference")
     synopsis = TextAreaField("Full Synopsis of project", validators=[Required()])
     website = StringField('Project Website', validators=[Length(0,64)])
-    twitter = StringField('Project Twitter', validators=[Length(0,64)])
+    twitter = StringField('Project Twitter Handle', default="@", validators=[Length(0,64)])
     facebook = StringField('Project Facebook', validators=[Length(0,64)])
     submit = SubmitField('Submit')
 
@@ -87,14 +87,12 @@ class ProjectEditForm(Form):
     website = StringField('Project Website', validators=[Length(0,64)])
     twitter = StringField('Project Twitter', validators=[Length(0,64)])
     facebook = StringField('Project Facebook', validators=[Length(0,64)])
-    # researchers = StringField('Other Researchers Involved')
     submit = SubmitField('Submit')
-
 
 
 class PublicationPostForm(Form):
     title = StringField('Publication Title', default="Brief title for display purposes, for example Demography or Lobsters, max 100", validators=[Required(), Length(0,100)])
-    urlname = StringField('Url Name', default="One word descriptor for the project URL", validators=[Required(), Length(0,100), Regexp('^[a-z]+$', 0,
+    urlname = StringField('Url Name', default="One word descriptor for the project URL", validators=[Required(), Length(0,15), Regexp('^[a-z]+$', 0,
                                           'Lowercase letters only')])
     full_title = StringField('Publication Full Title', validators=[Length(0,300)])
     brief_synopsis = TextAreaField('Brief Synopsis', default="Quick synopsis of project, summed up in around 100 words for quick reference")
@@ -106,7 +104,7 @@ class PublicationPostForm(Form):
 
 class PublicationEditForm(Form):
     title = StringField('Publication Title', default="Brief title for display purposes, for example Demography or Lobsters, max 100", validators=[Required(), Length(0,100)])
-    urlname = StringField('Url Name', default="One word descriptor for the project URL", validators=[Required(), Length(0,100), Regexp('^[a-z]+$', 0,
+    urlname = StringField('Url Name', default="One word descriptor for the project URL", validators=[Required(), Length(0,15), Regexp('^[a-z]+$', 0,
                                           'Lowercase letters only')])
     full_title = StringField('Publication Full Title', validators=[Length(0,300)])
     brief_synopsis = TextAreaField('Brief Synopsis', default="Quick synopsis of project, summed up in around 100 words for quick reference")
@@ -114,5 +112,4 @@ class PublicationEditForm(Form):
     website = StringField('Publication Website', validators=[Length(0,64)])
     citation = StringField('Citation')
     project_name = StringField('Project Associated')
-    # researchers = StringField('Other Researchers Involved', default="<3")
     submit = SubmitField('Submit')
