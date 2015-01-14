@@ -1,13 +1,17 @@
-Dear {{ user.username }},
-
-Welcome to Flasky!
-
-To confirm your account please click on the following link:
-
+Dear {{ user.name }},
+Welcome to Life Cycle, the home of SPANDEX.
+To confirm your account please <a href="{{ url_for('auth.confirm', token=token, _external=True) }}">click here</a>.
+Alternatively, you can paste the following link in your browser's address bar:
 {{ url_for('auth.confirm', token=token, _external=True) }}
+Currently, the site is in beta testing mode, but has been released to the group to begin entering profile, project and publication details. So don't worry - this is not the site in its final form. It would be a huge help if you could report issues, errors and bugs and also (most importantly) suggestions via the website's <a href="https://github.com/sargentfrancesca/life-cycle" target="_blank">Github page</a>, as it is a fantastic system for tackling problems.  You can also view the sourcecode and keep track of changes this way, especially if you 'follow' the project.  To be able to do this, you need to sign up with Github, but don't fear, it is not the sort of website to send weekly newsletters etc. To ensure the SPANDEX/Life Cycle website represents you correctly, your participation is vital.
 
-Sincerely,
+Profile images are generated <a href="https://en.gravatar.com" target="_blank">Gravatar</a> hashes.  If you already have a Gravatar/Wordpress account, your image should appear.  If not, I have created a Gravatar account - simply <a href="https://en.gravatar.com" target="_blank">log in to the website</a> with the following credentials:
 
-The Flasky Team
+User: spandexex
+Pass: tandemb1ke
 
+These credentials can be found on our Alfresco share site in the future. <a href="https://en.gravatar.com/emails/new" target="_blank">Add a new email</a>, which <em>must</em> be the email address you signed up to Life Cycle with. <a href="https://en.gravatar.com/gravatars/new" target="_blank">Add a new image</a> to your email address, ensuring you select the correct email address for yourself.  Of course, there is also the option to create your own personal Wordpress/Gravatar account with your email address.
+
+Take care,
+SPANDEX
 Note: replies to this email address are not monitored.

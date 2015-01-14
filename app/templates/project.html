@@ -10,8 +10,8 @@
                 <a href="{{ url_for('.user', username=researcher.username) }}">{{ researcher.name }}</a>,{% endfor %}</div>
     <p class="post-body">{{ post.synopsis }}</p>
     <div class="post-author"><p>Website: <a href="{{post.website}}">{{post.website}}</a></p></div>
-    <p class="post-body">{% if post.twitter %}
-        <a href = "{{ post.twitter }}"><span class="socicon">a</span></a> &nbsp;
+    <p class="post-body">{% if post.twitter_name %}
+        <a href = "http://twitter.com/{{ post.twitter_name }}" target="new"><span class="socicon">a</span> {{ post.twitter }}</a>&nbsp;
     {% endif %}
     {% if post.facebook %}
         <a href = "{{ post.facebook }}"><span class="socicon">b</span></a> &nbsp;

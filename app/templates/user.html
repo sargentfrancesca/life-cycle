@@ -6,7 +6,7 @@
 {% block page_content %}
 <div class="page-header">
     <img class="img-circle profile-thumbnail" src="{{ user.gravatar(size=250) }}">
-    <div class="profile-header">
+    <div class="profile-header col-sm-5">
         <h1>{{ user.name }}</h1>
         {% if user.jobtitle %}
         <h3>{{ user.jobtitle }}</h3>
@@ -22,8 +22,8 @@
                 {% else %}
                 <a href = "mailto: {{user.email}}"><span class="socicon">1</span></a> &nbsp;
             {% endif %}
-            {% if user.twitter %}
-                <a href = "{{ user.twitter }}"><span class="socicon">a</span></a> &nbsp;
+            {% if user.twitter_name %}
+                <a href = "http://twitter.com{{ user.twitter_name }}" target="_blank"><span class="socicon">a</span> {{ user.twitter }}</a> &nbsp;
             {% endif %}
             {% if user.linkedin %}
                 <a href = "{{ user.linkedin }}"><span class="socicon">j</span></a> &nbsp;
@@ -53,7 +53,13 @@
             {% endif %}
         </p>
     </div>
-</div>
+        <div class="col-sm-4">
+        {% if user.tw_confirmed %}
+       <a class="twitter-timeline" href="https://twitter.com/spand_ex" width="250" height="250" data-widget-id="{{ user.tw_widget_id}}">Tweets by {{ user.twitter }}</a>
+       {% else %}
+       <a class="twitter-timeline" href="https://twitter.com/spand_ex" width="250" height="250" data-widget-id="555417080305295361">Tweets by @spand_ex</a>
+       {% endif %}
+    </div>
 
 <div class="row">
     {% if user.about_me %}

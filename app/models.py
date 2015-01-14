@@ -64,7 +64,7 @@ class User(UserMixin, db.Model):
     username = db.Column(db.String(64), unique=True, index=True)
     role_id = db.Column(db.Integer, db.ForeignKey('roles.id'))
     password_hash = db.Column(db.String(128))
-    confirmed = db.Column(db.Boolean, default=True)
+    confirmed = db.Column(db.Boolean, default=False)
     name = db.Column(db.String(64), unique=True)
     location = db.Column(db.String(64))
     about_me = db.Column(db.Text())
@@ -79,6 +79,8 @@ class User(UserMixin, db.Model):
     twitter_name = db.Column(db.String(64))
     linkedin = db.Column(db.String(64))
     google = db.Column(db.String(64))
+    tw_confirmed = db.Column(db.Boolean(), default=False)
+    tw_widget_id = db.Column(db.String(64))
 
     posts = db.relationship('Project', backref='researcher', lazy='dynamic')
 
@@ -238,8 +240,10 @@ class Project(db.Model):
     timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
     researcher_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     researchers = db.relationship('User', secondary=coauthors, backref=db.backref('projects', lazy='dynamic'))
+    other_researchers = db.Column(db.String(100))
     publications = db.relationship('Publication', backref='projects', lazy='dynamic')
-
+    tw_confirmed = db.Column(db.Boolean(), default=False)
+    tw_widget_id = db.Column(db.String(64))
 
 
 
@@ -274,6 +278,7 @@ class Publication(db.Model):
     timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
     researcher_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     researchers = db.relationship('User', secondary=copubauthors, backref=db.backref('publications', lazy='dynamic')) 
+    other_researchers = db.Column(db.String(100))
     project_id = db.Column(db.String(100), db.ForeignKey('roles.name'))
     project_name = db.Column(db.String(100), db.ForeignKey('projects.urlname'))
     citation = db.Column(db.Text)

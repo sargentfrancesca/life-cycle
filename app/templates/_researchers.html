@@ -17,8 +17,8 @@
                 {% else %}
                 <a href = "mailto: {{researcher.email}}"><span class="socicon">1</span></a> &nbsp;
             {% endif %}
-            {% if researcher.twitter %}
-                <a href = "{{ researcher.twitter }}"><span class="socicon">a</span></a> &nbsp;
+            {% if researcher.twitter_name %}
+                <a href = "http://twitter.com/{{ researcher.twitter_name }}" target="_blank"><span class="socicon">a</span></a> &nbsp;
             {% endif %}
             {% if researcher.linkedin %}
                 <a href = "{{ researcher.linkedin }}"><span class="socicon">j</span></a> &nbsp;

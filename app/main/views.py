@@ -134,6 +134,8 @@ def edit_profile_admin(id):
         user.twitter_name = tweet
         user.linkedin = form.linkedin.data
         user.google = form.google.data
+        user.tw_confirmed = form.tw_confirmed.data
+        user.tw_widget_id = form.tw_widget_id.data
         db.session.add(user)
         flash('The profile has been updated.')
         return redirect(url_for('.user', username=user.username))
@@ -151,6 +153,8 @@ def edit_profile_admin(id):
     form.twitter.data = user.twitter
     form.linkedin.data = user.linkedin
     form.google.data = user.google
+    form.tw_confirmed.data = user.tw_confirmed
+    form.tw_widget_id.data = user.tw_widget_id
 
     ptype = "Profile"
     users = User.query.all()
@@ -194,7 +198,7 @@ def postproject():
     form = ProjectPostForm()
     if current_user.can(Permission.WRITE_ARTICLES) and \
             form.validate_on_submit():
-
+        tweet = re.sub('[@]', '', form.twitter.data)
         post = Project(title=form.title.data,
                         urlname=form.urlname.data,
                         full_title=form.full_title.data,
@@ -202,7 +206,7 @@ def postproject():
                         synopsis=form.synopsis.data,
                         website=form.website.data,
                         twitter=form.twitter.data,
-                        twitter_name = '',
+                        twitter_name = tweet,
                         facebook=form.facebook.data,
                         researchers = [current_user._get_current_object()])
         db.session.add(post)
@@ -234,6 +238,7 @@ def edit_project(urlname):
         not current_user.can(Permission.ADMINISTER): abort(403)
     form = ProjectEditForm()
     if form.validate_on_submit():
+        tweet = re.sub('[@]', '', form.twitter.data)
         post.title = form.title.data
         post.urlname = form.urlname.data
         post.full_title = form.full_title.data
@@ -241,7 +246,7 @@ def edit_project(urlname):
         post.synopsis = form.synopsis.data 
         post.website = form.website.data
         post.twitter = form.twitter.data
-        post.twitter_name = ''
+        post.twitter_name = tweet
         post.facebook = form.facebook.data
         db.session.add(post)
         flash('The post has been updated.')

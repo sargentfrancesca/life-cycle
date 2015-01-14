@@ -7,8 +7,8 @@
             <h4><em><strong>{{post.full_title}}</strong></em></h4>
             <div class="post-author">Researchers: {% for researcher in post.researchers %}
                 <img class="img-circle" src="{{ researcher.gravatar(size=20) }}"> <a href="{{ url_for('.user', username=researcher.username) }}">{{ researcher.name }}</a>{% endfor %}</div>
-            <p class="post-body">{% if post.twitter %}
-                <a href = "{{ post.twitter }}"><span class="socicon">a</span></a> &nbsp;
+            <p class="post-body">{% if post.twitter_name %}
+                <a href = "http://twitter.com/{{ post.twitter_name }}" target="_blank"><span class="socicon">a</span></a>&nbsp;
             {% endif %}
             {% if post.facebook %}
                 <a href = "{{ post.facebook }}"><span class="socicon">b</span></a> &nbsp;

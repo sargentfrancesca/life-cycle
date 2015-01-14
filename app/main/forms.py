@@ -39,6 +39,8 @@ class EditProfileAdminForm(Form):
     twitter = StringField('Twitter Handle (including @)', default='@', validators=[Length(0, 64), Regexp('(?<=^|(?<=[^a-zA-Z0-9-_\.]))@([A-Za-z]+[A-Za-z0-9]+)', 0, 'Twitter handle must be valid, and include leading @')])
     linkedin = StringField('LinkedIn Profile', validators=[Length(0, 64)])
     google = StringField('Google Profile', validators=[Length(0, 64)])
+    tw_widget_id = StringField('Twitter Widget Data ID', validators=[Length(0,64)])
+    tw_confirmed = BooleanField('Twitter Widget Generated')
     submit = SubmitField('Submit')
 
     def __init__(self, user, *args, **kwargs):
@@ -79,8 +81,9 @@ class ProjectEditForm(Form):
     brief_synopsis = TextAreaField('Brief Synopsis', default="Quick synopsis of project, summed up in around 100 words for quick reference", validators=[Required()])
     synopsis = TextAreaField("Full Synopsis of project")
     website = StringField('Project Website', validators=[Length(0,64)])
-    twitter = StringField('Project Twitter Handle', validators=[Length(0,64), Regexp('(?<=^|(?<=[^a-zA-Z0-9-_\.]))@([A-Za-z]+[A-Za-z0-9]+)', 0, 'Twitter handle must be valid, and include leading @')])
+    twitter = StringField('Project Twitter Handle - if none, use @spand_ex', validators=[Length(0,64), Regexp('(?<=^|(?<=[^a-zA-Z0-9-_\.]))@([A-Za-z]+[A-Za-z0-9]+)', 0, 'Twitter handle must be valid, and include leading @')])
     facebook = StringField('Project Facebook', validators=[Length(0,64)])
+    other_researchers = StringField('Other Researchers involved (not part of SPANDEX/yet)', validators=[Length(0,100)])
     submit = SubmitField('Submit')
 
 
@@ -106,4 +109,5 @@ class PublicationEditForm(Form):
     website = StringField('Publication Website', validators=[Length(0,64)])
     citation = StringField('Citation')
     project_name = StringField('Project Associated')
+    other_researchers = StringField('Other Researchers involved (not part of SPANDEX/yet)', validators=[Length(0,100)])
     submit = SubmitField('Submit')
