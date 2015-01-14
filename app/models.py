@@ -227,7 +227,7 @@ class Project(db.Model):
     __tablename__ = 'projects'
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(100))
-    urlname = db.Column(db.String(100), unique=True)
+    urlname = db.Column(db.String(15), unique=True)
     full_title = db.Column(db.String(300))
     brief_synopsis = db.Column(db.Text)
     synopsis = db.Column(db.Text)

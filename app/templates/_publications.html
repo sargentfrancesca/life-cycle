@@ -12,14 +12,14 @@
                 <p>Citation: {{publication.citation}}</p>
             <p class="post-body">
 
-            <a class="btn btn-default" href="{{ url_for('.pubpage', id=publication.id) }}"><span class="glyphicon glyphicon-eye-open"></span> View</a>
+            <a class="btn btn-default" href="{{ url_for('.pubnamepage', urlname=publication.urlname) }}"><span class="glyphicon glyphicon-eye-open"></span> View</a>
             {% for researcher in publication.researchers %}
                 {% if current_user == researcher  %}
-                <a class="btn btn-primary" href="{{ url_for('.edit_publication', id=publication.id) }}"><span class="glyphicon glyphicon-pencil"></span> Edit</a>
+                <a class="btn btn-primary" href="{{ url_for('.edit_publication', urlname=publication.urlname) }}"><span class="glyphicon glyphicon-pencil"></span> Edit</a>
                 {% endif %}
                 {% endfor %}
             {% if current_user.is_administrator() %}
-            <a class="btn btn-danger" href="{{ url_for('.edit_publication', id=publication.id) }}"><span class="glyphicon glyphicon-pencil"></span> Edit [Admin]</a>
+            <a class="btn btn-danger" href="{{ url_for('.edit_publication', urlname=publication.urlname) }}"><span class="glyphicon glyphicon-pencil"></span> Edit [Admin]</a>
             {% endif %}
 
         </p>

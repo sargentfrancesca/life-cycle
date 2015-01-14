@@ -165,14 +165,6 @@ def projectpage():
     publications = Publication.query.all()
     return render_template('projects.html', posts=posts,
                            pagination=pagination, projects=projects, researchers=users, publications=publications)
-@main.route('/projects/<int:id>') 
-@login_required
-def projpage(id):
-    post = Project.query.get_or_404(id)
-    users = User.query.all()
-    projects = Project.query.all()
-    publications = Publication.query.all()
-    return render_template('project.html', researchers=users, projects=projects, post=post, id=id, publications=publications)
 
 @main.route('/projects/<urlname>') 
 @login_required
@@ -181,7 +173,7 @@ def projnamepage(urlname):
     'urlname' : urlname
     }
 
-    post = Project.query.filter_by(**kwargs).first()
+    post = Project.query.filter_by(**kwargs).first_or_404()
 
     users = User.query.all()
     projects = Project.query.all()
@@ -197,12 +189,6 @@ def postproject():
     if current_user.can(Permission.WRITE_ARTICLES) and \
             form.validate_on_submit():
 
-        def replacement(match):
-            return match.group(1).lower()
-
-        url = re.sub(r'(^[a-z]+$)', replacement, form.urlname.data)
-        urlname = url.lower()
-            
         post = Project(title=form.title.data,
                         urlname=form.urlname.data,
                         full_title=form.full_title.data,
@@ -213,7 +199,7 @@ def postproject():
                         facebook=form.facebook.data,
                         researchers = [current_user._get_current_object()])
         db.session.add(post)
-        return redirect(url_for('.index'))
+        return redirect(url_for('.projnamepage', urlname=form.urlname.data))
     page = request.args.get('page', 1, type=int)
     pagination = Project.query.order_by(Project.timestamp.desc()).paginate(
         page, per_page=current_app.config['FLASKY_POSTS_PER_PAGE'],
@@ -244,21 +230,14 @@ def edit_project(urlname):
         post.title = form.title.data
         post.urlname = form.urlname.data
         post.full_title = form.full_title.data
-        post.brief_synopsis = ''
+        post.brief_synopsis = form.brief_synopsis.data
         post.synopsis = form.synopsis.data 
         post.website = form.website.data
         post.twitter = form.twitter.data
         post.facebook = form.facebook.data
-        # post.researchers 
-
-        # researchers = [x.strip() for x in form.researchers.data.split(',')]
-        # for researcher in researchers:
-        #     extend_researchers = [User.query.filter(User.name == researcher).first()]
-        #     post.researchers.extend(extend_researchers)
-        
         db.session.add(post)
         flash('The post has been updated.')
-        return redirect(url_for('.index', id=post.id))
+        return redirect(url_for('.projnamepage', urlname=form.urlname.data))
 
 
     form.title.data = post.title
@@ -269,12 +248,7 @@ def edit_project(urlname):
     form.website.data = post.website
     form.twitter.data = post.twitter
     form.facebook.data = post.facebook
-
-    # form.researchers.data = ''
-
-    # for person in post.researchers:
-    #     form.researchers.data += person.name + ", "
-
+    form.urlname.data = post.urlname
 
     ptype = "Project"
     users = User.query.all()
@@ -419,12 +393,6 @@ def postpublication():
     if current_user.can(Permission.WRITE_ARTICLES) and \
             form.validate_on_submit():
 
-        def replacement(match):
-            return match.group(1).lower()
-
-        url = re.sub(r'(^[a-z]+$)', replacement, form.urlname.data)
-        urlname = url.lower()
-
         post = Publication(title=form.title.data,
                         urlname=form.urlname.data,
                         full_title=form.full_title.data,
@@ -435,7 +403,7 @@ def postpublication():
                         project_name = form.project_name.data,
                         researchers = [current_user._get_current_object()])
         db.session.add(post)
-        return redirect(url_for('.pubpage', id=post.id))
+        return redirect(url_for('.pubnamepage', urlname=post.urlname))
     page = request.args.get('page', 1, type=int)
     pagination = Publication.query.order_by(Publication.timestamp.desc()).paginate(
         page, per_page=current_app.config['FLASKY_POSTS_PER_PAGE'],
@@ -449,19 +417,25 @@ def postpublication():
                            pagination=pagination, ptype=ptype, projects=projects, publications=publications)
 
 
-@main.route('/publications/<int:id>') 
+@main.route('/publications/<urlname>') 
 @login_required
-def pubpage(id):
-    post = Publication.query.get_or_404(id)
+def pubnamepage(urlname):
+    kwargs = {
+    'urlname' : urlname
+    }
+    post = Publication.query.filter_by(**kwargs).first_or_404()
     users = User.query.all()
     projects = Project.query.all()
     publications = Publication.query.all()
     return render_template('publication.html', researchers=users, projects=projects, post=post, id=id, publications=publications)
 
-@main.route('/publications/edit/<int:id>', methods=['GET', 'POST']) 
+@main.route('/publications/edit/<urlname>', methods=['GET', 'POST']) 
 @login_required
-def edit_publication(id):
-    post = Publication.query.get_or_404(id)
+def edit_publication(urlname):
+    kwargs = {
+    'urlname' : urlname
+    }
+    post = Publication.query.filter_by(**kwargs).first_or_404()
     if current_user != post.researchers and \
         not current_user.can(Permission.ADMINISTER): abort(403)
     form = PublicationEditForm()
@@ -474,18 +448,10 @@ def edit_publication(id):
         post.website = form.website.data
         post.citation = form.citation.data
         post.project_name = form.project_name.data
-
-        # researchers = [x.strip() for x in form.researchers.data.split(',')]
-        # for researcher in researchers:
-        #     extend_researchers = [User.query.filter(User.name == researcher).first()]
-        #     post.researchers.extend(extend_researchers)
-
-        # extend_researchers = [User.query.filter(User.name == form.researchers.data).first()]
-        
         db.session.add(post)
         print post
         flash('The post has been updated.')
-        return redirect(url_for('.pubpage', id=post.id))
+        return redirect(url_for('.pubnamepage', urlname=post.urlname))
     form.title.data = post.title
     form.urlname.data = post.urlname
     form.full_title.data = post.full_title

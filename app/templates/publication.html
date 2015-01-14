@@ -17,13 +17,13 @@
 
     {% for researcher in post.researchers %}
         {% if current_user == researcher  %}
-        <a href="{{ url_for('.edit_publication', id=post.id) }}">
+        <a href="{{ url_for('.edit_publication', urlname=post.urlname) }}">
             <span class="label label-primary">Edit</span>
         </a>
         {% endif %}
         {% endfor %}
     {% if current_user.is_administrator() %}
-    <a href="{{ url_for('.edit_publication', id=post.id) }}">
+    <a href="{{ url_for('.edit_publication', urlname=post.urlname) }}">
         <span class="label label-danger">Edit [Admin]</span>
     </a>
     {% endif %}

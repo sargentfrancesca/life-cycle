@@ -8,7 +8,7 @@
 	{% if ptype == "Profile" %}
 			{% if current_user.is_administrator() %}
 				{% if user.name == current_user %}
-					<h1>Edit your {{ ptype }}</h1>
+					<h1>Edit {{ user.name }}'s {{ ptype }}</h1>
 				{% else %}
 				<h1>Edit {{ user.name }} Profile <span class="label label-danger">Admin View</span></h1>		
 				{% endif %}	
@@ -24,7 +24,7 @@
 	
 	{% elif ptype == "Publication" %}
 		{% if current_user.is_administrator() %}
-		<h1>Edit {{ post.title }} Project <span class="label label-danger">Admin View</span></h1>
+		<h1>Edit {{ post.title }} Publication <span class="label label-danger">Admin View</span></h1>
 		{% else %}
 	    <h1>Edit your {{ ptype }}</h1>
 	    {% endif %}
@@ -39,6 +39,7 @@
 
 {% block scripts %}
 {{ super() }}
+{% if post %}
 <script>
 $( document ).ready(function() {
 
@@ -171,5 +172,6 @@ $( document ).ready(function() {
 
 
 </script>
+{% endif %}
 {{ moment.include_moment() }}
 {% endblock %}

@@ -2,7 +2,7 @@
 {% import "bootstrap/wtf.html" as wtf %}
 {% import "_macros.html" as macros %}
 
-{% block title %}Flasky{% endblock %}
+{% block title %}Life Cycle{% endblock %}
 
 {% block page_content %}
 <div class="page-header">
@@ -14,7 +14,7 @@
 		<a class="btn btn-default" href="{{ url_for('.edit_profile', username=current_user.username) }}">Edit Profile</a></p>
 		<p>You are currently involved in <a class= "badge" href="#">{{ current_user.projects.count() }}</a> Projects:<br/>
 		{% for project in current_user.projects %}
-		<a href="{{ url_for('.projpage', id=project.id) }}" class= "badge">{{ project.title }}</a>
+		<a href="{{ url_for('.projnamepage', urlname=project.urlname) }}" class= "badge">{{ project.title }}</a>
 		{% endfor %}
 		</p>
 	</div>
