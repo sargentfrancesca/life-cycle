@@ -75,6 +75,8 @@ def user_projects(user):
 def edit_profile():
     form = EditProfileForm()
     if form.validate_on_submit():
+        tweet = re.sub('[@]', '', form.twitter.data)
+
         current_user.name = form.name.data
         current_user.jobtitle = form.jobtitle.data 
         current_user.location = form.location.data
@@ -83,6 +85,7 @@ def edit_profile():
         current_user.pub_email = form.pub_email.data
         current_user.website = form.website.data
         current_user.twitter = form.twitter.data
+        current_user.twitter_name = tweet
         current_user.linkedin = form.linkedin.data
         current_user.google = form.google.data
         db.session.add(current_user)
@@ -114,6 +117,8 @@ def edit_profile_admin(id):
     user = User.query.get_or_404(id)
     form = EditProfileAdminForm(user=user)
     if form.validate_on_submit():
+        tweet = re.sub('[@]', '', form.twitter.data)
+
         user.email = form.email.data
         user.username = form.username.data
         user.confirmed = form.confirmed.data
@@ -126,6 +131,7 @@ def edit_profile_admin(id):
         user.pub_email = form.pub_email.data
         user.website = form.website.data
         user.twitter = form.twitter.data
+        user.twitter_name = tweet
         user.linkedin = form.linkedin.data
         user.google = form.google.data
         db.session.add(user)
@@ -196,6 +202,7 @@ def postproject():
                         synopsis=form.synopsis.data,
                         website=form.website.data,
                         twitter=form.twitter.data,
+                        twitter_name = '',
                         facebook=form.facebook.data,
                         researchers = [current_user._get_current_object()])
         db.session.add(post)
@@ -234,6 +241,7 @@ def edit_project(urlname):
         post.synopsis = form.synopsis.data 
         post.website = form.website.data
         post.twitter = form.twitter.data
+        post.twitter_name = ''
         post.facebook = form.facebook.data
         db.session.add(post)
         flash('The post has been updated.')

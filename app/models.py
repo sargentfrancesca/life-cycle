@@ -81,7 +81,6 @@ class User(UserMixin, db.Model):
     google = db.Column(db.String(64))
 
     posts = db.relationship('Project', backref='researcher', lazy='dynamic')
-    # publications = db.relationship('Publication', backref='researcher_pub', lazy='dynamic')
 
 
     @staticmethod
@@ -278,5 +277,3 @@ class Publication(db.Model):
     project_id = db.Column(db.String(100), db.ForeignKey('roles.name'))
     project_name = db.Column(db.String(100), db.ForeignKey('projects.urlname'))
     citation = db.Column(db.Text)
-
-# Trying to set up Many to Many relationship

@@ -6,12 +6,6 @@ from wtforms.validators import Required, Length, Email, Regexp
 from wtforms import ValidationError
 from ..models import Role, User, Publication, Project
 
-
-class NameForm(Form):
-    name = StringField('What is your name?', validators=[Required()])
-    submit = SubmitField('Submit')
-
-
 class EditProfileForm(Form):
     name = StringField('Full name', validators=[Length(0, 64)])
     jobtitle = StringField('Your Job Title', validators=[Length(0, 64)])
@@ -20,7 +14,7 @@ class EditProfileForm(Form):
     quals = TextAreaField('Your Qualifications')
     pub_email = StringField('Public Email', validators=[Length(0, 64)])
     website = StringField('Website', validators=[Length(0, 50)])
-    twitter = StringField('Twitter Handle', default="@", validators=[Length(0, 64)])
+    twitter = StringField('Twitter Handle', default="@", validators=[Length(0, 64), Regexp('(?<=^|(?<=[^a-zA-Z0-9-_\.]))@([A-Za-z]+[A-Za-z0-9]+)', 0, 'Twitter handle must be valid, and include leading @')])
     linkedin = StringField('LinkedIn Profile', validators=[Length(0, 64)])
     google = StringField('Google Profile', validators=[Length(0, 64)])
     submit = SubmitField('Submit')
@@ -42,7 +36,7 @@ class EditProfileAdminForm(Form):
     quals = TextAreaField('Your Qualifications')
     pub_email = StringField('Public Email', validators=[Length(0, 64)])
     website = StringField('Website', validators=[Length(0, 50)])
-    twitter = StringField('Twitter Profile', validators=[Length(0, 64)])
+    twitter = StringField('Twitter Handle (including @)', default='@', validators=[Length(0, 64), Regexp('(?<=^|(?<=[^a-zA-Z0-9-_\.]))@([A-Za-z]+[A-Za-z0-9]+)', 0, 'Twitter handle must be valid, and include leading @')])
     linkedin = StringField('LinkedIn Profile', validators=[Length(0, 64)])
     google = StringField('Google Profile', validators=[Length(0, 64)])
     submit = SubmitField('Submit')
@@ -65,50 +59,50 @@ class EditProfileAdminForm(Form):
 
 
 class ProjectPostForm(Form):
-    title = StringField('Project Title', default="Brief title for display purposes, for example Demography or Lobsters", validators=[Required(), Length(0,100)])
-    urlname = StringField('Url Name', default="One word descriptor for the project URL", validators=[Required(), Length(0,15), Regexp('^[a-z]+$', 0,
+    title = StringField('Project Title', default="Brief title for display purposes, for example Demography or Lobsters, max 20 letters", validators=[Required(), Length(0,20)])
+    urlname = StringField('Url Name', default="One word, lowercase descriptor for the project URL", validators=[Required(), Length(0,15), Regexp('^[a-z]+$', 0,
                                           'Lowercase letters only')])
     full_title = StringField('Project Full Title', validators=[Length(0,300)])
-    brief_synopsis = TextAreaField('Brief Synopsis', default="Quick synopsis of project, summed up in around 100 words for quick reference")
-    synopsis = TextAreaField("Full Synopsis of project", validators=[Required()])
+    brief_synopsis = TextAreaField('Brief Synopsis', default="Quick synopsis of project, summed up in around 100 words for quick reference", validators=[Required()])
+    synopsis = TextAreaField("Full Synopsis of project")
     website = StringField('Project Website', validators=[Length(0,64)])
-    twitter = StringField('Project Twitter Handle', default="@", validators=[Length(0,64)])
+    twitter = StringField('Project Twitter Handle', default="@", validators=[Length(0,64), Regexp('(?<=^|(?<=[^a-zA-Z0-9-_\.]))@([A-Za-z]+[A-Za-z0-9]+)', 0, 'Twitter handle must be valid, and include leading @')])
     facebook = StringField('Project Facebook', validators=[Length(0,64)])
     submit = SubmitField('Submit')
 
 
 class ProjectEditForm(Form):
-    title = StringField('Project Title', default="Brief title for display purposes, for example Demography or Lobsters", validators=[Required(), Length(0,100)])
+    title = StringField('Project Title', default="Brief title for display purposes, for example Demography or Lobsters, max 20 letters", validators=[Required(), Length(0,20)])
     urlname = StringField('Url Name', default="One word descriptor for the project URL", validators=[Required(), Length(0,100), Regexp('^[a-z]+$', 0,
                                           'Lowercase letters only')])
     full_title = StringField('Project Full Title', validators=[Length(0,300)])
-    brief_synopsis = TextAreaField('Brief Synopsis', default="Quick synopsis of project, summed up in around 100 words for quick reference")
-    synopsis = TextAreaField("Full Synopsis of project", validators=[Required()])
+    brief_synopsis = TextAreaField('Brief Synopsis', default="Quick synopsis of project, summed up in around 100 words for quick reference", validators=[Required()])
+    synopsis = TextAreaField("Full Synopsis of project")
     website = StringField('Project Website', validators=[Length(0,64)])
-    twitter = StringField('Project Twitter', validators=[Length(0,64)])
+    twitter = StringField('Project Twitter Handle', validators=[Length(0,64), Regexp('(?<=^|(?<=[^a-zA-Z0-9-_\.]))@([A-Za-z]+[A-Za-z0-9]+)', 0, 'Twitter handle must be valid, and include leading @')])
     facebook = StringField('Project Facebook', validators=[Length(0,64)])
     submit = SubmitField('Submit')
 
 
 class PublicationPostForm(Form):
-    title = StringField('Publication Title', default="Brief title for display purposes, for example Demography or Lobsters, max 100", validators=[Required(), Length(0,100)])
+    title = StringField('Publication Title', default="Brief title for display purposes, for example Demography or Lobsters, max 20 letters", validators=[Required(), Length(0,20)])
     urlname = StringField('Url Name', default="One word descriptor for the project URL", validators=[Required(), Length(0,15), Regexp('^[a-z]+$', 0,
                                           'Lowercase letters only')])
     full_title = StringField('Publication Full Title', validators=[Length(0,300)])
-    brief_synopsis = TextAreaField('Brief Synopsis', default="Quick synopsis of project, summed up in around 100 words for quick reference")
-    synopsis = TextAreaField("Full Synopsis of publication", validators=[Required()])
+    brief_synopsis = TextAreaField('Brief Synopsis', default="Quick synopsis of project, summed up in around 100 words for quick reference", validators=[Required()])
+    synopsis = TextAreaField("Full Synopsis of publication")
     website = StringField('Publication Website', validators=[Length(0,64)])
     citation = StringField('Citation')
     project_name = StringField('Project Associated')
     submit = SubmitField('Submit')
 
 class PublicationEditForm(Form):
-    title = StringField('Publication Title', default="Brief title for display purposes, for example Demography or Lobsters, max 100", validators=[Required(), Length(0,100)])
+    title = StringField('Publication Title', default="Brief title for display purposes, for example Demography or Lobsters, max 20 letters", validators=[Required(), Length(0,20)])
     urlname = StringField('Url Name', default="One word descriptor for the project URL", validators=[Required(), Length(0,15), Regexp('^[a-z]+$', 0,
                                           'Lowercase letters only')])
     full_title = StringField('Publication Full Title', validators=[Length(0,300)])
-    brief_synopsis = TextAreaField('Brief Synopsis', default="Quick synopsis of project, summed up in around 100 words for quick reference")
-    synopsis = TextAreaField("Full Synopsis of publication", validators=[Required()])
+    brief_synopsis = TextAreaField('Brief Synopsis', default="Quick synopsis of project, summed up in around 100 words for quick reference", validators=[Required()])
+    synopsis = TextAreaField("Full Synopsis of publication")
     website = StringField('Publication Website', validators=[Length(0,64)])
     citation = StringField('Citation')
     project_name = StringField('Project Associated')
