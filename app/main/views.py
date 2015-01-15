@@ -177,7 +177,6 @@ def projectpage():
                            pagination=pagination, projects=projects, researchers=users, publications=publications)
 
 @main.route('/projects/<urlname>') 
-@login_required
 def projnamepage(urlname):
     kwargs = {
     'urlname' : urlname
@@ -235,7 +234,7 @@ def edit_project(urlname):
     post = Project.query.filter_by(**kwargs).first()
 
     if current_user != post.researchers and \
-        not current_user.can(Permission.ADMINISTER): abort(403)
+        not current_user.can(Permission.WRITE_ARTICLES): abort(403)
     form = ProjectEditForm()
     if form.validate_on_submit():
         tweet = re.sub('[@]', '', form.twitter.data)
@@ -310,8 +309,6 @@ def delete_user_pub():
     publication = Publication.query.filter_by(**stuff).first()
     oldpost = User.query.filter_by(**kwargs).first()
     publication.researchers.remove(oldpost)
-    
-    num = db.session.query(Publication).join(Publication.researchers).filter(User.name==name).count()
 
     db.session.commit()
 
@@ -431,7 +428,6 @@ def postpublication():
 
 
 @main.route('/publications/<urlname>') 
-@login_required
 def pubnamepage(urlname):
     kwargs = {
     'urlname' : urlname
@@ -450,7 +446,7 @@ def edit_publication(urlname):
     }
     post = Publication.query.filter_by(**kwargs).first_or_404()
     if current_user != post.researchers and \
-        not current_user.can(Permission.ADMINISTER): abort(403)
+        not current_user.can(Permission.WRITE_ARTICLES): abort(403)
     form = PublicationEditForm()
     if form.validate_on_submit():
 
