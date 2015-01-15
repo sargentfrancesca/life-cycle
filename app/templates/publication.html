@@ -9,23 +9,21 @@
     <div class="post-author">Researchers: <span class="researcher_list">{% for researcher in post.researchers %}
                 <a href="{{ url_for('.user', username=researcher.username) }}">{{ researcher.name }}</a>,</span>{% endfor %}<br/>
                 Project: <a href="{{ url_for('.projnamepage', urlname=post.project_name) }}">{{ post.project_name }}</a></div>
-    <p class="post-body">{{ post.synopsis }}</p>
+    <p class="post-body">{% if post.synopsis_html %}{{ post.synopsis | safe }}{% else %}{{ post.synopsis }}{% endif %}</p>
     <div class="post-author">
         <p>Citation: {{post.citation}}</p>
+        {% if post.website %}
         <p>Website: <a href="{{post.website}}">{{post.website}}</a></p></div>
+        {% endif %}
     <p class="post-body">
 
-    {% for researcher in post.researchers %}
-        {% if current_user == researcher  %}
-        <a href="{{ url_for('.edit_publication', urlname=post.urlname) }}">
-            <span class="label label-primary">Edit</span>
-        </a>
-        {% endif %}
-        {% endfor %}
+   {% for researcher in post.researchers %}
+    {% if current_user == researcher  %}
+        <a class="btn btn-primary" href="{{ url_for('.edit_publication', urlname=post.urlname) }}"><span class="glyphicon glyphicon-pencil"></span> Edit</a>
+    {% endif %}
+    {% endfor %}
     {% if current_user.is_administrator() %}
-    <a href="{{ url_for('.edit_publication', urlname=post.urlname) }}">
-        <span class="label label-danger">Edit [Admin]</span>
-    </a>
+        <a class="btn btn-danger" href="{{ url_for('.edit_publication', urlname=post.urlname) }}"><span class="glyphicon glyphicon-pencil"></span> Edit [Admin]</a>
     {% endif %}
 
 </p>

@@ -4,12 +4,18 @@
 
         <div class="post-content">
             <h3>{{publication.title}}</h3>
-            <h4><em><strong>{{publication.full_title}}</strong></em></h4>
-            <div class="post-author">Researchers: <span class="researcher_list">{% for researcher in publication.researchers %}
-                        <img class="img-circle" src="{{ researcher.gravatar(size=20) }}"> <a href="{{ url_for('.user', username=researcher.username) }}"><a href="{{ url_for('.user', username=researcher.username) }}">{{ researcher.name }}</a></span>{% endfor %}<br/>
-                        Project: <a href="{{ url_for('.projnamepage', urlname=publication.project_name) }}">{{ publication.project_name }}</a></div>
+            <h5><a href="{{ url_for('.pubnamepage', urlname=publication.urlname) }}">{{publication.full_title}}</h5></a>
+            <div class="post-author"><b>Researchers</b>: <span class="researcher_list">{% for researcher in publication.researchers %}
+                        <img class="img-circle" src="{{ researcher.gravatar(size=20) }}"> <a href="{{ url_for('.user', username=researcher.username) }}" ><a href="{{ url_for('.user', username=researcher.username) }}" class="sublink">{{ researcher.name }}</a></span>{% endfor %}<br/>
+                {% if publication.other_researchers %}
+                <b>External Researchers: </b> {{ publication.other_researchers }}
+                {% endif %}
+                        <b>Project</b>: <a href="{{ url_for('.projnamepage', urlname=publication.project_name) }}" class="sublink"><span class="text-capitalize">{{ publication.project_name }}</span></a></div>
             <div class="post-author">
-                <p>Citation: {{publication.citation}}</p>
+                <p><b>Citation</b>: {{publication.citation}}</p>
+                {% if publication.brief_synopsis %}
+                <p> {{ publication.brief_synopsis }}</p>
+                {% endif %}
             <p class="post-body">
 
             <a class="btn btn-default" href="{{ url_for('.pubnamepage', urlname=publication.urlname) }}"><span class="glyphicon glyphicon-eye-open"></span> View</a>

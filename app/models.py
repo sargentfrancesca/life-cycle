@@ -5,6 +5,8 @@ from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 from flask import current_app, request
 from flask.ext.login import UserMixin, AnonymousUserMixin
 from . import db, login_manager
+from markdown import markdown
+import bleach
 
 
 class Permission:
@@ -32,8 +34,8 @@ class Role(db.Model):
             'Moderator': (Permission.FOLLOW |
                           Permission.COMMENT |
                           Permission.WRITE_ARTICLES |
-                          Permission.MODERATE_COMMENTS, False),
-            'Administrator': (0xff, True)
+                          Permission.MODERATE_COMMENTS, True),
+            'Administrator': (0xff, False)
         }
         for r in roles:
             role = Role.query.filter_by(name=r).first()
@@ -68,7 +70,9 @@ class User(UserMixin, db.Model):
     name = db.Column(db.String(64), unique=True)
     location = db.Column(db.String(64))
     about_me = db.Column(db.Text())
+    about_me_html = db.Column(db.Text())
     quals = db.Column(db.Text())
+    quals_html = db.Column(db.Text())
     jobtitle = db.Column(db.String(64))
     member_since = db.Column(db.DateTime(), default=datetime.utcnow)
     last_seen = db.Column(db.DateTime(), default=datetime.utcnow)
@@ -205,6 +209,18 @@ class User(UserMixin, db.Model):
         return '{url}/{hash}?s={size}&d={default}&r={rating}'.format(
             url=url, hash=hash, size=size, default=default, rating=rating)
 
+    @staticmethod
+    def on_changed_body(target, value, oldvalue, initiator):
+        allowed_tags = ['a', 'abbr', 'acronym', 'b', 'blockquote', 'code',
+                        'em', 'i', 'li', 'ol', 'pre', 'strong', 'ul',
+                        'h3', 'p', 'mark']
+        target.about_me_html = bleach.linkify(bleach.clean(
+            markdown(value, output_format='html'),
+            tags=allowed_tags, strip=True))
+        target.quals_html = bleach.linkify(bleach.clean(
+            markdown(value, output_format='html'),
+            tags=allowed_tags, strip=True))
+
     def __repr__(self):
         return '<User %r>' % self.username
 
@@ -217,6 +233,7 @@ class AnonymousUser(AnonymousUserMixin):
         return False
 
 login_manager.anonymous_user = AnonymousUser
+db.event.listen(User.about_me, 'set', User.on_changed_body)
 
 
 @login_manager.user_loader
@@ -233,6 +250,7 @@ class Project(db.Model):
     full_title = db.Column(db.String(300))
     brief_synopsis = db.Column(db.Text)
     synopsis = db.Column(db.Text)
+    synopsis_html = db.Column(db.Text)
     website = db.Column(db.String(64))
     twitter = db.Column(db.String(64))
     twitter_name = db.Column(db.String(64))
@@ -244,6 +262,8 @@ class Project(db.Model):
     publications = db.relationship('Publication', backref='projects', lazy='dynamic')
     tw_confirmed = db.Column(db.Boolean(), default=False)
     tw_widget_id = db.Column(db.String(64))
+    status = db.Column(db.Boolean(), default=False)
+
 
 
 
@@ -262,6 +282,18 @@ class Project(db.Model):
             db.session.add(p)
             db.session.commit()
 
+    @staticmethod
+    def on_changed_body(target, value, oldvalue, initiator):
+        allowed_tags = ['a', 'abbr', 'acronym', 'b', 'blockquote', 'code',
+                        'em', 'i', 'li', 'ol', 'pre', 'strong', 'ul',
+                        'h1', 'h2', 'h3', 'p', 'mark']
+        target.synopsis_html = bleach.linkify(bleach.clean(
+            markdown(value, output_format='html'),
+            tags=allowed_tags, strip=True))
+
+
+db.event.listen(Project.synopsis, 'set', Project.on_changed_body)
+
 
 
 class Publication(db.Model):
@@ -272,6 +304,7 @@ class Publication(db.Model):
     full_title = db.Column(db.String(300))
     brief_synopsis = db.Column(db.Text)
     synopsis = db.Column(db.Text)
+    synopsis_html = db.Column(db.Text)
     website = db.Column(db.String(64))
     twitter = db.Column(db.String(64))
     facebook = db.Column(db.String(64))
@@ -282,3 +315,15 @@ class Publication(db.Model):
     project_id = db.Column(db.String(100), db.ForeignKey('roles.name'))
     project_name = db.Column(db.String(100), db.ForeignKey('projects.urlname'))
     citation = db.Column(db.Text)
+    status = db.Column(db.Boolean(), default=False)
+
+    @staticmethod
+    def on_changed_body(target, value, oldvalue, initiator):
+        allowed_tags = ['a', 'abbr', 'acronym', 'b', 'blockquote', 'code',
+                        'em', 'i', 'li', 'ol', 'pre', 'strong', 'ul',
+                        'h1', 'h2', 'h3', 'p', 'mark']
+        target.synopsis_html = bleach.linkify(bleach.clean(
+            markdown(value, output_format='html'),
+            tags=allowed_tags, strip=True))
+
+db.event.listen(Publication.synopsis, 'set', Publication.on_changed_body)

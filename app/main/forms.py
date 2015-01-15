@@ -3,20 +3,23 @@ from wtforms import StringField, TextAreaField, BooleanField, SelectField,\
     SubmitField, IntegerField
 from wtforms.ext.sqlalchemy.fields import QuerySelectField
 from wtforms.validators import Required, Length, Email, Regexp
+from flask.ext.pagedown.fields import PageDownField
 from wtforms import ValidationError
 from ..models import Role, User, Publication, Project
+from markdown import markdown
+import bleach
 
 class EditProfileForm(Form):
     name = StringField('Full name', validators=[Length(0, 64)])
     jobtitle = StringField('Your Job Title', validators=[Length(0, 64)])
     location = StringField('Location', validators=[Length(0, 64)])
-    about_me = TextAreaField('Your Bio', default='Write your bio here, you can use your Exeter profile bio if you wish.')
-    quals = TextAreaField('Your Qualifications')
+    about_me = PageDownField('Your Bio', default='Write your bio here, you can use your Exeter profile bio if you wish.')
+    quals = PageDownField('Your Qualifications')
     pub_email = StringField('Public Email', validators=[Length(0, 64)])
     website = StringField('Website', validators=[Length(0, 50)])
     twitter = StringField('Twitter Handle (including @) - if none, use @spand_ex', default="@spand_ex", validators=[Length(0, 64), Regexp('(?<=^|(?<=[^a-zA-Z0-9-_\.]))@([A-Za-z]+[A-Za-z0-9]+)', 0, 'Twitter handle must be valid, and include leading @')])
-    linkedin = StringField('LinkedIn Profile', validators=[Length(0, 64)])
-    google = StringField('Google Profile', validators=[Length(0, 64)])
+    linkedin = StringField('LinkedIn Profile Full URL', validators=[Length(0, 64)])
+    google = StringField('Google Profile Full URL', validators=[Length(0, 64)])
     submit = SubmitField('Submit')
 
 
@@ -32,13 +35,13 @@ class EditProfileAdminForm(Form):
     name = StringField('Full name', validators=[Length(0, 64)])
     jobtitle = StringField('Your Job Title', validators=[Length(0, 64)])
     location = StringField('Location', validators=[Length(0, 64)])
-    about_me = TextAreaField('About me')
-    quals = TextAreaField('Your Qualifications')
+    about_me = PageDownField('Your Bio')
+    quals = PageDownField('Your Qualifications')
     pub_email = StringField('Public Email', validators=[Length(0, 64)])
     website = StringField('Website', validators=[Length(0, 50)])
     twitter = StringField('Twitter Handle (including @) - if none, use @spand_ex', default='@', validators=[Length(0, 64), Regexp('(?<=^|(?<=[^a-zA-Z0-9-_\.]))@([A-Za-z]+[A-Za-z0-9]+)', 0, 'Twitter handle must be valid, and include leading @')])
-    linkedin = StringField('LinkedIn Profile', validators=[Length(0, 64)])
-    google = StringField('Google Profile', validators=[Length(0, 64)])
+    linkedin = StringField('LinkedIn Profile Full URL', validators=[Length(0, 64)])
+    google = StringField('Google Profile Full URL', validators=[Length(0, 64)])
     tw_widget_id = StringField('Twitter Widget Data ID', validators=[Length(0,64)])
     tw_confirmed = BooleanField('Twitter Widget Generated')
     submit = SubmitField('Submit')
@@ -66,7 +69,7 @@ class ProjectPostForm(Form):
                                           'Lowercase letters only')])
     full_title = StringField('Project Full Title', validators=[Length(0,300)])
     brief_synopsis = TextAreaField('Brief Synopsis', default="Quick synopsis of project, summed up in around 100 words for quick reference", validators=[Required()])
-    synopsis = TextAreaField("Full Synopsis of project")
+    synopsis = PageDownField("Full Synopsis of project")
     website = StringField('Project Website', validators=[Length(0,64)])
     twitter = StringField('Project Twitter Handle (including @) - if none, use @spand_ex', default="@spand_ex", validators=[Length(0,64), Regexp('(?<=^|(?<=[^a-zA-Z0-9-_\.]))@([A-Za-z]+[A-Za-z0-9]+)', 0, 'Twitter handle must be valid, and include leading @')])
     facebook = StringField('Project Facebook', validators=[Length(0,64)])
@@ -79,7 +82,7 @@ class ProjectEditForm(Form):
                                           'Lowercase letters only')])
     full_title = StringField('Project Full Title', validators=[Length(0,300)])
     brief_synopsis = TextAreaField('Brief Synopsis', default="Quick synopsis of project, summed up in around 100 words for quick reference", validators=[Required()])
-    synopsis = TextAreaField("Full Synopsis of project")
+    synopsis = PageDownField("Full Synopsis of project")
     website = StringField('Project Website', validators=[Length(0,64)])
     twitter = StringField('Project Twitter Handle (including @) - if none, use @spand_ex', validators=[Length(0,64), Regexp('(?<=^|(?<=[^a-zA-Z0-9-_\.]))@([A-Za-z]+[A-Za-z0-9]+)', 0, 'Twitter handle must be valid, and include leading @')])
     facebook = StringField('Project Facebook', validators=[Length(0,64)])
@@ -92,7 +95,7 @@ class ProjectEditFormAdmin(Form):
                                           'Lowercase letters only')])
     full_title = StringField('Project Full Title', validators=[Length(0,300)])
     brief_synopsis = TextAreaField('Brief Synopsis', default="Quick synopsis of project, summed up in around 100 words for quick reference", validators=[Required()])
-    synopsis = TextAreaField("Full Synopsis of project")
+    synopsis = PageDownField("Full Synopsis of project")
     website = StringField('Project Website', validators=[Length(0,64)])
     twitter = StringField('Project Twitter Handle (including @) - if none, use @spand_ex', validators=[Length(0,64), Regexp('(?<=^|(?<=[^a-zA-Z0-9-_\.]))@([A-Za-z]+[A-Za-z0-9]+)', 0, 'Twitter handle must be valid, and include leading @')])
     facebook = StringField('Project Facebook', validators=[Length(0,64)])
@@ -106,7 +109,7 @@ class PublicationPostForm(Form):
                                           'Lowercase letters only')])
     full_title = StringField('Publication Full Title', validators=[Length(0,300)])
     brief_synopsis = TextAreaField('Brief Synopsis', default="Quick synopsis of project, summed up in around 100 words for quick reference", validators=[Required()])
-    synopsis = TextAreaField("Full Synopsis of publication")
+    synopsis = PageDownField("Full Synopsis of publication")
     website = StringField('Publication Website', validators=[Length(0,64)])
     citation = StringField('Citation')
     project_name = StringField('Project Associated')
@@ -118,7 +121,7 @@ class PublicationEditForm(Form):
                                           'Lowercase letters only')])
     full_title = StringField('Publication Full Title', validators=[Length(0,300)])
     brief_synopsis = TextAreaField('Brief Synopsis', default="Quick synopsis of project, summed up in around 100 words for quick reference", validators=[Required()])
-    synopsis = TextAreaField("Full Synopsis of publication")
+    synopsis = PageDownField("Full Synopsis of publication")
     website = StringField('Publication Website', validators=[Length(0,64)])
     citation = StringField('Citation')
     project_name = StringField('Project Associated')

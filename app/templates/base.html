@@ -19,7 +19,7 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="{{ url_for('main.index') }}">Life Cycle</a>
+            <a class="navbar-brand" href="{{ url_for('main.index') }}"><span class="glyphicon glyphicon-refresh"></span> Life Cycle</a>
         </div>
         <div class="navbar-collapse collapse">
             <ul class="nav navbar-nav">
@@ -35,7 +35,6 @@
                         <li><a href="{{ url_for('main.postpublication') }}">Publication</a></li>
                     </ul>
                 </li>
-                {% endif %}
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                         Researchers <b class="caret"></b>
@@ -78,6 +77,7 @@
                         {% endif %}
                     </ul>
                 </li>
+                {% endif %}
                 
                 
             </ul>
@@ -95,7 +95,7 @@
                     </ul>
                 </li>
                 {% else %}
-                <li><a href="{{ url_for('auth.login') }}">Log In</a></li>
+                <li><a href="{{ url_for('auth.login') }}"><span class="glyphicon glyphicon-tree-conifer"></span>&nbsp; Member Login</a></li>
                 {% endif %}
             </ul>
         </div>
@@ -160,11 +160,14 @@ $( document ).ready(function() {
             });
         });
 
-    
+    $("label[for='synopsis']").after('<br><small>HTML tags allowed: &lt;b&gt;&lt;/b&gt; &lt;abbr&gt;&lt;/abbr&gt; &lt;acronym&gt;&lt;/acronym&gt; &lt;a&gt;&lt;/a&gt; &lt;em&gt;&lt;/em&gt; &lt;code&gt;&lt;/code&gt; &lt;li&gt;&lt;/li&gt; &lt;ol&gt;&lt;/ol&gt; &lt;pre&gt;&lt;/pre&gt; &lt;ul&gt;&lt;/ul&gt; &lt;p&gt;&lt;/p&gt; &lt;h3&gt;&lt;/h3&gt; &lt;br/&gt;</small>');
 });
+
+document.getElementById("flask-pagedown-synopsis").rows = "30";
 
 </script>
 
 <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
 {{ moment.include_moment() }}
+{{ pagedown.include_pagedown() }}
 {% endblock %}

@@ -9,6 +9,12 @@
     font-style: normal;
 }
 
+body {
+    background: #f9f9f9;
+    -webkit-font-smoothing: antialiased;
+    color: #333333;
+}
+
 .socicon {
     font-family: 'socicon' !important;
 }
@@ -112,4 +118,92 @@ div.deleted {
 div.controldisabled {
     background: #ecf0f1;
     cursor: default;
+}
+
+div.flask-pagedown-preview {
+    padding: 0.5em;
+    margin: 1em;
+    text-align: justify;
+    background: #ecf0f1;
+    border: 2px dotted #ecf0f1;
+}
+
+div.hr {
+    border-bottom: 1px solid #eee;
+}
+
+a.sublink {
+    text-decoration: none;
+    font-weight: normal !important;
+}
+
+.post-author {
+    font-weight: normal !important;
+}
+
+.wtform {
+    padding-bottom: 50px;
+}
+
+.navbar,
+.navbar-inverse {
+    font-size: 1em;
+    background: #fff;
+    border-radius: 0px;
+    border: 0px;
+    border-bottom: 1px solid #ececec;
+    min-height: 50px;
+}
+
+.navbar-inverse .navbar-nav>.open>a, .navbar-inverse .navbar-nav>.open>a:hover, .navbar-inverse .navbar-nav>.open>a:focus {
+    background: #ececec !important;
+    color: #FFAB06;
+}
+
+.navbar-brand {
+    color: #05c9c0 !important;
+    font-size: 1.5em
+}
+
+.navbar.navbar-inverse li a {
+    color: #333;
+}
+
+.navbar.navbar-inverse li a:hover {
+    text-decoration: underline;
+    color: #FFAB06;
+}
+
+.post,
+.post-content {
+    background: #fff;
+}
+
+.post-content {
+    padding: 0.5em 1em;
+    margin: 1em;
+}
+
+.banner {
+    text-align: center;
+    padding-top: 25%;
+}
+
+.jumbotron {
+    background: transparent;
+}
+
+.jumbotron h1,
+.jumbotron a {
+    color: #05c9c0 !important;
+    font-weight: 200;
+}
+
+.jumbotron a:hover {
+    text-decoration: none;
+    color: #FFAB06 !important;
+}
+.jumbotron a:active,
+a:-webkit-any-link {
+    text-decoration: none !important;
 }

@@ -3,12 +3,25 @@
     <li class="post">
 
         <div class="post-content">
-            <a href="{{ url_for('.projnamepage', urlname=post.urlname) }}"><h3>{{post.title}}</h3></a>
-            <h4><em><strong>{{post.full_title}}</strong></em></h4>
-            <div class="post-author">Researchers: {% for researcher in post.researchers %}
+            <h3>{{post.title}}</h3>
+            <h5><a href="{{ url_for('.projnamepage', urlname=post.urlname) }}">{{post.full_title}}</a></h5>
+            {% if post.website %}<b>Website: </b><a href="{{ url_for('.projnamepage', urlname=post.urlname) }}" target="_blank">{{post.website}}</a>{% endif %}<br/>
+            <div class="post-author"><b>Researchers</b>: {% for researcher in post.researchers %}
                 <img class="img-circle" src="{{ researcher.gravatar(size=20) }}"> <a href="{{ url_for('.user', username=researcher.username) }}">{{ researcher.name }}</a>{% endfor %}</div>
+                 {% if post.other_researchers %}
+                <b>External Researchers: </b> {{ post.other_researchers }}
+                {% endif %}
+                {% if post.publications.count() >= 1 %}
+                <b>Associated Publications:</b> {% for publication in post.publications %}
+                <a href="{{ url_for('.pubnamepage', urlname=publication.urlname) }}">{{ publication.title }}</a>{% endfor %}
+                {% endif %}
+
+            </p>
+            {% if post.brief_synopsis %}
+            <p class="post-body">{{ post.brief_synopsis }}</p>
+            {% endif %}
             <p class="post-body">{% if post.twitter_name %}
-                <a href = "http://twitter.com/{{ post.twitter_name }}" target="_blank"><span class="socicon">a</span></a>&nbsp;
+                <a href = "http://twitter.com/{{ post.twitter_name }}" target="_blank"><span class="socicon">a</span> {{ post.twitter_name }}</a>&nbsp;
             {% endif %}
             {% if post.facebook %}
                 <a href = "{{ post.facebook }}"><span class="socicon">b</span></a> &nbsp;

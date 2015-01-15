@@ -21,6 +21,7 @@ def index():
 
 # Researchers
 @main.route('/researchers/')
+@login_required
 def researcherpage():
     page = request.args.get('page', 1, type=int)
     pagination = User.query.order_by(User.name.desc()).paginate(
@@ -34,6 +35,7 @@ def researcherpage():
                            pagination=pagination, projects=projects, researchers=users, publications=publications)
 
 @main.route('/researchers/<username>')
+@login_required
 def user(username):
     user = User.query.filter_by(username=username).first_or_404()
 
@@ -49,6 +51,7 @@ def user(username):
                            pagination=pagination, projects=projects, publications=publications)
 
 @main.route('/researchers/<user>/projects')
+@login_required
 def user_projects(user):
     user = User.query.filter_by(username=user).first() 
     if user is None:
@@ -164,6 +167,7 @@ def edit_profile_admin(id):
 
 # Projects
 @main.route('/projects/')
+@login_required
 def projectpage():
     page = request.args.get('page', 1, type=int)
     pagination = Project.query.order_by(Project.timestamp.desc()).paginate(
@@ -176,7 +180,8 @@ def projectpage():
     return render_template('projects.html', posts=posts,
                            pagination=pagination, projects=projects, researchers=users, publications=publications)
 
-@main.route('/projects/<urlname>') 
+@main.route('/projects/<urlname>')
+@login_required 
 def projnamepage(urlname):
     kwargs = {
     'urlname' : urlname
@@ -384,6 +389,7 @@ def landing():
 
 # Publications   
 @main.route('/publications/')
+@login_required
 def publicationpage():
     page = request.args.get('page', 1, type=int)
     pagination = Publication.query.order_by(Publication.timestamp.desc()).paginate(
@@ -428,6 +434,7 @@ def postpublication():
 
 
 @main.route('/publications/<urlname>') 
+@login_required
 def pubnamepage(urlname):
     kwargs = {
     'urlname' : urlname
@@ -482,11 +489,13 @@ def edit_publication(urlname):
 
 # JSON fun
 @main.route('/researchersjson')
+@login_required
 def researchersjson():
     researchers = [(u.name) for u in User.query.all()]
     return jsonify(json_list=researchers) 
 
 @main.route('/json/<urlname>')
+@login_required
 def json(urlname):
     kwargs = {
         'urlname' : urlname
@@ -538,6 +547,7 @@ def json(urlname):
     return jsonify(researchers=researchers) 
 
 @main.route('/jsonpub/<int:id>')
+@login_required
 def jsonpub(id):
     kwargs = {
         'id' : id
@@ -589,6 +599,7 @@ def jsonpub(id):
     return jsonify(researchers=researchers) 
 
 @main.route('/projectsjson')
+@login_required
 def projectsjson():
     projects = [(p.urlname) for p in Project.query.all()]
     return jsonify(json_list=projects) 

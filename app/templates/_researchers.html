@@ -2,9 +2,9 @@
     {% for researcher in researchers %}
     <li class="post">
         <div class="post-content">
-             <h1>{{ researcher.name }}</h1>
+             <h3>{{ researcher.name }}</h3>
         {% if researcher.jobtitle %}
-        <h3>{{ researcher.jobtitle }}</h3>
+        <h5>{{ researcher.jobtitle }}</h5>
         {% endif %}
         {% if researcher.website %}
         <p>
