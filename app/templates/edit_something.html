@@ -8,19 +8,22 @@
 	{% if ptype == "Profile" %}
 			{% if current_user.is_administrator() %}
 				{% if user.name == current_user %}
-					<h1>Edit {{ user.name }}'s {{ ptype }}</h1>
+					<h1>Edit {{ user.name }}'s {{ ptype }}</h1><br/>
+                    <div><p class=" alert alert-info"><span class="socicon">a</span> &nbsp; The Administrator of this website will create a Twitter Widget for you using your Twitter handle. By default, this will be @spand_ex. </p></div>
 				{% else %}
-				<h1>Edit {{ user.name }} Profile <span class="label label-danger">Admin View</span></h1>		
+				<h1>Edit {{ user.name }} Profile <span class="label label-danger">Admin View</span></h1><br/>
+                <div><p class=" alert alert-info"><span class="socicon">a</span> &nbsp; The Administrator of this website will create a Twitter Widget for you using your Twitter handle. By default, this will be @spand_ex. </p></div>		
 				{% endif %}	
 			{% else %}
 			<h1>Edit your {{ ptype }}</h1>
 		    {% endif %}
 	{% elif ptype == "Project" %}
       {% if current_user.is_administrator() %}
-          <h1>Edit {{ post.title }} Project <span class="label label-danger">Admin View</span></h1>
+          <h1>Edit {{ post.title }} Project <span class="label label-danger">Admin View</span></h1><br/>
        {% else %}
-          <h1>Edit {{ post.title }} Project</h1>
+          <h1>Edit {{ post.title }} Project</h1><br/>
         {% endif %}
+        <div><p class=" alert alert-info"><span class="socicon">a</span> &nbsp; The Administrator of this website will create a Twitter Widget for your project using your Twitter handle. By default, this will be @spand_ex. </p></div>
 	
 	{% elif ptype == "Publication" %}
 		{% if current_user.is_administrator() %}
