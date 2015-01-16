@@ -16,7 +16,7 @@ class EditProfileForm(Form):
     about_me = PageDownField('Your Bio', default='Write your bio here, you can use your Exeter profile bio if you wish.')
     quals = PageDownField('Your Qualifications')
     pub_email = StringField('Public Email', validators=[Length(0, 64)])
-    website = StringField('Website', validators=[Length(0, 50)])
+    website = StringField('Website', validators=[Length(0, 100)])
     twitter = StringField('Twitter Handle (including @) - if none, use @spand_ex', default="@spand_ex", validators=[Length(0, 64), Regexp('(?<=^|(?<=[^a-zA-Z0-9-_\.]))@([A-Za-z]+[A-Za-z0-9]+)', 0, 'Twitter handle must be valid, and include leading @')])
     linkedin = StringField('LinkedIn Profile Full URL', validators=[Length(0, 64)])
     google = StringField('Google Profile Full URL', validators=[Length(0, 64)])
@@ -38,7 +38,7 @@ class EditProfileAdminForm(Form):
     about_me = PageDownField('Your Bio')
     quals = PageDownField('Your Qualifications')
     pub_email = StringField('Public Email', validators=[Length(0, 64)])
-    website = StringField('Website', validators=[Length(0, 50)])
+    website = StringField('Website', validators=[Length(0, 100)])
     twitter = StringField('Twitter Handle (including @) - if none, use @spand_ex', default='@', validators=[Length(0, 64), Regexp('(?<=^|(?<=[^a-zA-Z0-9-_\.]))@([A-Za-z]+[A-Za-z0-9]+)', 0, 'Twitter handle must be valid, and include leading @')])
     linkedin = StringField('LinkedIn Profile Full URL', validators=[Length(0, 64)])
     google = StringField('Google Profile Full URL', validators=[Length(0, 64)])
@@ -112,7 +112,6 @@ class PublicationPostForm(Form):
     synopsis = PageDownField("Full Synopsis of publication")
     website = StringField('Publication Website', validators=[Length(0,64)])
     citation = StringField('Citation')
-    project_name = StringField('Project Associated')
     submit = SubmitField('Submit')
 
 class PublicationEditForm(Form):
@@ -124,6 +123,5 @@ class PublicationEditForm(Form):
     synopsis = PageDownField("Full Synopsis of publication")
     website = StringField('Publication Website', validators=[Length(0,64)])
     citation = StringField('Citation')
-    project_name = StringField('Project Associated')
     other_researchers = StringField('Other Researchers involved (not part of SPANDEX/yet)', validators=[Length(0,100)])
     submit = SubmitField('Submit')

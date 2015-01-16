@@ -78,7 +78,7 @@ class User(UserMixin, db.Model):
     last_seen = db.Column(db.DateTime(), default=datetime.utcnow)
     avatar_hash = db.Column(db.String(32))
     pub_email = db.Column(db.String(64))
-    website = db.Column(db.String(50))
+    website = db.Column(db.String(100))
     twitter = db.Column(db.String(64))
     twitter_name = db.Column(db.String(64))
     linkedin = db.Column(db.String(64))

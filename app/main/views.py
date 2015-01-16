@@ -416,7 +416,7 @@ def postpublication():
                         synopsis=form.synopsis.data,
                         website=form.website.data,
                         citation=form.citation.data,
-                        project_name = form.project_name.data,
+#                        project_name = form.project_name.data,
                         researchers = [current_user._get_current_object()])
         db.session.add(post)
         return redirect(url_for('.pubnamepage', urlname=post.urlname))
@@ -463,7 +463,7 @@ def edit_publication(urlname):
         post.synopsis = form.synopsis.data 
         post.website = form.website.data
         post.citation = form.citation.data
-        post.project_name = form.project_name.data
+#        post.project_name = form.project_name.data
         db.session.add(post)
         print post
         flash('The post has been updated.')
