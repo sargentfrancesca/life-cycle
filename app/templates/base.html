@@ -113,6 +113,28 @@
 <script>
 $( document ).ready(function() {
 
+    var checktype = '{{ptype}}'
+    var type;
+
+    if (checktype = 'Project') {
+        type = 'projects'
+    } else if (checktype = 'Publication') {
+        type = 'publications'
+    } else {
+        type = '';
+    }
+
+    $('input#urlname').before('&nbsp; <span class="glyphicon glyphicon-arrow-right"></span> &nbsp; http://lifecycle.ex.ac.uk/'+type+'/<span class="urls"></span>')
+
+    $("input#urlname").keyup(function(event) {
+       var stt=$(this).val();
+           $(".urls").text(stt);
+    }, function() {
+        var stt=$("input#urlname").val();
+        $(".urls").text(stt);
+    });
+
+    
     $.ajax({
         url: '{{ url_for("main.researchersjson") }}'
         }).done(function (data) {
@@ -120,8 +142,6 @@ $( document ).ready(function() {
             var names = data.json_list
 
                 $.each(names, function(key, val){
-
-
                     $("#researchers").attr("disabled", false)
                     $("#researchers").after('<div class="authortag">' + val + '</div>')                
                 });
