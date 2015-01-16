@@ -207,3 +207,9 @@ a.sublink {
 a:-webkit-any-link {
     text-decoration: none !important;
 }
+
+span.glyphicon-globe {
+    padding: 0 !important;
+    margin: 0 !important;
+    display: inline;
+}

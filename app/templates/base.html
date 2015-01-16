@@ -28,15 +28,6 @@
                 <li><a href="{{ url_for('main.user', username=current_user.username) }}">Profile</a></li>
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                        Post <b class="caret"></b>
-                    </a>
-                    <ul class="dropdown-menu">
-                        <li><a href="{{ url_for('main.postproject') }}">Project</a></li>
-                        <li><a href="{{ url_for('main.postpublication') }}">Publication</a></li>
-                    </ul>
-                </li>
-                <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                         Researchers <b class="caret"></b>
                     </a>
                     <ul class="dropdown-menu">
@@ -72,14 +63,15 @@
                         <li><a href="{{ url_for('main.pubnamepage', urlname=publication.urlname) }}">{{ publication.title }}</a></li>
                         {% endfor %}
                         {% if current_user.is_authenticated() %}
-                        <li role="presentation" class="divider"></li>
+                        
                         <li class="add"><a href="{{ url_for('main.postpublication') }}"><span class="glyphicon glyphicon-plus"></span>  Post a Publication</a></li>
                         {% endif %}
                     </ul>
                 </li>
+                <li><a href= "http://lifecycle.ex.ac.uk:8080/share" target="new"><span class="glyphicon glyphicon-globe"></span> Alfresco</a></li> 
                 {% endif %}
                 
-                
+               
             </ul>
             <ul class="nav navbar-nav navbar-right">
                 {% if current_user.is_authenticated() %}
