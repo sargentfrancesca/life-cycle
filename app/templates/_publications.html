@@ -10,7 +10,9 @@
                 {% if publication.other_researchers %}
                 <b>External Researchers: </b> {{ publication.other_researchers }}
                 {% endif %}
+                {% if publication.project_name %}
                         <b>Project</b>: <a href="{{ url_for('.projnamepage', urlname=publication.project_name) }}" class="sublink"><span class="text-capitalize">{{ publication.project_name }}</span></a></div>
+                {% endif %}
             <div class="post-author">
                 <p><b>Citation</b>: {{publication.citation}}</p>
                 {% if publication.brief_synopsis %}
