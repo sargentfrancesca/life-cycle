@@ -45,7 +45,7 @@ def user(username):
     users = User.query.all()
     projects = Project.query.all()
 
-    if len(user.publications) > 0:
+    if user.publications:
         publications = user.publications.order_by(Publication.timestamp.desc())
 
 
