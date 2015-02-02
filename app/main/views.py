@@ -41,11 +41,18 @@ def user(username):
 
     posts = user.projects.order_by(Project.timestamp.desc())
 
-    pagination = ""
 
     users = User.query.all()
     projects = Project.query.all()
     publications = user.publications.order_by(Publication.timestamp.desc())
+
+    if publications is None:
+        publications = []
+
+    if posts is None:
+        posts = []
+
+    print publications 
 
     return render_template('user.html', user=user, researchers=users, posts=posts,
                            projects=projects, publications=publications)
