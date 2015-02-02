@@ -38,14 +38,14 @@
         <span class="badge">Last seen {{ moment(user.last_seen).fromNow() }}.</span>
         {% endif %}
         </p>
-        {% if user.projects.count() >=1 %}
+        {% if user.projects %}
         <p>Involved in <a class= "badge" href="#">{{ user.projects.count() }}</a> Projects:<br/>
         {% for project in user.projects %}
         <a class= "badge">{{ project.title }}</a>
         {% endfor %}</p>
         {% endif %}
         
-        {% if user.publications.count() >= 1 %}
+        {% if user.publications %}
         <p>Involved in <a class= "badge" href="#">{{ user.publications.count() }}</a> Publications:<br/>
         {% for publication in user.publications %}
         <a class= "badge">{{ publication.title }}</a>
