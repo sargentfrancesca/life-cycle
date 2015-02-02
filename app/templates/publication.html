@@ -8,7 +8,9 @@
     <h4><em><strong>{{post.full_title}}</strong></em></h4>
     <div class="post-author">Researchers: <span class="researcher_list">{% for researcher in post.researchers %}
                 <a href="{{ url_for('.user', username=researcher.username) }}">{{ researcher.name }}</a>,</span>{% endfor %}<br/>
+                {% if post.project_name %}
                 Project: <a href="{{ url_for('.projnamepage', urlname=post.project_name) }}">{{ post.project_name }}</a></div>
+                {% endif %}
     <p class="post-body">{% if post.synopsis_html %}{{ post.synopsis | safe }}{% else %}{{ post.synopsis }}{% endif %}</p>
     <div class="post-author">
         <p>Citation: {{post.citation}}</p>
