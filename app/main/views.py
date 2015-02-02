@@ -49,7 +49,7 @@ def user(username):
     print posts
     print publications 
 
-    return render_template('user.html', user=user, researchers=users, posts=posts)
+    return render_template('user.html', user=user, researchers=users, posts=posts, publications=publications)
 
 @main.route('/researchers/<user>/projects')
 @login_required
