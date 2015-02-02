@@ -43,9 +43,7 @@
                     </a>
                     <ul class="dropdown-menu">
                         <li><a href="{{ url_for('main.projectpage') }}">All</a></li>
-                        {% for project in projects %}
-                        <li><a href="{{ url_for('main.projnamepage', urlname=project.urlname) }}">{{ project.title }}</a></li>
-                        {% endfor %}
+
                         {% if current_user.is_authenticated() %}
                         <li role="presentation" class="divider"></li>
                         <li class="add"><a href="{{ url_for('main.postproject') }}"><span class="glyphicon glyphicon-plus"></span>  Post a Project</a></li>
