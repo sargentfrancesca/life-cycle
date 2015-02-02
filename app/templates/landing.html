@@ -15,11 +15,13 @@
 		<a class="btn btn-default" href="{{ url_for('main.postproject') }}"><span class="glyphicon glyphicon-plus"></span> Add a new Project</a>
 		<a class="btn btn-default" href="{{ url_for('main.postpublication') }}"><span class="glyphicon glyphicon-plus"></span> Add a new Publication</a>
 </p>
+		{% if current_user.projects %}
 		<p>You are currently involved in <a class= "badge" href="#">{{ current_user.projects.count() }}</a> Projects:<br/>
 		{% for project in current_user.projects %}
 		<a href="{{ url_for('.projnamepage', urlname=project.urlname) }}" class= "badge">{{ project.title }}</a>
 		{% endfor %}
 		</p>
+		{% endif %}
 	</div>
 </div>
 <div><p class=" alert alert-info"><span class="glyphicon glyphicon-user"></span>&nbsp; Instructions for adding your own Gravatar (profile image, as above) are included with your conformation email. </p></div>
