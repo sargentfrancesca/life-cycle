@@ -48,7 +48,7 @@ def user(username):
     publications = user.publications.order_by(Publication.timestamp.desc())
 
     return render_template('user.html', user=user, researchers=users, posts=posts,
-                           pagination=pagination, projects=projects, publications=publications)
+                           projects=projects, publications=publications)
 
 @main.route('/researchers/<user>/projects')
 @login_required
