@@ -23,24 +23,42 @@
 <script src="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
 <script>
 $( document ).ready(function() {
-  $.getJSON('{{ url_for(".geojson") }}', function(data) {
 
-  	L.mapbox.accessToken = 'pk.eyJ1IjoiZnJhbmNlc2Nhc2FyZ2VudCIsImEiOiJvZmFuUzM0In0.-gsScOsPRxKs9E8qNy3qwg';
-  	map = L.mapbox.map('map', 'francescasargent.ja3p4m1n');
+  L.mapbox.accessToken = 'pk.eyJ1IjoiZnJhbmNlc2Nhc2FyZ2VudCIsImEiOiJvZmFuUzM0In0.-gsScOsPRxKs9E8qNy3qwg'
+  var baseLayer = L.mapbox.tileLayer('francescasargent.ja3p4m1n', {
+    maxZoom: 5
+  });
+  var markers = L.markerClusterGroup({
+                      polygonOptions: {
+                        fillColor: '#9b59b6',
+                        color: '#9b59b6',
+                        weight: 1,
+                        opacity: 1,
+                        fillOpacity: 0.5
+                      }
+                    });
 
-  	var markers = new L.MarkerClusterGroup();
+  $.getJSON("{{ url_for(".geojson") }}", function(data) {
+    var geojson = L.geoJson(data, {
+      onEachFeature: function (feature, layer) {
 
-  	var geoJSONFeature = data;
+        layer.setIcon(L.mapbox.marker.icon({'marker-color': '#27ae60'}));
 
-  	var geoJSONLayer = L.geoJson(geoJSONFeature);
+        layer.bindPopup('<em>'+feature.properties.name+'</em><br/>'+feature.properties.population+', '+feature.properties.country);
 
-  	markers.addLayer(geoJSONLayer);
+      }
+    });
+    markers.addLayer(geojson);
 
-  	map.addLayer(markers);
+    var map = L.map('map', {maxZoom: 9, minZoom: 3}).fitBounds(markers.getBounds());
+    baseLayer.addTo(map);
+    markers.addTo(baseLayer);
 
-   
+    map.setFilter(function(feature, layer) {
+        console.log(feature.properties['marker-symbol'] === 'fast-food')
     });
   });
+});
 
 </script>
 {% endblock %}
