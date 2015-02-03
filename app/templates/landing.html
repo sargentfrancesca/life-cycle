@@ -25,9 +25,5 @@
 
 <h3>Recently Posted by all users</h3>
 {% include '_posts.html' %}
-{% if pagination %}
-<div class="pagination">
-    {{ macros.pagination_widget(pagination, '.index') }}
-</div>
-{% endif %}
+
 {% endblock %}
