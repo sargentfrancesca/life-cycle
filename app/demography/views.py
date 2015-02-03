@@ -12,7 +12,6 @@ from sqlalchemy import *
 from sqlalchemy.ext.declarative import declarative_base
 
 @demography.route('/')
-@login_required
 def map():
 	species = Species.query.all()
 	plants = Plant.query.all()
