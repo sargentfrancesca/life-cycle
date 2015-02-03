@@ -35,4 +35,7 @@ def create_app(config_name):
     from .auth import auth as auth_blueprint
     app.register_blueprint(auth_blueprint, url_prefix='/auth')
 
+    from .demography import demography as demography_blueprint 
+    app.register_blueprint(demography_blueprint, url_prefix='/demography')
+
     return app
