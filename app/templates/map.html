@@ -54,9 +54,6 @@ $( document ).ready(function() {
     baseLayer.addTo(map);
     markers.addTo(baseLayer);
 
-    map.setFilter(function(feature, layer) {
-        console.log(feature.properties['marker-symbol'] === 'fast-food')
-    });
   });
 });
 
