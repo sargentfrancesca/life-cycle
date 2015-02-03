@@ -52,8 +52,9 @@ $( document ).ready(function() {
 
     var map = L.map('map', {maxZoom: 9, minZoom: 3}).fitBounds(markers.getBounds());
     baseLayer.addTo(map);
-    markers.addTo(baseLayer);
+    markers.addTo(map);
 
+    
   });
 });
 
