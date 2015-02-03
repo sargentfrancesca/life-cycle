@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% import "bootstrap/wtf.html" as wtf %}
+{% import "_macros.html" as macros %}
+
+{% block title %}Demography{% endblock %}
+
+{% block content %}
+
+
+<div id="map"></div>
+
+
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<script src='https://api.tiles.mapbox.com/mapbox.js/v2.0.1/mapbox.js'></script>
+<link href='https://api.tiles.mapbox.com/mapbox.js/v2.0.1/mapbox.css' rel='stylesheet' />
+<script src='https://api.tiles.mapbox.com/mapbox.js/plugins/leaflet-markercluster/v0.4.0/leaflet.markercluster.js'></script>
+<link href='//api.tiles.mapbox.com/mapbox.js/plugins/leaflet-markercluster/v0.4.0/MarkerCluster.css' rel='stylesheet' />
+<link href='//api.tiles.mapbox.com/mapbox.js/plugins/leaflet-markercluster/v0.4.0/MarkerCluster.Default.css' rel='stylesheet' 
+<script src="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+<script>
+$( document ).ready(function() {
+  $.getJSON('{{ url_for(".geojson") }}', function(data) {
+
+  	L.mapbox.accessToken = 'pk.eyJ1IjoiZnJhbmNlc2Nhc2FyZ2VudCIsImEiOiJvZmFuUzM0In0.-gsScOsPRxKs9E8qNy3qwg';
+  	map = L.mapbox.map('map', 'francescasargent.ja3p4m1n');
+
+  	var markers = new L.MarkerClusterGroup();
+
+  	var geoJSONFeature = data;
+
+  	var geoJSONLayer = L.geoJson(geoJSONFeature);
+
+  	markers.addLayer(geoJSONLayer);
+
+  	map.addLayer(markers);
+
+   
+    });
+  });
+
+</script>
+{% endblock %}
