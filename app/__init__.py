@@ -38,4 +38,7 @@ def create_app(config_name):
     from .demography import demography as demography_blueprint 
     app.register_blueprint(demography_blueprint, url_prefix='/demography')
 
+    from .eol import eol as eol_blueprint
+    app.register_blueprint(eol_blueprint, url_prefix='/eol')
+
     return app
