@@ -450,6 +450,8 @@ class Species(db.Model):
     planttype = db.Column(db.String(64))
     commonname = db.Column(db.String(64))
     originalimageurl = db.Column(db.String(64))
+    localimageurl = db.Column(db.String(64))
+    originalpageurl = db.Column(db.String(200))
 
     plants = db.relationship("Plant", backref="species")
 
@@ -472,6 +474,8 @@ class Species(db.Model):
         self.planttype = planttype
         self.commonname = commonname
         self.originalimageurl = originalimageurl
+        self.localimageurl = localimageurl
+        self.originalpageurl = originalpageurl
 
     def __repr__(self):
         return '<Species %r>' % self.name
