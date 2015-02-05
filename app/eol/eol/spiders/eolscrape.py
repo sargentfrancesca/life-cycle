@@ -17,7 +17,7 @@ from sqlalchemy.orm import sessionmaker
 
 import sys
 
-sys.path.append('/home/francesca/Sites/life-cycle/')
+sys.path.append('/Users/francesca/sites/env/life-cycle/')
 
 print sys.path
 
@@ -73,16 +73,19 @@ class EolPage(Spider):
 	def parse_two(self, response1):
 		item = EolItem()
 		referring_url = response1.url
-		item["main_url"] = referring_url
 		hxs2 = HtmlXPathSelector(response1)
 		name = hxs2.select('//*[@id="page_heading"]/div/div[1]/h1/i/text()').extract()
 		common_name = hxs2.select('//*[@id="page_heading"]/div/div[1]/h2/text()').extract()
-		image_url = hxs2.select('//*[@id="media_summary"]/div/div[1]/a/img/@src').extract()
+		image_urls = hxs2.select('//*[@id="media_summary"]/div/div[1]/a/img/@src').extract()
+		
 
 		try:
+			item["main_url"] = referring_url
 			item["name"] = str(name[0])
 			item["common_name"] = str(common_name[0].replace('\n', ''))
-			item["image_url"] = str(image_url[0])
+			item["image_urls"] = str(image_urls[0])
+			local_image_url = item["image_urls"].split('/')[-1]
+			item["local_image_url"] = local_image_url
 
 		except IndexError:
 			print "Passing"

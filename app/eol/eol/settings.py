@@ -13,7 +13,8 @@ BOT_NAME = 'eol'
 SPIDER_MODULES = ['eol.spiders']
 NEWSPIDER_MODULE = 'eol.spiders'
 ITEM_PIPELINES = {
-	'eol.pipelines.EolPipeline'
+	'eol.pipelines.EolPipeline',
+	'eol.pipelines.MyImagesPipeline'
 }
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent

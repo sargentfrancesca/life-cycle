@@ -6,6 +6,7 @@
 # See: http://doc.scrapy.org/en/latest/topics/item-pipeline.html
 from scrapy.exceptions import DropItem
 from scrapy.http import Request
+from scrapy.contrib.pipeline.images import ImagesPipeline
 
 from flask import render_template, redirect, url_for, abort, flash, request,\
     current_app, jsonify
@@ -19,9 +20,11 @@ from sqlalchemy import create_engine, exc
 import sqlalchemy.exc
 from sqlalchemy.orm import sessionmaker
 
+from PIL import Image
+
 import sys
 
-sys.path.append('/home/francesca/Sites/life-cycle/')
+sys.path.append('/Users/francesca/sites/env/life-cycle/')
 
 from app.models import Plant, Species
 
@@ -35,13 +38,16 @@ class EolPipeline(object):
 
 			species = session.query(Species).filter_by(name=item['name']).first()
 			species.commonname = item['common_name']
-			species.originalimageurl = item['image_url']
+			species.originalimageurl = item['image_urls']
+			species.localimageurl = item["local_image_url"]
+			species.originalpageurl = item["main_url"]
+			session._model_changes = {}
 
 			session.add(species)
 
 		except:
-			text_file = open("error.txt", "w")
-			text_file.write("Did not work: " + item['name'])
+			text_file = open("error.txt", "a")
+			text_file.write("Did not work: " + item['name'] + "\n")
 			text_file.close()
 
 		else:
@@ -49,3 +55,21 @@ class EolPipeline(object):
 			session.commit()
 
 		return item
+
+class MyImagesPipeline(ImagesPipeline):
+
+    #Name download version
+    def file_path(self, request, response=None, info=None):		
+		image_guid = request.url.split('/')[-1]
+
+		return 'full/%s' % (image_guid)
+
+    #Name thumbnail version
+    def thumb_path(self, request, thumb_id, response=None, info=None):
+        image_guid = thumb_id + response.url.split('/')[-1]
+        return 'thumbs/%s/%s.jpg' % (thumb_id, image_guid)
+
+    def get_media_requests(self, item, info):
+        #yield Request(item['images']) # Adding meta. Dunno how to put it in one line :-)
+        for image in item['image_urls']:
+            yield Request(image)

@@ -13,4 +13,5 @@ class EolItem(scrapy.Item):
 	main_url = scrapy.Field()
 	name = scrapy.Field()
 	common_name = scrapy.Field()
-	image_url = scrapy.Field()
+	image_urls = scrapy.Field()
+	local_image_url = scrapy.Field()
