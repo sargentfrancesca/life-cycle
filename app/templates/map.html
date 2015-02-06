@@ -54,6 +54,27 @@ $( document ).ready(function() {
         })
     });
 
+
+  $('.glyphicon-map-marker').each(function(){
+        //get img dimensions
+        var h = $(this).height();
+        var w = $(this).width();
+
+        //get div dimensions
+        var div_h =$('#loading').height();
+        var div_w =$('#loading').width();
+
+
+        //set img position
+        $(this).css({
+          'margin-top' : Math.round(Math.abs((div_h + h) * 4)) + 'px',
+        })
+
+        console.log(Math.abs((div_h + h)) * 2)
+    });
+
+
+
   L.mapbox.accessToken = 'pk.eyJ1IjoiZnJhbmNlc2Nhc2FyZ2VudCIsImEiOiJvZmFuUzM0In0.-gsScOsPRxKs9E8qNy3qwg'
 
   var baseLayer = L.mapbox.tileLayer('francescasargent.ja3p4m1n', {
