@@ -8,6 +8,7 @@
 {% block content %}
 
 
+<div id ="loading"><p><span class="glyphicon glyphicon-map-marker"></span></p></div>
 <div id="map"></div>
 
 <div class="info panel panel-default" id="info">
@@ -36,10 +37,29 @@
 <script>
 $( document ).ready(function() {
 
+  $('#loading').each(function(){
+        //get img dimensions
+        var h = $(this).height();
+        var w = $(this).width();
+
+        //get div dimensions
+        var div_h =$(document).height();
+        var div_w =$(document).width();
+
+
+        //set img position
+        $(this).css({
+          'margin-top' : Math.round((div_h - h) / 2) + 'px',
+          'margin-left' : Math.round((div_w - w) / 2) + 'px'
+        })
+    });
+
   L.mapbox.accessToken = 'pk.eyJ1IjoiZnJhbmNlc2Nhc2FyZ2VudCIsImEiOiJvZmFuUzM0In0.-gsScOsPRxKs9E8qNy3qwg'
+
   var baseLayer = L.mapbox.tileLayer('francescasargent.ja3p4m1n', {
     maxZoom: 5
   });
+
   var markers = L.markerClusterGroup({
                       polygonOptions: {
                         fillColor: '#9b59b6',
@@ -57,20 +77,30 @@ $( document ).ready(function() {
         layer.setIcon(L.mapbox.marker.icon({'marker-color': '#27ae60'}));
 
         layer.bindPopup('<em>'+feature.properties.name+'</em><br/>'+feature.properties.population+', '+feature.properties.country+'<p><a><span class="float focus glyphicon glyphicon-search" aria-hidden="true"></a></span></p>');
+  
+
 
       }
     });
     markers.addLayer(geojson);
 
     var map = L.map('map', {maxZoom: 9, minZoom: 3}).fitBounds(markers.getBounds());
-    baseLayer.addTo(map);
-    markers.addTo(map);
+    baseLayer.addTo(map).on('load', addMarkers);
+    
+    function addMarkers() {
+      console.log("loaded");
+      markers.addTo(map);
+      $('#map').animate({
+        'opacity' : '1',
+        'background' : '#c0c0c0'
+      }, 3000);
+      $('#loading').fadeOut()
+    }
 
-
-    markers.on('click',function(e, map) {
+    markers.on('click',function(e, layer, map) {
       var feature = e.layer.feature;
       console.log(feature.properties.name);
-      console.log(String(feature.properties.species.localimageurl))
+      console.log(feature.properties.species.localimageurl)
 
       function setDefaultContent(statusstudy, statuselsewhere) {
         var content = '<div class="panel-heading"><strong>#'+feature.properties.matrixnumber+' </strong><em> '+feature.properties.name+'</em></div><ul class="list-group"><li class="list-group-item '+statusstudy+' '+statuselsewhere+'-else "><em>'+feature.properties.name+'</em> is '+ statusstudy +' in '+feature.properties.continent+', and '+ statuselsewhere +' elsewhere</li></ul>';
@@ -114,6 +144,9 @@ $( document ).ready(function() {
           squareImage('speciesimage');
         });        
       });
+
+     
+
      console.log(feature.properties.species.originalpageurl)
 
       } else {
