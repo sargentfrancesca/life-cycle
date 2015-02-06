@@ -91,6 +91,27 @@ def geojson():
 						'statuselsewhereref' : plant.statuselsewhereref,
 						'marker-color' : '#e74c3c',
 						'marker-size' : 'small',
+						'species' : {
+							'name' : plant.species.name,
+							'speciesauthor' : plant.species.speciesauthor,
+							'kingdom' : plant.species.kingdom,
+							'phylum' : plant.species.phylum,
+							'angiogymno' : plant.species.angiogymno,
+							'dicotmonoc' : plant.species.dicotmonoc,
+							'class' : plant.species._class,
+							'order' : plant.species._order,
+							'family': plant.species.family,
+							'genus' : plant.species.genus,
+							'ecoregion' : plant.species.ecoregion,
+							'growthtype' : plant.species.growthtype,
+							'growthformraunkiaer' : plant.species.growthformraunkiaer,
+							'annualperiodicity' : plant.species.annualperiodicity,
+							'planttype' : plant.species.planttype,
+							'commonname' : plant.species.commonname,
+							'originalimageurl' : plant.species.originalimageurl,
+							'localimageurl' : plant.species.localimageurl,
+							'originalpageurl' : plant.species.originalpageurl
+							}
 						}
 					
 				}
@@ -179,6 +200,25 @@ def geojsonfilter(param, filters):
 						'statuselsewhereref' : plant.statuselsewhereref,
 						'marker-color' : '#e74c3c',
 						'marker-size' : 'small',
+						'species' : {
+							'name' : plant.species.name,
+							'speciesauthor' : plant.species.speciesauthor,
+							'kingdom' : plant.species.kingdom,
+							'phylum' : plant.species.phylum,
+							'angiogymno' : plant.species.angiogymno,
+							'dicotmonoc' : plant.species.dicotmonoc,
+							'class' : plant.species._class,
+							'order' : plant.species._order,
+							'family': plant.species.family,
+							'genus' : plant.species.genus,
+							'ecoregion' : plant.species.ecoregion,
+							'growthtype' : plant.species.growthtype,
+							'growthformraunkiaer' : plant.species.growthformraunkiaer,
+							'annualperiodicity' : plant.species.annualperiodicity,
+							'planttype' : plant.species.planttype,
+							'commonname' : plant.species.commonname,
+							'originalimageurl' : plant.species.originalimageurl
+							}
 						}
 					
 				}
@@ -229,7 +269,9 @@ def speciesjson(name):
 					'annualperiodicity' : sp.annualperiodicity,
 					'planttype' : sp.planttype,
 					'commonname' : sp.commonname,
-					'originalimageurl' : sp.originalimageurl
+					'originalimageurl' : sp.originalimageurl,
+					'localimageurl' : sp.localimageurl,
+					'originalpageurl' : sp.originalpageurl
 						}
 					
 				
@@ -238,3 +280,18 @@ def speciesjson(name):
 			geojson['features'].append(fe)
 
 	return jsonify(geojson)
+
+@demography.route('/json/image/<name>')
+def jsonimage(name):
+
+	kwargs = {
+		'name' : name
+	}
+
+	species = Species.query.filter_by(**kwargs).first()
+
+	json = {
+		'url' : species.localimageurl
+	}
+
+	return jsonify(json)
