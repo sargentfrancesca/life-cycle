@@ -43,8 +43,8 @@ $( document ).ready(function() {
         var w = $(this).width();
 
         //get div dimensions
-        var div_h =$(document).height();
-        var div_w =$(document).width();
+        var div_h =$(window).height();
+        var div_w =$(window).width();
 
 
         //set img position
@@ -67,7 +67,7 @@ $( document ).ready(function() {
 
         //set img position
         $(this).css({
-          'margin-top' : Math.round(Math.abs((div_h + h) * 4)) + 'px',
+          'margin-top' : Math.round(Math.abs((div_h + h) * 2)) + 'px',
         })
 
         console.log(Math.abs((div_h + h)) * 2)
