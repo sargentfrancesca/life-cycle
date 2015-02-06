@@ -66,10 +66,20 @@ $( document ).ready(function() {
     baseLayer.addTo(map);
     markers.addTo(map);
 
+
     markers.on('click',function(e, map) {
       var feature = e.layer.feature;
       console.log(feature.properties.name);
       console.log(String(feature.properties.species.localimageurl))
+
+      function setDefaultContent(statusstudy, statuselsewhere) {
+        var content = '<div class="panel-heading"><strong>#'+feature.properties.matrixnumber+' </strong><em> '+feature.properties.name+'</em></div><ul class="list-group"><li class="list-group-item '+statusstudy+' '+statuselsewhere+'-else "><em>'+feature.properties.name+'</em> is '+ statusstudy +' in '+feature.properties.continent+', and '+ statuselsewhere +' elsewhere</li></ul>';
+        $('#info').html(content);
+      }
+
+      var statusstudy = feature.properties.statusstudy;
+      var statuselsewhere = feature.properties.statuselsewhere;
+      setDefaultContent(statusstudy, statuselsewhere);
 
       if ((feature.properties.species.commonname).length > 0) {
           function squareImage(classname) {
@@ -88,21 +98,16 @@ $( document ).ready(function() {
           "opacity" : "1"
         }, 1000)
       }
-        
-      var statusstudy = feature.properties.statusstudy;
-      var statuselsewhere = feature.properties.statuselsewhere;
 
-      function setCommonContent(statusstudy, statuselsewhere) {
-      var content = '<div class="panel-heading"><strong>#'+feature.properties.matrixnumber+' </strong><em> '+feature.properties.name+'</em></div><ul class="list-group"><li class="list-group-item '+statusstudy+' '+statuselsewhere+'-else "><em>'+feature.properties.name+'</em> is '+ statusstudy +' in '+feature.properties.continent+', and '+ statuselsewhere +' elsewhere</li></ul>';
+      function setContent() {
+      var img = feature.properties.species.localimageurl
       var commoncontent = '<div class="commoncontent sp"><div class="panel-heading sp"><h3>'+feature.properties.species.commonname+'</h3></div><ul class="list-group"><li class="list-group-item sp"><em>'+feature.properties.name+'</em></li><li class="list-group-item thumbnail sp"><div class="species"><img class="speciesimage" src="{{ url_for("static", filename="images/eol/thumbs/big/big") }}' + feature.properties.species.localimageurl + '.jpg"></div></li><li class="list-group-item sp"><span class= "glyphicon glyphicon-link"></span>&nbsp;<a href="'+feature.properties.species.originalpageurl+'" target="_blank">'+feature.properties.species.originalpageurl+'</a></li></ul>'
-      
-      $('#info').html(content);
       $('#common').html(commoncontent);
       
     }
     
      
-    setContent(statusstudy, statuselsewhere)
+    setContent();
 
      $('.focus').click(function(e, map){
         $('.commoncontent').fadeIn(1000, function() {
