@@ -225,3 +225,85 @@ span.glyphicon-globe {
     top: 53px;
     background: #c0c0c0;
 }
+
+.float {
+    float: right;
+}
+
+.info,
+.common {
+  position: relative;
+  z-index: 100;
+  display: block;
+  margin: 50px;
+}
+
+.info {
+  float: left;
+}
+
+.common {
+  float: right;
+}
+
+
+.filters {
+    position: relative;
+    float: right;
+    z-index: 100;
+    display: block;
+    margin: 50px
+}
+
+.panel-heading .label {
+    font-size: 15px;
+}
+
+li.native {
+    background: #dff0d8;
+}
+
+li.introduced {
+    background: #dff0d8;
+}
+
+li.invasive {
+    background: #f2dede;
+}
+
+li.native.introduced-else {
+    background: #dff0d8;
+}
+
+li.introduced.introduced-else {
+    background: #dff0d8;
+}
+
+li.introduced.invasive-else {
+    background: #fcf8e3;
+}
+
+li.native.invasive-else {
+    background: #fcf8e3;
+}
+
+div.species {
+    width: 150px;
+    height: 150px;
+    opacity: 0;
+}
+.list-group-item.thumbnail.sp {
+    height: 250px;
+}
+
+.sp {
+    width: 300px;
+    border: 0px;
+}
+img.speciesimage {
+    opacity: 0;
+}
+
+.commoncontent {
+    display: none;
+}

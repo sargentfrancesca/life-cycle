@@ -10,6 +10,18 @@
 
 <div id="map"></div>
 
+<div class="info panel panel-default" id="info">
+  <div class="panel-heading">
+    <h3 class="panel-title">Plant View</h3>
+  </div>
+</div>
+
+<div class="common panel panel-default" id="common">
+  <div class="panel-heading">
+    <h3 class="panel-title">Commons Data</h3>
+  </div>
+</div>
+
 
 {% endblock %}
 
@@ -44,7 +56,7 @@ $( document ).ready(function() {
 
         layer.setIcon(L.mapbox.marker.icon({'marker-color': '#27ae60'}));
 
-        layer.bindPopup('<em>'+feature.properties.name+'</em><br/>'+feature.properties.population+', '+feature.properties.country);
+        layer.bindPopup('<em>'+feature.properties.name+'</em><br/>'+feature.properties.population+', '+feature.properties.country+'<p><a><span class="float focus glyphicon glyphicon-search" aria-hidden="true"></a></span></p>');
 
       }
     });
@@ -54,8 +66,69 @@ $( document ).ready(function() {
     baseLayer.addTo(map);
     markers.addTo(map);
 
+    markers.on('click',function(e, map) {
+      var feature = e.layer.feature;
+      console.log(feature.properties.name);
+      console.log(String(feature.properties.species.localimageurl))
+
+      if ((feature.properties.species.commonname).length > 0) {
+          function squareImage(classname) {
+        var width = $('.' + classname).width()
+        var height = $('.' + classname).height()
+
+          $('.species').css({
+            "background": "url({{ url_for('static', filename='images/eol/thumbs/big/big') }}"+feature.properties.species.localimageurl+".jpg) 50% 50% no-repeat",
+            "background-position" : "center",
+            "border-radius" : "50%",
+            "border" : "8px solid #FFAB06",
+            "margin" : "50px"
+          });
+
+        $('.species').animate({
+          "opacity" : "1"
+        }, 1000)
+      }
+        
+      var statusstudy = feature.properties.statusstudy;
+      var statuselsewhere = feature.properties.statuselsewhere;
+
+      function setCommonContent(statusstudy, statuselsewhere) {
+      var content = '<div class="panel-heading"><strong>#'+feature.properties.matrixnumber+' </strong><em> '+feature.properties.name+'</em></div><ul class="list-group"><li class="list-group-item '+statusstudy+' '+statuselsewhere+'-else "><em>'+feature.properties.name+'</em> is '+ statusstudy +' in '+feature.properties.continent+', and '+ statuselsewhere +' elsewhere</li></ul>';
+      var commoncontent = '<div class="commoncontent sp"><div class="panel-heading sp"><h3>'+feature.properties.species.commonname+'</h3></div><ul class="list-group"><li class="list-group-item sp"><em>'+feature.properties.name+'</em></li><li class="list-group-item thumbnail sp"><div class="species"><img class="speciesimage" src="{{ url_for("static", filename="images/eol/thumbs/big/big") }}' + feature.properties.species.localimageurl + '.jpg"></div></li><li class="list-group-item sp"><span class= "glyphicon glyphicon-link"></span>&nbsp;<a href="'+feature.properties.species.originalpageurl+'" target="_blank">'+feature.properties.species.originalpageurl+'</a></li></ul>'
+      
+      $('#info').html(content);
+      $('#common').html(commoncontent);
+      
+    }
     
+     
+    setContent(statusstudy, statuselsewhere)
+
+     $('.focus').click(function(e, map){
+        $('.commoncontent').fadeIn(1000, function() {
+          squareImage('speciesimage');
+        });        
+      });
+     console.log(feature.properties.species.originalpageurl)
+
+      } else {
+        console.log("No data yet")
+      }
+
+      
   });
+
+  map.on('move', empty);
+
+  empty();
+
+  function empty() {
+    $('#info').html('');
+    $('#common').html('');
+  }
+    
+});
+
 });
 
 </script>
