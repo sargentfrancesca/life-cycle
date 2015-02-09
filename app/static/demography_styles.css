@@ -151,8 +151,39 @@ a.sublink {
     background: #95a5a6;
     border-radius: 0px;
     border: 0px;
-    border-bottom: 1px solid #fff;
     min-height: 50px;
+    border-bottom: 2px solid #fff;
+}
+
+.navbar.navbar-left {
+    width: 75px;
+    height: 100%;
+    position: absolute;
+    top: 50px;
+    left: -100px;
+    border-right: 2px solid #fff;
+    z-index: 20;
+}
+
+@-webkit-keyframes slide {
+    100% { left: 0; border: 2px solid rgb(255, 171, 6)}
+}
+
+@keyframes slide {
+    100% { left: 0; border: 2px solid rgb(255, 171, 6)}
+}
+
+.slidein {
+    -webkit-animation: slide 0.5s forwards;
+    animation: slide 0.5s forwards;
+    
+}
+
+.slideout {
+    -webkit-animation: slide 0.5s backwards;
+    animation: slide 0.5s backwards;
+    display: inline-block;
+    
 }
 
 .navbar-inverse .navbar-nav>.open>a, .navbar-inverse .navbar-nav>.open>a:hover, .navbar-inverse .navbar-nav>.open>a:focus {
@@ -173,6 +204,8 @@ a.sublink {
     text-decoration: underline;
     color: #FFAB06;
 }
+
+
 
 .post,
 .post-content {
@@ -222,15 +255,22 @@ span.glyphicon-globe {
     width: 100%;
     height: 100%;
     position: absolute;
-    top: 53px;
+    top: 50px;
     background: #fff;
     opacity: 0;
     display: inline;
-    z-index: 100;
+    z-index: 10;
 }
 
 .float {
     float: right;
+}
+
+.absleft {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    padding-left: 50px;
 }
 
 .info,
@@ -338,5 +378,6 @@ div#loading {
 @-moz-keyframes spin { 100% { -moz-transform: rotate(360deg); } }
 @-webkit-keyframes spin { 100% { -webkit-transform: rotate(360deg); } }
 @keyframes spin { 100% { -webkit-transform: rotate(360deg); transform:rotate(360deg); } }
+
 
 

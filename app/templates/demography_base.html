@@ -19,6 +19,7 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
+            <a class="navbar-brand absleft" href="#"><span class="glyphicon glyphicon-th-list"></span></a>
             <a class="navbar-brand" href="{{ url_for('demography.map') }}"><span class="glyphicon glyphicon-leaf"></span> Demography</a>
         </div>
         <div class="navbar-collapse collapse">
@@ -32,6 +33,8 @@
         </div>
     </div>
 </div>
+
+<div class="navbar navbar-left"></div>
 {% endblock %}
 
 {% block content %}
@@ -51,6 +54,20 @@
 {{ super() }}
 
 <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+
+<script>
+    $(document).ready(function(){
+        $('.absleft').click(function(){
+            $('.navbar-left').toggle(function(){
+                $(this).removeClass('slideout');
+                $(this).addClass('slidein');
+                $('.navbar-inverse').animate({
+                    'border' : '2px solid rgb(255, 171, 6)'
+                })
+            });
+        })
+    })
+</script>
 {{ moment.include_moment() }}
 {{ pagedown.include_pagedown() }}
 {% endblock %}
