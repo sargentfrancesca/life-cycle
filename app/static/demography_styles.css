@@ -10,7 +10,7 @@
 }
 
 body {
-    background: #ffffff;
+    background: #fff;
     -webkit-font-smoothing: antialiased;
     color: #333333;
 }
@@ -148,10 +148,10 @@ a.sublink {
 .navbar,
 .navbar-inverse {
     font-size: 1em;
-    background: #fff;
+    background: #95a5a6;
     border-radius: 0px;
     border: 0px;
-    border-bottom: 1px solid #ececec;
+    border-bottom: 1px solid #fff;
     min-height: 50px;
 }
 
@@ -161,12 +161,12 @@ a.sublink {
 }
 
 .navbar-brand {
-    color: #05c9c0 !important;
-    font-size: 1.5em
+    color: #fff !important;
+    font-size: 1.2em
 }
 
 .navbar.navbar-inverse li a {
-    color: #333;
+    color: #fff;
 }
 
 .navbar.navbar-inverse li a:hover {
@@ -223,7 +223,7 @@ span.glyphicon-globe {
     height: 100%;
     position: absolute;
     top: 53px;
-    background: #1abc9c;
+    background: #fff;
     opacity: 0;
     display: inline;
     z-index: 100;
@@ -329,7 +329,7 @@ div#loading {
     top: 50%;
     left: 50%;
     margin-left: -50px;
-    color: #fff;
+    color: #2ecc71;
     -webkit-animation:spin 4s linear infinite;
     -moz-animation:spin 4s linear infinite;
     animation:spin 4s linear infinite;
