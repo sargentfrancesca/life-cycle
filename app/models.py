@@ -485,7 +485,7 @@ class Species(db.Model):
 
 class Page(db.Model):
     __tablename__ = 'page'
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True, index=True)
     pagetype = db.Column(db.String(64))
     title = db.Column(db.String(64))
     publish = db.Column(db.Boolean)
