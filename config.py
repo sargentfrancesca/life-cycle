@@ -14,6 +14,7 @@ class Config:
     FLASKY_MAIL_SENDER = 'Life Cycle Admin <you@email.com>'
     FLASKY_ADMIN = os.environ.get('FLASKY_ADMIN')
     FLASKY_POSTS_PER_PAGE = 20
+    UPLOAD_FOLDER = 'app/uploads/'
 
     @staticmethod
     def init_app(app):
@@ -23,27 +24,28 @@ class Config:
 class DevelopmentConfig(Config):
     DEBUG = True
     SQLALCHEMY_DATABASE_URI = os.environ.get('DEV_DATABASE_URL') or \
-        'mysql://root:your_password@localhost/lifecycle'
+        'mysql://root:jeh5t@localhost/lifecycle'
 
 
 
 class TestingConfig(Config):
     TESTING = True
     SQLALCHEMY_DATABASE_URI = os.environ.get('TEST_DATABASE_URL') or \
-        'mysql://root:your_password@localhost/lifecycle'
+        'mysql://root:jeh5t@localhost/lifecycle'
 
 
 
 class ProductionConfig(Config):
     SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or \
-        'mysql://root:your_password@localhost/lifecycle'
+        'mysql://root:jeh5ts@localhost/lifecycle'
 
 
 config = {
     'development': DevelopmentConfig,
     'testing': TestingConfig,
     'production': ProductionConfig,
-
+    'ALLOWED_EXTENSIONS' : set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif']),
+    'UPLOAD_FOLDER' : Config.UPLOAD_FOLDER,
     'default': DevelopmentConfig
 }
 

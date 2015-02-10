@@ -1,0 +1,35 @@
+{% extends "demography_base.html" %}
+
+{% block page_content %}
+
+<div class="post-content">
+    <h3>{{page.title}}</h3>
+    <p class="post-body">{% if page.content_html %}{{ page.content | safe }}{% else %}{{ page.content }}{% endif %}</p>
+</div>
+
+<div class="media">
+  <div class="media-body">
+    <h4 class="media-heading">{{ page.researcher.name }}</h4>
+    <p>{% if page.researcher.about_me_html %}{{ page.researcher.about_me | safe }}{% else %}{{ page.researcher.about_me }}{% endif %}</p><br/>
+  {% if page.researcher.pub_email or page.researcher.twitter or page.researcher.linkedin or page.researcher.google %}
+        {% if page.researcher.pub_email %}
+            <a href = "mailto: {{page.researcher.pub_email}}"><span class="socicon">1</span></a>&nbsp;
+            {% else %}
+            <a href = "mailto: {{page.researcher.email}}"><span class="socicon">1</span></a> &nbsp;
+        {% endif %}
+        {% if page.researcher.twitter_name %}
+            <a href = "http://twitter.com/{{ page.researcher.twitter_name }}" target="_blank"><span class="socicon">a</span></a> &nbsp;
+        {% endif %}
+        {% if page.researcher.linkedin %}
+            <a href = "{{ page.researcher.linkedin }}" target="_blank"><span class="socicon">j</span></a> &nbsp;
+        {% endif %}
+        {% if page.researcher.google %}
+            <a href = "{{ page.researcher.google }}" target="_blank"><span class="socicon">c</span></a> &nbsp;
+        {% endif %}
+
+    {% endif %}
+  </div>
+</div>
+
+{% endblock %}
+

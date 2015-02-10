@@ -23,6 +23,16 @@
             <a class="navbar-brand" href="{{ url_for('demography.map') }}"><span class="glyphicon glyphicon-leaf"></span> Demography</a>
         </div>
         <div class="navbar-collapse collapse">
+            <ul class="nav navbar-nav">
+                <li><a href="{{ url_for('demography.map') }}">Map View</a></li>
+            {% if current_user.is_authenticated() %}
+                {% for project in current_user.projects %}
+                    {% if project.urlname == 'demography' %}
+                    <li><a href="{{ url_for('demography.pages') }}">All Pages</a></li>
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
+            </ul>
             <ul class="nav navbar-nav navbar-right">
                 <ul class= "nav navbar-nav">
                         <li><a href="{{ url_for('main.index') }}"><span class="glyphicon glyphicon-refresh"></span> Life Cycle</a></li>

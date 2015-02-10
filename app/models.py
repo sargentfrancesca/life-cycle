@@ -87,6 +87,8 @@ class User(UserMixin, db.Model):
     tw_widget_id = db.Column(db.String(64))
 
     posts = db.relationship('Project', backref='researcher', lazy='dynamic')
+    pages = db.relationship('Page', backref='researcher', lazy='dynamic')
+    uploads = db.relationship('Upload', backref='researcher', lazy='dynamic')
 
 
     @staticmethod
@@ -260,6 +262,7 @@ class Project(db.Model):
     researchers = db.relationship('User', secondary=coauthors, backref=db.backref('projects', lazy='dynamic'))
     other_researchers = db.Column(db.String(100))
     publications = db.relationship('Publication', backref='projects', lazy='dynamic')
+    pages = db.relationship('Page', backref='projects', lazy='dynamic')
     tw_confirmed = db.Column(db.Boolean(), default=False)
     tw_widget_id = db.Column(db.String(64))
     status = db.Column(db.Boolean(), default=False)
@@ -479,3 +482,53 @@ class Species(db.Model):
 
     def __repr__(self):
         return '<Species %r>' % self.name
+
+class Page(db.Model):
+    __tablename__ = 'page'
+    id = db.Column(db.Integer, primary_key=True)
+    pagetype = db.Column(db.String(64))
+    title = db.Column(db.String(64))
+    public = db.Column(db.Boolean)
+    content = db.Column(db.Text())
+    content_html = db.Column(db.Text())
+    author_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    project_name = db.Column(db.String(100), db.ForeignKey('projects.urlname'))
+    image_url = db.Column(db.String(100), db.ForeignKey('uploads.filename'))
+
+    @staticmethod
+    def on_changed_body(target, value, oldvalue, initiator):
+        allowed_tags = ['a', 'abbr', 'acronym', 'b', 'blockquote', 'code',
+                        'em', 'i', 'li', 'ol', 'pre', 'strong', 'ul',
+                        'h1', 'h2', 'h3', 'p', 'mark', 'strong']
+        target.content_html = bleach.linkify(bleach.clean(
+            markdown(value, output_format='html'),
+            tags=allowed_tags, strip=True))
+
+
+db.event.listen(Page.content, 'set', Page.on_changed_body)
+
+class Upload(db.Model):
+    __tablename__ = 'uploads'
+    id = db.Column(db.Integer, primary_key=True)
+    filename = db.Column(db.String(64))
+    author_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    page = db.relationship('Page', backref='uploads', lazy='dynamic')
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

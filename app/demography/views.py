@@ -1,15 +1,24 @@
 from flask import render_template, redirect, url_for, abort, flash, request,\
-    current_app, jsonify
+    current_app, jsonify, send_from_directory
 from flask.ext.login import login_required, current_user
 from . import demography
-# from .forms import EditProfileForm, EditProfileAdminForm, ProjectPostForm, ProjectEditForm, PublicationPostForm, PublicationEditForm
+from .forms import PageForm
 from .. import db
-from ..models import Permission, Role, User, Project, Publication, Species, Plant
+from ..models import Permission, Role, User, Project, Publication, Species, Plant, Page, Upload
 from ..decorators import admin_required
-import re
+import re, sys, os
 from jinja2 import evalcontextfilter, Markup, escape
 from sqlalchemy import *
 from sqlalchemy.ext.declarative import declarative_base
+from werkzeug import secure_filename
+
+sys.path.append('/Users/francesca/sites/env/life-cycle')
+
+import app
+
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1] in app.config['ALLOWED_EXTENSIONS']
 
 @demography.route('/')
 def map():
@@ -295,3 +304,75 @@ def jsonimage(name):
 	}
 
 	return jsonify(json)
+
+@demography.route('/pages/')
+@login_required 
+def pages():
+
+    pages = Page.query.all()
+
+    return render_template('pages.html', pages=pages)
+
+@demography.route('/pages/<int:id>')
+@login_required 
+def page(id):
+    kwargs = {
+    'id' : id
+    }
+
+    page = Page.query.filter_by(**kwargs).first_or_404()
+
+    return render_template('page.html', page=page)
+
+@demography.route('/pages/edit/<int:id>', methods=['GET', 'POST'])
+@login_required 
+def pageedit(id):
+	kwargs = {
+	'id' : id
+	}
+
+	page = Page.query.filter_by(**kwargs).first_or_404()
+
+	if current_user != page.researcher and \
+		not current_user.can(Permission.WRITE_ARTICLES): abort(403)
+	form = PageForm()
+	if form.validate_on_submit():
+		page.title = form.title.data
+		page.content = form.content.data
+		page.project_name = 'demography'
+		page.public = form.publish.data
+		page.researcher = current_user._get_current_object()
+
+		db.session.add(page)
+		flash('The page has been updated.')
+		return redirect(url_for('.page', id=page.id))
+
+	form.title.data = page.title
+	form.content.data = page.title
+	form.publish.data = page.public
+	return render_template('edit_page.html', page=page, form=form)
+
+@demography.route('/pages/add', methods=['GET', 'POST'])
+@login_required 
+def pageadd():
+	page = Page()
+
+	if current_user != page.researcher and \
+		not current_user.can(Permission.WRITE_ARTICLES): abort(403)
+	
+	form = PageForm()
+	
+	if form.validate_on_submit():
+		page.title = form.title.data
+		page.content = form.content.data
+		page.project_name = 'demography'
+		page.public = form.publish.data
+		page.researcher = current_user._get_current_object()
+
+		db.session.add(page)
+		flash('The page has been updated.')
+		return redirect(url_for('.map'))
+	return render_template('post_page.html', page=page, form=form)
+
+
+

@@ -10,7 +10,7 @@
 }
 
 body {
-    background: #fff;
+    background: #ecf0f1;
     -webkit-font-smoothing: antialiased;
     color: #333333;
 }
@@ -19,19 +19,22 @@ body {
     font-family: 'socicon' !important;
 }
 
-.profile-thumbnail {
-    position: absolute;
-}
-.profile-header {
-    min-height: 260px;
-    margin-left: 280px;
-}
 ul.posts {
     list-style-type: none;
     padding: 0px;
     margin: 16px 0px 0px 0px;
     border-top: 1px solid #e0e0e0;
 }
+
+.media {
+    border-top: 1px solid #e0e0e0;
+    margin-top: 50px;
+}
+
+.media-body {
+    padding-top: 20px;
+}
+
 ul.posts li.post {
     padding: 8px;
     border-bottom: 1px solid #e0e0e0;
@@ -51,7 +54,14 @@ div.post-thumbnail {
 div.post-content {
     margin-left: 48px;
     min-height: 48px;
+    border-bottom: 3px solid #FFAB06;
 }
+
+.post-body {
+    padding-bottom: 20px;
+}
+
+
 div.pagination {
     width: 100%;
     text-align: right;

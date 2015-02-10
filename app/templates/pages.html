@@ -1,0 +1,19 @@
+{% extends "demography_base.html" %}
+{% import "_macros.html" as macros %}
+
+{% block page_content %}
+
+<h2>All Pages</h2>
+{% if current_user.is_authenticated() %}
+    {% for project in current_user.projects %}
+        {% if project.urlname == 'demography' %}
+       		<a class="btn btn-default" href="{{ url_for('demography.pageadd') }}"><span class="glyphicon glyphicon-plus"></span> Add a new Page</a>
+        {% endif %}
+    {% endfor %}
+{% endif %}
+
+
+{% include '_pages.html' %}
+
+{% endblock %}
+
