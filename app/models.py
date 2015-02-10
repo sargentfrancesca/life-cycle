@@ -488,7 +488,7 @@ class Page(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     pagetype = db.Column(db.String(64))
     title = db.Column(db.String(64))
-    public = db.Column(db.Boolean)
+    publish = db.Column(db.Boolean)
     content = db.Column(db.Text())
     content_html = db.Column(db.Text())
     author_id = db.Column(db.Integer, db.ForeignKey('users.id'))
