@@ -78,6 +78,29 @@
         })
     })
 </script>
+
+
+<script type="text/javascript">
+$(function() {
+    $('#upload-file').after('<div class="up_image"></div>')
+    $('#upload-file-btn').click(function() {
+        var form_data = new FormData($('#upload-file')[0]);
+        console.log(form_data);
+        $.ajax({
+            type: 'POST',
+            url: '{{ url_for('demography.upload') }}',
+            data: form_data,
+            contentType: false,
+            cache: false,
+            processData: false,
+            async: false,
+            success: function(data) {
+                console.log('success!')
+            },
+        });
+    });
+});
+</script>
 {{ moment.include_moment() }}
 {{ pagedown.include_pagedown() }}
 {% endblock %}
