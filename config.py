@@ -14,7 +14,6 @@ class Config:
     FLASKY_MAIL_SENDER = 'Life Cycle Admin <you@email.com>'
     FLASKY_ADMIN = os.environ.get('FLASKY_ADMIN')
     FLASKY_POSTS_PER_PAGE = 20
-    UPLOAD_FOLDER = 'app/uploads/'
 
     @staticmethod
     def init_app(app):
@@ -45,7 +44,7 @@ config = {
     'testing': TestingConfig,
     'production': ProductionConfig,
     'ALLOWED_EXTENSIONS' : set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif']),
-    'UPLOAD_FOLDER' : Config.UPLOAD_FOLDER,
+    'UPLOAD_FOLDER' : 'app/uploads/',
     'default': DevelopmentConfig
 }
 

@@ -340,7 +340,7 @@ def pageedit(id):
 		page.title = form.title.data
 		page.content = form.content.data
 		page.project_name = 'demography'
-		page.public = form.publish.data
+		page.publish = form.publish.data
 		page.researcher = current_user._get_current_object()
 
 		db.session.add(page)
@@ -349,7 +349,7 @@ def pageedit(id):
 
 	form.title.data = page.title
 	form.content.data = page.title
-	form.publish.data = page.public
+	form.publish.data = page.publish
 	return render_template('edit_page.html', page=page, form=form)
 
 @demography.route('/pages/add', methods=['GET', 'POST'])
@@ -366,7 +366,7 @@ def pageadd():
 		page.title = form.title.data
 		page.content = form.content.data
 		page.project_name = 'demography'
-		page.public = form.publish.data
+		page.publish = form.publish.data
 		page.researcher = current_user._get_current_object()
 
 		db.session.add(page)
@@ -374,5 +374,22 @@ def pageadd():
 		return redirect(url_for('.map'))
 	return render_template('post_page.html', page=page, form=form)
 
+@demography.route('/add/')
+@login_required
+def add():
+	return render_template('upload.html')
+
+@demography.route('/add/uploads/<filename>')
+def uploaded_file(filename):
+	return send_from_directory('/Users/francesca/sites/env/life-cycle/app/uploads', filename)
+
+@demography.route('/add/upload', methods=['POST'])
+@login_required
+def upload():
+	file = request.files['file']
+	if file and allowed_file(file.filename):
+		filename = secure_filename(file.filename)
+		file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+		return redirect(url_for('demography.uploaded_file', filename=filename))
 
 
