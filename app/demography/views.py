@@ -386,6 +386,75 @@ def doi():
 
 	return render_template('doi.html', m=m)
 
+@demography.route('/matrix/', methods=['GET', 'POST'])
+@login_required
+def matrix():
+	return render_template('matrix.html')
+
+@demography.route('/matrixresult/', methods=['GET', 'POST'])
+@login_required
+def matrixresult():
+	def stringFromText(string):
+		#Formatting string and separating for use as a list
+		#string usually contained within [], remove these
+		if string.startswith('[') and string.endswith(']'):
+		    string = string[1:-1]
+
+		 
+		#substitute non-alphanumeric with a space
+		#string = re.sub('[^\w.\s-+]+', ' ', string)
+
+		string = string.replace(';', ' ')
+
+		#split into list by whitespace
+
+		#string = [float(x.strip()) for x in string.split(' ')]
+		matrix = []
+		xl = string.split(' ')
+		for x in xl:
+			# print x
+			if x != '':
+				if x == 'NA':
+					matrix.append(0)
+				else:
+					if x == 'NDY':
+						matrix.append(0)
+					else:
+						matrix.append(float(x.strip()))
+
+		return matrix
+
+
+	def classNamesFromText(string):
+		classNames = []
+		string = re.findall(r'(?:[^\s,"]|"(?:\\.|[^"])*")+', string)
+
+
+		for className in string:
+			if className.startswith('"') and className.endswith('"'):
+		   		className = className[1:-1]
+		   		className = className.replace(':', ';')
+		   		classNames.append(className)
+
+		return classNames
+
+	def dimensionSize(classnames, matrix):
+		m = len(matrix)
+		c = len(classnames)
+		s = len(classnames)*len(classnames)
+
+		if s == m:
+			return True
+		else:
+			return False
+
+	classnames = classNamesFromText(request.form['classnames'])
+	matrix = stringFromText(request.form['matrix'])
+
+	squared = dimensionSize(classnames, matrix)
+
+	return jsonify(classnames=classnames, matrix=matrix, squared=squared)
+
 @demography.route('/add/uploads/<filename>')
 def uploaded_file(filename):
 	return send_from_directory('/Users/francesca/sites/env/life-cycle/app/uploads', filename)

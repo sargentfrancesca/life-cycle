@@ -1,0 +1,44 @@
+{% extends "demography_base.html" %}
+
+{% block page_content %}
+
+<form>
+<label for="matrix">Matrix: </label>
+<input type="text" name="matrix" id="matrix"><br/>
+<label for="classnames">Class Names: </label>
+<input type="text" name="classnames" id="classnames"> &nbsp; <button type="button" href="javascript:void();" class="btn btn-default btn-sml" id="check">
+                                                  <span class="glyphicon glyphicon-search" aria-hidden="true"></span> Check
+                                                </button><br/>
+<hr/>
+
+<label for="authors">Authors: </label>
+<input type="text" name="authors" id="authors">
+
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<script>
+$( document ).ready(function() {
+  $(function() {
+    $('button#check').bind('click', function() {          
+      var matrix = $('input#matrix').val();
+      var classnames = $('input#classnames').val();
+        $.post('{{ url_for("demography.matrixresult") }}', {
+        matrix : matrix,
+        classnames : classnames
+      }).done(function(data) {
+        if (data.squared == true) {
+          console.log(data.classnames)
+          console.log(data.matrix) 
+        } else {
+          console.log('Error - classnames and matrix lengths do not compute')
+        }
+      }).fail(function() {
+        console.log("Error - Possible duplicate entry");
+      });
+    })
+  });
+});
+</script>
+{% endblock %}
