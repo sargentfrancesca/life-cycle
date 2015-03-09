@@ -379,6 +379,13 @@ def pageadd():
 def add():
 	return render_template('upload.html')
 
+@demography.route('/doi/')
+@login_required
+def doi():
+	m = Plant.query.order_by(Plant.id.desc()).first()
+
+	return render_template('doi.html', m=m)
+
 @demography.route('/add/uploads/<filename>')
 def uploaded_file(filename):
 	return send_from_directory('/Users/francesca/sites/env/life-cycle/app/uploads', filename)
@@ -390,6 +397,10 @@ def upload():
 	if file and allowed_file(file.filename):
 		filename = secure_filename(file.filename)
 		file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-		return redirect(url_for('demography.uploaded_file', filename=filename))
+		upload = Upload()
+		upload.filename = filename
+		upload.researcher = current_user._get_current_object()
+		db.session.add(upload)
+		return jsonify(img = filename)
 
 
