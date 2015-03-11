@@ -3,6 +3,8 @@
 {% block page_content %}
 
 <form>
+<label for="species">Species Name: </label>
+<input type="text" name="species" id="species">
 <label for="matrix">Matrix: </label>
 <input type="text" name="matrix" id="matrix">
 <label for="classnames">Class Names: </label>
@@ -26,9 +28,13 @@ $( document ).ready(function() {
     $('button#check').bind('click', function() {          
       var matrix = $('input#matrix').val();
       var classnames = $('input#classnames').val();
+      var species = $('input#species').val()
+      console.log(species)
+      console.log('{{ url_for("demography.matrixresult") }}')
         $.post('{{ url_for("demography.matrixresult") }}', {
         matrix : matrix,
-        classnames : classnames
+        classnames : classnames,
+        species : species
       }).done(function(data) {
         if (data.squared == true) {
           console.log(data.classnames)
@@ -40,13 +46,14 @@ $( document ).ready(function() {
           $('div.info').html('')
 
           xhr = new XMLHttpRequest();
-          xhr.open("GET","{{ url_for('static', filename='images/dot/') }}" + data.matrixnumber + "_dot.svg",false);
+          xhr.open("GET","{{ url_for('static', filename='images/dot/') }}" + data.species + "_dot.svg",false);
           // Following line is just to be on the safe side;
           // not needed if your server delivers SVG with correct MIME type
           xhr.overrideMimeType("image/svg+xml");
           xhr.send("");
-          document.getElementById("svgContainer")
-            .appendChild(xhr.responseXML.documentElement);
+
+          $('#svgContainer').html(xhr.responseXML.documentElement)
+        
 
         } else {
           console.log('Server Side Error')

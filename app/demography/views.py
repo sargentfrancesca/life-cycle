@@ -473,10 +473,17 @@ def matrixresult():
 				if v > 0:
 					graph.add_edge(pydot.Edge(colClassName, rowClassName, label=str(v)))
 
-		graph.write_svg('app/static/images/dot/'+str(matrixnumber)+'_dot.svg', prog='dot')
+		graph.write_svg('app/static/images/dot/'+str(species)+'_dot.svg', prog='dot')
 		return graph
 
+	def Species(string):
+		species_lower = string.lower()
+		species = species_lower.replace(' ', '_')
+
+		return species
+
 	classnames = classNamesFromText(request.form['classnames'])
+	species = Species(request.form['species'])
 	matrix = stringFromText(request.form['matrix'])
 	m = Plant.query.order_by(Plant.id.desc()).first()
 	matrixnumber = int(m.matrixnumber) + 1
@@ -486,7 +493,7 @@ def matrixresult():
 	graph = dotGraph(classnames, matrix, matrixnumber, dimension)
 
 
-	return jsonify(classnames=classnames, matrix=matrix, matrixnumber=matrixnumber, squared=squared, dimension=dimension)
+	return jsonify(classnames=classnames, matrix=matrix, matrixnumber=matrixnumber, squared=squared, dimension=dimension, species=species)
 
 @demography.route('/add/uploads/<filename>')
 def uploaded_file(filename):
