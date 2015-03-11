@@ -11,6 +11,7 @@ from jinja2 import evalcontextfilter, Markup, escape
 from sqlalchemy import *
 from sqlalchemy.ext.declarative import declarative_base
 from werkzeug import secure_filename
+import pydot
 
 sys.path.append('/Users/francesca/sites/env/life-cycle')
 
@@ -438,7 +439,7 @@ def matrixresult():
 
 		return classNames
 
-	def dimensionSize(classnames, matrix):
+	def dimensionSquared(classnames, matrix):
 		m = len(matrix)
 		c = len(classnames)
 		s = len(classnames)*len(classnames)
@@ -448,12 +449,44 @@ def matrixresult():
 		else:
 			return False
 
+	def dimensionSize(classnames):
+		return len(classnames)
+
+	def dotGraph(classnames, matrix, matrixnumber, dimension):
+		graph = pydot.Dot(graph_type='digraph', rankdir="LR")
+		#Organise into stages
+		classIndices = {}
+
+		#Add classNames to graph as nodes 
+		for (i, className) in enumerate(classnames):
+			#print className	
+			classIndices[className] = i
+			graph.add_node(pydot.Node(className, shape="circle"))
+
+		print classIndices
+
+		for rowClassName in classnames:
+			row = classIndices[rowClassName]
+			for colClassName in classnames:
+				col = classIndices[colClassName]
+				v = matrix[(row*dimension) + col]
+				if v > 0:
+					graph.add_edge(pydot.Edge(colClassName, rowClassName, label=str(v)))
+
+		graph.write_svg('app/static/images/dot/'+str(matrixnumber)+'_dot.svg', prog='dot')
+		return graph
+
 	classnames = classNamesFromText(request.form['classnames'])
 	matrix = stringFromText(request.form['matrix'])
+	m = Plant.query.order_by(Plant.id.desc()).first()
+	matrixnumber = int(m.matrixnumber) + 1
+	squared = dimensionSquared(classnames, matrix)
+	dimension = dimensionSize(classnames)
 
-	squared = dimensionSize(classnames, matrix)
+	graph = dotGraph(classnames, matrix, matrixnumber, dimension)
 
-	return jsonify(classnames=classnames, matrix=matrix, squared=squared)
+
+	return jsonify(classnames=classnames, matrix=matrix, matrixnumber=matrixnumber, squared=squared, dimension=dimension)
 
 @demography.route('/add/uploads/<filename>')
 def uploaded_file(filename):

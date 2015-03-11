@@ -4,15 +4,17 @@
 
 <form>
 <label for="matrix">Matrix: </label>
-<input type="text" name="matrix" id="matrix"><br/>
+<input type="text" name="matrix" id="matrix">
 <label for="classnames">Class Names: </label>
 <input type="text" name="classnames" id="classnames"> &nbsp; <button type="button" href="javascript:void();" class="btn btn-default btn-sml" id="check">
                                                   <span class="glyphicon glyphicon-search" aria-hidden="true"></span> Check
                                                 </button><br/>
-<hr/>
 
-<label for="authors">Authors: </label>
-<input type="text" name="authors" id="authors">
+<label for="dimension">Dimension: </label>
+<input type="text" name="dimension" id="dimension">
+
+<div class="info"></div><br/>
+<div id="svgContainer"></div>
 
 {% endblock %}
 
@@ -30,12 +32,28 @@ $( document ).ready(function() {
       }).done(function(data) {
         if (data.squared == true) {
           console.log(data.classnames)
-          console.log(data.matrix) 
+          console.log(data.matrix)
+          $('button#check>span').removeClass('glyphicon-search')
+          $('button#check>span').addClass('glyphicon-ok')
+          $('button#check').addClass('btn-success')
+          $('input#dimension').val(data.dimension)
+          $('div.info').html('')
+
+          xhr = new XMLHttpRequest();
+          xhr.open("GET","{{ url_for('static', filename='images/dot/') }}" + data.matrixnumber + "_dot.svg",false);
+          // Following line is just to be on the safe side;
+          // not needed if your server delivers SVG with correct MIME type
+          xhr.overrideMimeType("image/svg+xml");
+          xhr.send("");
+          document.getElementById("svgContainer")
+            .appendChild(xhr.responseXML.documentElement);
+
         } else {
-          console.log('Error - classnames and matrix lengths do not compute')
+          console.log('Server Side Error')
         }
       }).fail(function() {
-        console.log("Error - Possible duplicate entry");
+        $('div.info').html('<div class="alert alert-danger" role="alert">Invalid Class Number vs Matrix Size. Please check that the matrix size is equal to the square of the number of class names.</div>')
+        $('button#check').addClass('btn-danger')
       });
     })
   });
