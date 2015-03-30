@@ -132,6 +132,41 @@ def geojson():
 
 	return jsonify(geojson)
 
+@demography.route('/ecoregion')
+def ecoregion():
+
+	ecoregion = {
+	'TMB' : ['Terrestrial', str('Tropical and subtropical moist broadleaf forests.')],
+	'TDB' : ['Terrestrial', str('Tropical and subtropical dry broadleaf forests.')],
+	'TSC' : ['Terrestrial', str('Tropical and subtropical coniferous forests.')], 
+	'TBM' : ['Terrestrial', str('Temperate broadleaf and mixed forests.')],
+	'TCF' : ['Terrestrial', str('Temperate coniferous forests.')],
+	'BOR' : ['Terrestrial', str('Boreal forests/taiga.')],
+	'TGV' : ['Terrestrial', str('Tropical and subtropical grasslands, savannas and shrublands.')],
+	'TGS' : ['Terrestrial', str('Temperate grasslands, savannas, and shrublands.')],
+	'FGS' : ['Terrestrial', str('Flooded grasslands, savannas, and shrublands.')],
+	'MON' : ['Terrestrial', str('Montane grasslands and shrublands.')],
+	'TUN' : ['Terrestrial', str('Tundra.')],
+	'MED' : ['Terrestrial', str('Mediterranean forests, woodlands and scrubs.')],
+	'DES' : ['Terrestrial', str('Deserts and xeric shrublands.')],
+	'MAN' : ['Terrestrial', str('Mangroves.')],
+	'LRE' : ['Freshwater', str('Large river ecosystems.')],
+	'LRH' : ['Freshwater', str('Large river headwater ecosystems.')],
+	'LRD' : ['Freshwater', str('Large river delta ecosystems.')],
+	'SRD' : ['Freshwater', str('Small river delta ecosystems.')],
+	'SLE' : ['Freshwater', str('Small lake ecosystems.')],
+	'LLE' : ['Freshwater', str('Large lake ecosystems')],
+	'XBE' : ['Freshwater', str('Xeric basin ecosystems.')],
+	'POE' : ['Marine', str('Polar ecosystems.')],
+	'TSS' : ['Marine', str('Temperate shelf and seas ecosystems.')],
+	'TEU' : ['Marine', str('Temperate upwellings.')],
+	'TRU' : ['Marine', str('Tropical upwellings.')],
+	'TRC' : ['Marine', str('Tropical coral.')],
+	'LAB' : ['Laboratory or greenhouse conditions controlled, usually indoor, conditions that mean the study species is not affected by the environment conditions typical of the actual geographic location of the study.']
+	}
+
+	return jsonify(ecoregion)
+
 @demography.route('/geojson/<param>/<filters>')
 def geojsonfilter(param, filters):
 
