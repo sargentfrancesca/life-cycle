@@ -449,7 +449,7 @@ class Species(db.Model):
     ecoregion = db.Column(db.String(64))
     growthtype = db.Column(db.String(64))
     growthformraunkiaer = db.Column(db.String(64))
-    annualperiodicity = db.Column(db.Integer)
+    annualperiodicity = db.Column(db.String(64))
     planttype = db.Column(db.String(64))
     commonname = db.Column(db.String(64))
     originalimageurl = db.Column(db.String(64))

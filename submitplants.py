@@ -16,6 +16,7 @@ logging.basicConfig(level=logging.DEBUG, filename='dberrors.log')
 # create a Session
 Session = sessionmaker(bind=engine)
 session = Session()
+session._model_changes = {}
 
 error = sqlalchemy.exc.ProgrammingError
 

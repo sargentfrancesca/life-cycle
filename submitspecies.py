@@ -12,6 +12,7 @@ engine = create_engine('mysql://root:jeh5t@localhost/lifecycle', echo=False)
 # create a Session
 Session = sessionmaker(bind=engine)
 session = Session()
+session._model_changes = {}
 
 
 def importCSV():
@@ -22,7 +23,9 @@ def importCSV():
 		allSpecies = []
 
 		for i, row in enumerate(fileread):
-			if i != 0:
+			if i == 0:
+				pass
+			else:
 				allPlants.append({
 					'name' : row[21],
 					'matrixnumber' : row[51], 
@@ -93,12 +96,14 @@ def importCSV():
 
 				})
 
+			print row[9]
+
 			# print allSpecies
 
 			for species in allSpecies:
 				
 				speciesname = species['name']
-				# print speciesname
+				print speciesname
 				
 				# check = session.query(Species).filter_by(name=speciesname).first()
 				# print check 
@@ -130,12 +135,10 @@ def importCSV():
 						species['originalimageurl']
 						)
 
-					session.add(new_entry)
-
+					session.add(new_entry)	
+				
 				else:
-					# print species['name'], "Match!"
-					pass
-					
+					print "Data already exists"
 
 			session.commit()
 				
@@ -151,8 +154,5 @@ def importCSV():
 				# # 		p.dotGraph().write_png('graph/'+plant['matrixnumber']+'_'+p.name+'_dot.png', prog='dot')
 
 				# # except:
-				# 	pass
-
-
 
 importCSV()	

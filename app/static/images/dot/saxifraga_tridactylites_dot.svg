@@ -18,7 +18,7 @@
 <g id="edge1" class="edge"><title>A; Adults&#45;&gt;A; Adults</title>
 <path fill="none" stroke="black" d="M30.3232,-121.046C31.2265,-133.026 36.9341,-142.139 47.4458,-142.139 54.6726,-142.139 59.6287,-137.831 62.314,-131.247"/>
 <polygon fill="black" stroke="black" points="65.8278,-131.566 64.5684,-121.046 58.9928,-130.055 65.8278,-131.566"/>
-<text text-anchor="middle" x="47.4458" y="-145.939" font-family="Times,serif" font-size="14.00">0.722943</text>
+<text text-anchor="middle" x="47.4458" y="-145.939" font-family="Times,serif" font-size="14.00">0.203651</text>
 </g>
 <!-- S; Dormant seeds -->
 <g id="node2" class="node"><title>S; Dormant seeds</title>
@@ -35,13 +35,13 @@
 <g id="edge2" class="edge"><title>S; Dormant seeds&#45;&gt;A; Adults</title>
 <path fill="none" stroke="black" d="M189.555,-60.3109C165.122,-56.9147 137.821,-55.2771 112.892,-58.6932 109.611,-59.1427 106.263,-59.7152 102.902,-60.3777"/>
 <polygon fill="black" stroke="black" points="101.846,-57.0265 92.8372,-62.6025 103.357,-63.8615 101.846,-57.0265"/>
-<text text-anchor="middle" x="141.392" y="-62.4932" font-family="Times,serif" font-size="14.00">0.006503</text>
+<text text-anchor="middle" x="141.392" y="-62.4932" font-family="Times,serif" font-size="14.00">0.001176</text>
 </g>
 <!-- S; Dormant seeds&#45;&gt;S; Dormant seeds -->
 <g id="edge4" class="edge"><title>S; Dormant seeds&#45;&gt;S; Dormant seeds</title>
 <path fill="none" stroke="black" d="M243.324,-150.54C246.299,-162.875 253.386,-171.386 264.585,-171.386 272.634,-171.386 278.559,-166.989 282.36,-159.936"/>
 <polygon fill="black" stroke="black" points="285.649,-161.133 285.846,-150.54 279.086,-158.698 285.649,-161.133"/>
-<text text-anchor="middle" x="264.585" y="-175.186" font-family="Times,serif" font-size="14.00">0.30135</text>
+<text text-anchor="middle" x="264.585" y="-175.186" font-family="Times,serif" font-size="14.00">0.08795</text>
 </g>
 </g>
 </svg>

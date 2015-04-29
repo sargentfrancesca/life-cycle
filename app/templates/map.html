@@ -11,17 +11,50 @@
 <div id ="loading"><p><span class="glyphicon glyphicon-map-marker"></span></p></div>
 <div id="map"></div>
 
-<div class="info panel panel-default" id="info">
-  <div class="panel-heading">
-    <h3 class="panel-title">Plant View</h3>
+<div id="bottom-left-panel">
+  <div class="info panel panel-default" id="info">
+  </div> <br/>
+
+  <div class="classification panel panel-default" id="classification">
+    <table class="table table-compact">
+    <tr>
+      <th>&nbsp;<span class="glyphicon glyphicon-leaf"></th>
+      <th>Kingdom</th>
+      <th>Phylum</th>
+      <th>Class</th>
+      <th>Order</th>
+      <th>Family</th>
+      <th>Genus</th>
+      <th>Species</th>
+    </tr>
+    <tr>
+      <td></td>
+      <td class="c_kingdom"></td>
+      <td class="c_phylum"></td>
+      <td class="c_class"></td>
+      <td class="c_order"></td>
+      <td class="c_family"></td>
+      <td class="c_genus"></td>
+      <td class="c_species"></td>
+    </tr>
+  </table>
   </div>
 </div>
 
-<div class="common panel panel-default" id="common">
-  <div class="panel-heading">
-    <h3 class="panel-title">Commons Data</h3>
+<div id="top-right-panel">
+  <div class="common panel panel-default" id="common">
   </div>
+
+  <div class="planttype panel panel-default" id="planttype">
+  </div>
+
+  <div class="ecoregion panel panel-default" id="ecoregion">
+  </div>
+
 </div>
+
+
+
 
 
 {% endblock %}
@@ -36,42 +69,19 @@
 <script src="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
 <script>
 $( document ).ready(function() {
-
-  $('#loading').each(function(){
-        //get img dimensions
-        var h = $(this).height();
-        var w = $(this).width();
-
-        //get div dimensions
-        var div_h =$(window).height();
-        var div_w =$(window).width();
+  $('#info').fadeOut();
+  $('#classification').hide()
 
 
-        //set img position
-        $(this).css({
-          'margin-top' : Math.round((div_h - h) / 2) + 'px',
-          'margin-left' : Math.round((div_w - w) / 2) + 'px'
-        })
-    });
-
-
-  $('.glyphicon-map-marker').each(function(){
-        //get img dimensions
-        var h = $(this).height();
-        var w = $(this).width();
-
-        //get div dimensions
-        var div_h =$('#loading').height();
-        var div_w =$('#loading').width();
-
-
-        //set img position
-        $(this).css({
-          'margin-top' : Math.round(Math.abs((div_h + h) * 2)) + 'px',
-        })
-
-        console.log(Math.abs((div_h + h)) * 2)
-    });
+  $(function() {
+      $('#loading').css({
+          'position' : 'absolute',
+          'left' : '50%',
+          'top' : '50%',
+          'margin-left' : -$('#loading').outerWidth()/2,
+          'margin-top' : -$('#loading').outerHeight()/2
+      });
+  });
 
 
 
@@ -118,19 +128,11 @@ $( document ).ready(function() {
       $('#loading').fadeOut()
     }
 
-    markers.on('click',function(e, layer, map) {
+    markers.on('click',function(e, layer, map) {  
+
       var feature = e.layer.feature;
       console.log(feature.properties.name);
-      console.log(feature.properties.species.localimageurl)
-
-      function setDefaultContent(statusstudy, statuselsewhere) {
-        var content = '<div class="panel-heading"><strong>#'+feature.properties.matrixnumber+' </strong><em> '+feature.properties.name+'</em></div><ul class="list-group"><li class="list-group-item '+statusstudy+' '+statuselsewhere+'-else "><em>'+feature.properties.name+'</em> is '+ statusstudy +' in '+feature.properties.continent+', and '+ statuselsewhere +' elsewhere</li></ul>';
-        $('#info').html(content);
-      }
-
-      var statusstudy = feature.properties.statusstudy;
-      var statuselsewhere = feature.properties.statuselsewhere;
-      setDefaultContent(statusstudy, statuselsewhere);
+      console.log(feature.properties.species.localimageurl);
 
       if ((feature.properties.species.commonname).length > 0) {
           function squareImage(classname) {
@@ -150,25 +152,55 @@ $( document ).ready(function() {
         }, 1000)
       }
 
+      function getEco(string) {
+        var string = String(string)
+        var array = string.split(';')
+        console.log(array[0]);
+        $.each(array, function(index, value) {
+          $.getJSON("{{ url_for(".ecoregion") }}", function(data) {
+              var terrain = data[value]
+              console.log(terrain)
+            });
+        });
+      }
+
       function setContent() {
       var img = feature.properties.species.localimageurl
       var commoncontent = '<div class="commoncontent sp"><div class="panel-heading sp"><h3>'+feature.properties.species.commonname+'</h3></div><ul class="list-group"><li class="list-group-item sp"><em>'+feature.properties.name+'</em></li><li class="list-group-item thumbnail sp"><div class="species"><img class="speciesimage" src="{{ url_for("static", filename="images/eol/thumbs/big/big") }}' + feature.properties.species.localimageurl + '.jpg"></div></li><li class="list-group-item sp"><span class= "glyphicon glyphicon-link"></span>&nbsp;<a href="'+feature.properties.species.originalpageurl+'" target="_blank">'+feature.properties.species.originalpageurl+'</a></li></ul>'
       $('#common').html(commoncontent);
-      
+      $('.c_kingdom').html(feature.properties.species.kingdom + '<span class="glyphicon glyphicon-chevron-right"></span>')
+      $('.c_phylum').html(feature.properties.species.phylum + '<span class="glyphicon glyphicon-chevron-right"></span>')
+      $('.c_class').html(feature.properties.species.class + '<span class="glyphicon glyphicon-chevron-right"></span>')
+      $('.c_order').html(feature.properties.species.order + '<span class="glyphicon glyphicon-chevron-right"></span>')
+      $('.c_family').html(feature.properties.species.family + '<span class="glyphicon glyphicon-chevron-right"></span>')
+      $('.c_genus').html(feature.properties.species.genus + '<span class="glyphicon glyphicon-chevron-right"></span>')
+      $('.c_species').html(feature.properties.species.name)
+      $('.planttype').html('<div class= "panel-heading sp"><span class="glyphicon glyphicon-grain"></span>&nbsp;&nbsp;Species Data</div><ul class="list-group"><li class="list-group-item sp"><strong>Plant Type: </strong>&nbsp;'+feature.properties.species.planttype+'</li><li class="list-group-item sp"><strong>Growth Type: </strong>&nbsp;'+feature.properties.species.growthtype+'</li></ul>')
+      $('.ecoregion').html('<div class= "panel-heading sp"><span class="glyphicon glyphicon glyphicon-globe"></span>&nbsp;&nbsp;Eco Region</div>');
+      var ecoregion = feature.properties.species.ecoregion;
+      getEco(ecoregion)
     }
     
      
     setContent();
 
-     $('.focus').click(function(e, map){
-        $('.commoncontent').fadeIn(1000, function() {
-          squareImage('speciesimage');
-        });        
+    $('.commoncontent').fadeIn(1000, function() {
+      squareImage('speciesimage');
+    });  
+
+      $('.focus').click(function(e, map){
+          function setDefaultContent(statusstudy, statuselsewhere) {
+          var content = '<div class="panel-heading"><strong>#'+feature.properties.matrixnumber+' </strong><em> '+feature.properties.name+'</em></div><ul class="list-group"><li class="list-group-item '+statusstudy+' '+statuselsewhere+'-else "><em>'+feature.properties.name+'</em> is '+ statusstudy +' in '+feature.properties.continent+', and '+ statuselsewhere +' elsewhere</li></ul>';
+          $('#info').html(content);
+          $('#info').fadeIn();
+          $('#classification').fadeIn();
+        }
+
+        var statusstudy = feature.properties.statusstudy;
+        var statuselsewhere = feature.properties.statuselsewhere;
+        setDefaultContent(statusstudy, statuselsewhere); 
+
       });
-
-     
-
-     console.log(feature.properties.species.originalpageurl)
 
       } else {
         console.log("No data yet")
@@ -184,6 +216,9 @@ $( document ).ready(function() {
   function empty() {
     $('#info').html('');
     $('#common').html('');
+    $('#classification').hide();
+    $('#planttype').html('');
+    $('#ecoregion').html('');
   }
     
 });

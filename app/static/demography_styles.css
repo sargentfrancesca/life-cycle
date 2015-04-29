@@ -10,7 +10,7 @@
 }
 
 body {
-    background: #ecf0f1;
+    background:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAIElEQVQYV2Nk+L/fh4EIwAhS+J/BgaDSUYV4g4jo4AEAik8fpjEg/pUAAAAASUVORK5CYII=) repeat;
     -webkit-font-smoothing: antialiased;
     color: #333333;
 }
@@ -283,20 +283,50 @@ span.glyphicon-globe {
     padding-left: 50px;
 }
 
-.info,
-.common {
+.common,
+.planttype,
+.ecoregion {
   position: relative;
-  z-index: 100;
+  z-index: 1000;
   display: block;
   margin: 50px;
 }
 
-.info {
-  float: left;
+.info,
+.classification {
+    position: relative;
+    z-index: 100;
+    display: block;
 }
 
-.common {
-  float: right;
+#bottom-left-panel {
+    position: absolute;
+    left: 50px;
+    max-width: 50%;
+    height: 20%;
+    bottom: 0px;
+}
+
+.info {
+    max-width: 500px;
+}
+
+.classification {
+    display: none;
+}
+
+#top-right-panel {
+    position: absolute;
+    right: 0px;
+    max-width: 50%;
+    height: 100%;
+    z-index: 1000;
+}
+
+.common, .planttype {
+}
+
+.planttype {
 }
 
 
@@ -362,13 +392,16 @@ img.speciesimage {
 }
 
 
-
+#classification {
+    border: 1px solid rgb(255, 171, 6);
+}
+#classification > table > tbody > tr:nth-child(1) {
+    background: rgba(255, 171, 6, 0.8);
+}
 
 div#loading {
-  width: 900px;
-  height: 900px;
-  position: relative;
-  display: inline;
+  width: 100px;
+  height: 100px;
 }
 
 .glyphicon-map-marker {
@@ -376,10 +409,7 @@ div#loading {
     width: 100px;
     height: 100px;
     font-size: 100px;
-    top: 50%;
-    left: 50%;
-    margin-left: -50px;
-    color: #2ecc71;
+    color: #00ffbf;
     -webkit-animation:spin 4s linear infinite;
     -moz-animation:spin 4s linear infinite;
     animation:spin 4s linear infinite;
@@ -388,6 +418,11 @@ div#loading {
 @-moz-keyframes spin { 100% { -moz-transform: rotate(360deg); } }
 @-webkit-keyframes spin { 100% { -webkit-transform: rotate(360deg); } }
 @keyframes spin { 100% { -webkit-transform: rotate(360deg); transform:rotate(360deg); } }
+
+td > .glyphicon-chevron-right {
+    padding-left: 5px;
+    color: rgb(255, 171, 6);;
+}
 
 
 
