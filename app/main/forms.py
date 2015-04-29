@@ -19,7 +19,9 @@ class EditProfileForm(Form):
     website = StringField('Website', validators=[Length(0, 100)])
     twitter = StringField('Twitter Handle (including @) - if none, use @spand_ex', default="@spand_ex", validators=[Length(0, 64), Regexp('(?<=^|(?<=[^a-zA-Z0-9-_\.]))@([A-Za-z]+[A-Za-z0-9]+)', 0, 'Twitter handle must be valid, and include leading @')])
     linkedin = StringField('LinkedIn Profile Full URL', validators=[Length(0, 64)])
-    google = StringField('Google Profile Full URL', validators=[Length(0, 200)])
+    google = StringField('Google Plus Profile Full URL', validators=[Length(0, 200)])
+    google_scholar = StringField('Google Scholar Profile Full URL', validators=[Length(0, 200)])
+    research_gate = StringField('Research Gate Profile Full URL', validators=[Length(0, 200)])
     submit = SubmitField('Submit')
 
 
@@ -33,15 +35,17 @@ class EditProfileAdminForm(Form):
     confirmed = BooleanField('Confirmed')
     role = SelectField('Role', coerce=int)
     name = StringField('Full name', validators=[Length(0, 64)])
-    jobtitle = StringField('Your Job Title', validators=[Length(0, 64)])
+    jobtitle = StringField('Your Job Title', validators=[Length(0, 200)])
     location = StringField('Location', validators=[Length(0, 64)])
-    about_me = PageDownField('Your Bio')
+    about_me = PageDownField('Your Bio', default='Write your bio here, you can use your Exeter profile bio if you wish.')
     quals = PageDownField('Your Qualifications')
     pub_email = StringField('Public Email', validators=[Length(0, 64)])
     website = StringField('Website', validators=[Length(0, 100)])
-    twitter = StringField('Twitter Handle (including @) - if none, use @spand_ex', default='@', validators=[Length(0, 64), Regexp('(?<=^|(?<=[^a-zA-Z0-9-_\.]))@([A-Za-z]+[A-Za-z0-9]+)', 0, 'Twitter handle must be valid, and include leading @')])
+    twitter = StringField('Twitter Handle (including @) - if none, use @spand_ex', default="@spand_ex", validators=[Length(0, 64), Regexp('(?<=^|(?<=[^a-zA-Z0-9-_\.]))@([A-Za-z]+[A-Za-z0-9]+)', 0, 'Twitter handle must be valid, and include leading @')])
     linkedin = StringField('LinkedIn Profile Full URL', validators=[Length(0, 64)])
-    google = StringField('Google Profile Full URL', validators=[Length(0, 64)])
+    google = StringField('Google Plus Profile Full URL', validators=[Length(0, 200)])
+    google_scholar = StringField('Google Scholar Profile Full URL', validators=[Length(0, 200)])
+    research_gate = StringField('Research Gate Profile Full URL', validators=[Length(0, 200)])
     tw_widget_id = StringField('Twitter Widget Data ID', validators=[Length(0,64)])
     tw_confirmed = BooleanField('Twitter Widget Generated')
     submit = SubmitField('Submit')
@@ -68,7 +72,6 @@ class ProjectPostForm(Form):
     urlname = StringField('Web Address Name', default="One word, lowercase descriptor for the project address, for example demography or lobsters", validators=[Required(), Length(0,15), Regexp('^[a-z]+$', 0,
                                           'Lowercase letters only')])
     full_title = StringField('Project Full Title', validators=[Length(0,300)])
-    brief_synopsis = TextAreaField('Brief Synopsis', default="Quick synopsis of project, summed up in around 100 words for quick reference")
     synopsis = PageDownField("Full Synopsis of project")
     website = StringField('Project Website', validators=[Length(0,64)])
     twitter = StringField('Project Twitter Handle (including @) - if none, use @spand_ex', default="@spand_ex", validators=[Length(0,64), Regexp('(?<=^|(?<=[^a-zA-Z0-9-_\.]))@([A-Za-z]+[A-Za-z0-9]+)', 0, 'Twitter handle must be valid, and include leading @')])
@@ -81,7 +84,6 @@ class ProjectEditForm(Form):
     urlname = StringField('Web Address Name', default="One word descriptor for the project address, for example demography or lobsters", validators=[Required(), Length(0,100), Regexp('^[a-z]+$', 0,
                                           'Lowercase letters only')])
     full_title = StringField('Project Full Title', validators=[Length(0,300)])
-    brief_synopsis = TextAreaField('Brief Synopsis', default="Quick synopsis of project, summed up in around 100 words for quick reference")
     synopsis = PageDownField("Full Synopsis of project")
     website = StringField('Project Website', validators=[Length(0,64)])
     twitter = StringField('Project Twitter Handle (including @) - if none, use @spand_ex', validators=[Length(0,64), Regexp('(?<=^|(?<=[^a-zA-Z0-9-_\.]))@([A-Za-z]+[A-Za-z0-9]+)', 0, 'Twitter handle must be valid, and include leading @')])
@@ -94,7 +96,6 @@ class ProjectEditFormAdmin(Form):
     urlname = StringField('Web Address Name', default="One word descriptor for the project address, for example demography or lobsters", validators=[Required(), Length(0,100), Regexp('^[a-z]+$', 0,
                                           'Lowercase letters only')])
     full_title = StringField('Project Full Title', validators=[Length(0,300)])
-    brief_synopsis = TextAreaField('Brief Synopsis', default="Quick synopsis of project, summed up in around 100 words for quick reference")
     synopsis = PageDownField("Full Synopsis of project")
     website = StringField('Project Website', validators=[Length(0,64)])
     twitter = StringField('Project Twitter Handle (including @) - if none, use @spand_ex', validators=[Length(0,64), Regexp('(?<=^|(?<=[^a-zA-Z0-9-_\.]))@([A-Za-z]+[A-Za-z0-9]+)', 0, 'Twitter handle must be valid, and include leading @')])
@@ -108,20 +109,33 @@ class PublicationPostForm(Form):
     urlname = StringField('Web Address Name', default="One word descriptor for the project address, for example demography or lobsters", validators=[Required(), Length(0,15), Regexp('^[a-z]+$', 0,
                                           'Lowercase letters only')])
     full_title = StringField('Publication Full Title', validators=[Length(0,300)])
-    brief_synopsis = TextAreaField('Brief Synopsis', default="Quick synopsis of project, summed up in around 100 words for quick reference")
+    other_researchers = StringField('Author List', validators=[Length(0,100)])
     synopsis = PageDownField("Full Synopsis of publication")
     website = StringField('Publication Website', validators=[Length(0,200)])
     citation = StringField('Citation')
+    project = SelectField('Project', coerce=int)
     submit = SubmitField('Submit')
+
+    def __init__(self, user, *args, **kwargs):
+        super(PublicationPostForm, self).__init__(*args, **kwargs)
+        self.project.choices = [(project.id, project.title)
+                             for project in Project.query.order_by(Project.title).all()]
+        self.user = user
 
 class PublicationEditForm(Form):
     title = StringField('Page Title', default="Brief one-word title for display purposes, for example Demography or Lobsters, max 20 letters", validators=[Required(), Length(0,20)])
     urlname = StringField('Web Address Name', default="One word descriptor for the project address, for example demography or lobsters", validators=[Required(), Length(0,15), Regexp('^[a-z]+$', 0,
                                           'Lowercase letters only')])
     full_title = StringField('Publication Full Title', validators=[Length(0,300)])
-    brief_synopsis = TextAreaField('Brief Synopsis', default="Quick synopsis of project, summed up in around 100 words for quick reference")
+    other_researchers = StringField('Author List', validators=[Length(0,100)])
     synopsis = PageDownField("Full Synopsis of publication")
     website = StringField('Publication Website', validators=[Length(0,200)])
     citation = StringField('Citation')
-    other_researchers = StringField('Other Researchers involved (not part of SPANDEX/yet)', validators=[Length(0,100)])
+    project = SelectField('Project', coerce=int)
     submit = SubmitField('Submit')
+
+    def __init__(self, user, *args, **kwargs):
+        super(PublicationEditForm, self).__init__(*args, **kwargs)
+        self.project.choices = [(project.id, project.title)
+                             for project in Project.query.order_by(Project.title).all()]
+        self.user = user

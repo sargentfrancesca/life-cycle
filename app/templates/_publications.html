@@ -3,15 +3,14 @@
     <li class="post">
 
         <div class="post-content">
-            <h3>{{publication.title}}</h3>
-            <h5><a href="{{ url_for('.pubnamepage', urlname=publication.urlname) }}">{{publication.full_title}}</h5></a>
+            <h5><a href="{{ url_for('.pubnamepage', id=publication.id) }}">{{publication.full_title}}</h5></a>
             <div class="post-author"><b>Researchers</b>: <span class="researcher_list">{% for researcher in publication.researchers %}
                         <img class="img-circle" src="{{ researcher.gravatar(size=20) }}"> <a href="{{ url_for('.user', username=researcher.username) }}" ><a href="{{ url_for('.user', username=researcher.username) }}" class="sublink">{{ researcher.name }}</a></span>{% endfor %}<br/>
                 {% if publication.other_researchers %}
-                <b>External Researchers: </b> {{ publication.other_researchers }}
+                <b>Author List: </b> {{ publication.other_researchers }}
                 {% endif %}
                 {% if publication.project_name %}
-                        <b>Project</b>: <a href="{{ url_for('.projnamepage', urlname=publication.project_name) }}" class="sublink"><span class="text-capitalize">{{ publication.project_name }}</span></a></div>
+                        <b>Project</b>: <a href="{{ url_for('.projnamepage', id=publication.id) }}" class="sublink"><span class="text-capitalize">{{ publication.project_name }}</span></a></div>
                 {% endif %}
             <div class="post-author">
                 <p><b>Citation</b>: {{publication.citation}}</p>
@@ -20,14 +19,14 @@
                 {% endif %}
             <p class="post-body">
 
-            <a class="btn btn-default" href="{{ url_for('.pubnamepage', urlname=publication.urlname) }}"><span class="glyphicon glyphicon-eye-open"></span> View</a>
+            <a class="btn btn-default" href="{{ url_for('.pubnamepage', id=publication.id) }}"><span class="glyphicon glyphicon-eye-open"></span> View</a>
             {% for researcher in publication.researchers %}
                 {% if current_user == researcher  %}
-                <a class="btn btn-primary" href="{{ url_for('.edit_publication', urlname=publication.urlname) }}"><span class="glyphicon glyphicon-pencil"></span> Edit</a>
+                <a class="btn btn-primary" href="{{ url_for('.edit_publication', id=publication.id) }}"><span class="glyphicon glyphicon-pencil"></span> Edit</a>
                 {% endif %}
                 {% endfor %}
             {% if current_user.is_administrator() %}
-            <a class="btn btn-danger" href="{{ url_for('.edit_publication', urlname=publication.urlname) }}"><span class="glyphicon glyphicon-pencil"></span> Edit [Admin]</a>
+            <a class="btn btn-danger" href="{{ url_for('.edit_publication', id=publication.id) }}"><span class="glyphicon glyphicon-pencil"></span> Edit [Admin]</a>
             {% endif %}
 
         </p>

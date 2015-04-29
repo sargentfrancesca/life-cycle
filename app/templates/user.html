@@ -30,6 +30,12 @@
             {% if user.google %}
                 <a href = "{{ user.google }}" target="_blank"><span class="socicon">c</span></a> &nbsp;
             {% endif %}
+            {% if user.google_scholar %}
+                <a href = "{{ user.google_scholar }}" target="_blank"><span class="glyphicon glyphicon-link">c</span> Google Scholar</a> &nbsp;
+            {% endif %}
+            {% if user.research_gate %}
+                <a href = "{{ user.research_gate }}" target="_blank"><span class="glyphicon glyphicon-link">c</span> Research Gate</a> &nbsp;
+            {% endif %}
 
         {% endif %}
         {% if current_user.is_administrator() %}

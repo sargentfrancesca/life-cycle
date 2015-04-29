@@ -44,7 +44,7 @@
                      <ul class="dropdown-menu">
                          <li><a href="{{ url_for('main.projectpage') }}">All</a></li>
                          {% for project in projects %}
-                         <li><a href="{{ url_for('main.projnamepage', urlname=project.urlname) }}">{{ project.title }}</a></li>
+                         <li><a href="{{ url_for('main.projnamepage', id=project.id) }}">{{ project.title }}</a></li>
                          {% endfor %}
                         {% if current_user.is_authenticated() %}                       
                         <li role="presentation" class="divider"></li>
@@ -60,7 +60,7 @@
                     <ul class="dropdown-menu">
                         <li><a href="{{ url_for('main.publicationpage') }}">All</a></li>
                         {% for publication in publications %}
-                        <li><a href="{{ url_for('main.pubnamepage', urlname=publication.urlname) }}">{{ publication.title }}</a></li>
+                        <li><a href="{{ url_for('main.pubnamepage', id=publication.id) }}">{{ publication.title }}</a></li>
                         {% endfor %}
                         {% if current_user.is_authenticated() %}
                         
@@ -172,7 +172,7 @@ $( document ).ready(function() {
             });
         });
 
-    $("label[for='synopsis']").after('<br><small>HTML tags allowed: &lt;b&gt;&lt;/b&gt; &lt;abbr&gt;&lt;/abbr&gt; &lt;acronym&gt;&lt;/acronym&gt; &lt;a&gt;&lt;/a&gt; &lt;em&gt;&lt;/em&gt; &lt;code&gt;&lt;/code&gt; &lt;li&gt;&lt;/li&gt; &lt;ol&gt;&lt;/ol&gt; &lt;pre&gt;&lt;/pre&gt; &lt;ul&gt;&lt;/ul&gt; &lt;p&gt;&lt;/p&gt; &lt;h3&gt;&lt;/h3&gt; &lt;br/&gt;</small>');
+    $("label[for='synopsis']").after('<br><small>HTML tags allowed: &lt;b&gt;<b>bold</b>&lt;/b&gt; &lt;abbr&gt;abbreviation&lt;/abbr&gt; &lt;acronym&gt;acronym&lt;/acronym&gt; &lt;a href="URL"&gt;<a href="http://google.com" target="none">link</a>&lt;/a&gt; &lt;em&gt;<em>italics</em>&lt;/em&gt; &lt;code&gt;<code>code block</code>&lt;/code&gt; &lt;ol&gt; ordered (numbered) list &lt;/ol&gt; &lt;pre&gt;preformatted text&lt;/pre&gt; &lt;ul&gt;unordered list&lt;/ul&gt; &lt;li&gt;list item&lt;/li&gt; &lt;p&gt;paragraph block&lt;/p&gt; &lt;h3&gt;heading&lt;/h3&gt; &lt;br/&gt; line break<br><a href="http://www.w3schools.com/tags/default.asp" target="new">Full spec here</a></small>');
 });
 
 document.getElementById("flask-pagedown-synopsis").rows = "30";

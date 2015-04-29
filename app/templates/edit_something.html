@@ -50,7 +50,7 @@ $( document ).ready(function() {
     $('#facebook').after('</div><p><div class="form-group"><label class="control-label"><b>Researchers Involved</b></label><div id="authorcontrol"></div></div>');
 
     $.ajax({
-        url: '{{ url_for("main.json", urlname=post.urlname) }}'
+        url: '{{ url_for("main.json", id=post.id) }}'
         }).done(function (data) {
 
         	var namesin = data.researchers["in"];

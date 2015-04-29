@@ -184,11 +184,11 @@ def projectpage():
     return render_template('projects.html', posts=posts,
                            pagination=pagination, projects=projects, researchers=users, publications=publications)
 
-@main.route('/projects/<urlname>')
+@main.route('/projects/<int:id>')
 @login_required 
-def projnamepage(urlname):
+def projnamepage(id):
     kwargs = {
-    'urlname' : urlname
+    'id' : id
     }
 
     post = Project.query.filter_by(**kwargs).first_or_404()
@@ -210,7 +210,6 @@ def postproject():
         post = Project(title=form.title.data,
                         urlname=form.urlname.data,
                         full_title=form.full_title.data,
-                        brief_synopsis=form.brief_synopsis.data,
                         synopsis=form.synopsis.data,
                         website=form.website.data,
                         twitter=form.twitter.data,
@@ -218,7 +217,7 @@ def postproject():
                         facebook=form.facebook.data,
                         researchers = [current_user._get_current_object()])
         db.session.add(post)
-        return redirect(url_for('.projnamepage', urlname=form.urlname.data))
+        return redirect(url_for('.projnamepage', urlname=post.id))
     page = request.args.get('page', 1, type=int)
     pagination = Project.query.order_by(Project.timestamp.desc()).paginate(
         page, per_page=current_app.config['FLASKY_POSTS_PER_PAGE'],
@@ -232,12 +231,12 @@ def postproject():
                            pagination=pagination, ptype=ptype, projects=projects, publications=publications)
 
 
-@main.route('/projects/edit/<urlname>', methods=['GET', 'POST']) 
+@main.route('/projects/edit/<int:id>', methods=['GET', 'POST']) 
 @login_required
-def edit_project(urlname):
+def edit_project(id):
     
     kwargs = {
-    'urlname' : urlname
+    'id' : id
     }
 
     post = Project.query.filter_by(**kwargs).first()
@@ -250,7 +249,6 @@ def edit_project(urlname):
         post.title = form.title.data
         post.urlname = form.urlname.data
         post.full_title = form.full_title.data
-        post.brief_synopsis = form.brief_synopsis.data
         post.synopsis = form.synopsis.data 
         post.website = form.website.data
         post.twitter = form.twitter.data
@@ -258,13 +256,12 @@ def edit_project(urlname):
         post.facebook = form.facebook.data
         db.session.add(post)
         flash('The post has been updated.')
-        return redirect(url_for('.projnamepage', urlname=form.urlname.data))
+        return redirect(url_for('.projnamepage', urlname=post.id))
 
 
     form.title.data = post.title
     form.urlname.data = post.urlname
     form.full_title.data = post.full_title
-    form.brief_synopsis.data = post.brief_synopsis
     form.synopsis.data = post.synopsis
     form.website.data = post.website
     form.twitter.data = post.twitter
@@ -416,13 +413,13 @@ def postpublication():
         post = Publication(title=form.title.data,
                         urlname=form.urlname.data,
                         full_title=form.full_title.data,
-                        brief_synopsis=form.brief_synopsis.data,
                         synopsis=form.synopsis.data,
                         website=form.website.data,
                         citation=form.citation.data,
+                        project_id = form.project.data,
                         researchers = [current_user._get_current_object()])
         db.session.add(post)
-        return redirect(url_for('.pubnamepage', urlname=post.urlname))
+        return redirect(url_for('.publicationpage'))
     page = request.args.get('page', 1, type=int)
     pagination = Publication.query.order_by(Publication.timestamp.desc()).paginate(
         page, per_page=current_app.config['FLASKY_POSTS_PER_PAGE'],
@@ -436,11 +433,11 @@ def postpublication():
                            pagination=pagination, ptype=ptype, projects=projects, publications=publications)
 
 
-@main.route('/publications/<urlname>') 
+@main.route('/publications/<int:id>') 
 @login_required
-def pubnamepage(urlname):
+def pubnamepage(id):
     kwargs = {
-    'urlname' : urlname
+    'id' : id
     }
     post = Publication.query.filter_by(**kwargs).first_or_404()
     users = User.query.all()
@@ -448,16 +445,16 @@ def pubnamepage(urlname):
     publications = Publication.query.all()
     return render_template('publication.html', researchers=users, projects=projects, post=post, id=id, publications=publications)
 
-@main.route('/publications/edit/<urlname>', methods=['GET', 'POST']) 
+@main.route('/publications/edit/<int:id>', methods=['GET', 'POST']) 
 @login_required
-def edit_publication(urlname):
+def edit_publication(id):
     kwargs = {
-    'urlname' : urlname
+    'id' : id
     }
     post = Publication.query.filter_by(**kwargs).first_or_404()
     if current_user != post.researchers and \
         not current_user.can(Permission.WRITE_ARTICLES): abort(403)
-    form = PublicationEditForm()
+    form = PublicationEditForm(user=user)
     if form.validate_on_submit():
 
         post.title = form.title.data
@@ -466,17 +463,18 @@ def edit_publication(urlname):
         post.synopsis = form.synopsis.data 
         post.website = form.website.data
         post.citation = form.citation.data
+        post.project_id = form.project.data
         db.session.add(post)
         print post
         flash('The post has been updated.')
-        return redirect(url_for('.pubnamepage', urlname=post.urlname))
+        return redirect(url_for('.pubnamepage', id=post.id))
     form.title.data = post.title
     form.urlname.data = post.urlname
     form.full_title.data = post.full_title
-    form.brief_synopsis.data = post.brief_synopsis
     form.synopsis.data = post.synopsis
     form.website.data = post.website
     form.citation.data = post.citation
+    form.project.data = post.project_id
 
 
     ptype = "Publication"
@@ -495,11 +493,11 @@ def researchersjson():
     researchers = [(u.name) for u in User.query.all()]
     return jsonify(json_list=researchers) 
 
-@main.route('/json/<urlname>')
+@main.route('/json/<int:id>')
 @login_required
-def json(urlname):
+def json(id):
     kwargs = {
-        'urlname' : urlname
+        'id' : id
     }
 
     projects = Project.query.filter_by(**kwargs).first()

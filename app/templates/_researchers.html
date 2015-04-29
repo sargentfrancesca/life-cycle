@@ -36,7 +36,7 @@
         {% if researcher.projects %}
         <p>Involved in <a class= "badge" href="#">{{ researcher.projects.count() }}</a> Projects:<br/>
         {% for project in current_user.projects %}
-        <a href="{{ url_for('.projnamepage', urlname=project.urlname) }}" class= "badge">{{ project.title }}</a>
+        <a href="{{ url_for('.projnamepage', id=publication.id) }}" class= "badge">{{ project.title }}</a>
         {% endfor %}</p>
         {% endif %}
         <p>
