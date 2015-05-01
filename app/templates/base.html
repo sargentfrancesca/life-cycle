@@ -59,8 +59,8 @@
                     </a>
                     <ul class="dropdown-menu">
                         <li><a href="{{ url_for('main.publicationpage') }}">All</a></li>
-                        {% for publication in publications %}
-                        <li><a href="{{ url_for('main.pubnamepage', id=publication.id) }}">{{ publication.title }}</a></li>
+                        {% for project in projects %}
+                        <li><a href="{{ url_for('main.projectpublications', id=project.id) }}">{{ project.title }}</a></li>
                         {% endfor %}
                         {% if current_user.is_authenticated() %}
                         
@@ -123,16 +123,6 @@ $( document ).ready(function() {
     } else {
         type = '';
     }
-
-    $('input#urlname').before('&nbsp; <span class="glyphicon glyphicon-arrow-right"></span> &nbsp; http://lifecycle.ex.ac.uk/'+type+'/<span class="urls"></span>')
-
-    $("input#urlname").keyup(function(event) {
-       var stt=$(this).val();
-           $(".urls").text(stt);
-    }, function() {
-        var stt=$("input#urlname").val();
-        $(".urls").text(stt);
-    });
 
     
     $.ajax({

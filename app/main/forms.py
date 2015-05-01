@@ -69,8 +69,6 @@ class EditProfileAdminForm(Form):
 
 class ProjectPostForm(Form):
     title = StringField('Project Title', default="Brief one-word title for display purposes, for example Demography or Lobsters, max 20 letters", validators=[Required(), Length(0,20)])
-    urlname = StringField('Web Address Name', default="One word, lowercase descriptor for the project address, for example demography or lobsters", validators=[Required(), Length(0,15), Regexp('^[a-z]+$', 0,
-                                          'Lowercase letters only')])
     full_title = StringField('Project Full Title', validators=[Length(0,300)])
     synopsis = PageDownField("Full Synopsis of project")
     website = StringField('Project Website', validators=[Length(0,64)])
@@ -81,8 +79,6 @@ class ProjectPostForm(Form):
 
 class ProjectEditForm(Form):
     title = StringField('Page Title', default="Brief one-word title for display purposes, for example Demography or Lobsters, max 20 letters", validators=[Required(), Length(0,20)])
-    urlname = StringField('Web Address Name', default="One word descriptor for the project address, for example demography or lobsters", validators=[Required(), Length(0,100), Regexp('^[a-z]+$', 0,
-                                          'Lowercase letters only')])
     full_title = StringField('Project Full Title', validators=[Length(0,300)])
     synopsis = PageDownField("Full Synopsis of project")
     website = StringField('Project Website', validators=[Length(0,64)])
@@ -93,8 +89,6 @@ class ProjectEditForm(Form):
 
 class ProjectEditFormAdmin(Form):
     title = StringField('Page Title', default="Brief one-word title for display purposes, for example Demography or Lobsters, max 20 letters", validators=[Required(), Length(0,20)])
-    urlname = StringField('Web Address Name', default="One word descriptor for the project address, for example demography or lobsters", validators=[Required(), Length(0,100), Regexp('^[a-z]+$', 0,
-                                          'Lowercase letters only')])
     full_title = StringField('Project Full Title', validators=[Length(0,300)])
     synopsis = PageDownField("Full Synopsis of project")
     website = StringField('Project Website', validators=[Length(0,64)])
@@ -105,9 +99,6 @@ class ProjectEditFormAdmin(Form):
 
 
 class PublicationPostForm(Form):
-    title = StringField('Page Title', default="Brief one-word title for display purposes, for example Demography or Lobsters, max 20 letters", validators=[Required(), Length(0,20)])
-    urlname = StringField('Web Address Name', default="One word descriptor for the project address, for example demography or lobsters", validators=[Required(), Length(0,15), Regexp('^[a-z]+$', 0,
-                                          'Lowercase letters only')])
     full_title = StringField('Publication Full Title', validators=[Length(0,300)])
     other_researchers = StringField('Author List', validators=[Length(0,100)])
     synopsis = PageDownField("Full Synopsis of publication")
@@ -123,9 +114,6 @@ class PublicationPostForm(Form):
         self.user = user
 
 class PublicationEditForm(Form):
-    title = StringField('Page Title', default="Brief one-word title for display purposes, for example Demography or Lobsters, max 20 letters", validators=[Required(), Length(0,20)])
-    urlname = StringField('Web Address Name', default="One word descriptor for the project address, for example demography or lobsters", validators=[Required(), Length(0,15), Regexp('^[a-z]+$', 0,
-                                          'Lowercase letters only')])
     full_title = StringField('Publication Full Title', validators=[Length(0,300)])
     other_researchers = StringField('Author List', validators=[Length(0,100)])
     synopsis = PageDownField("Full Synopsis of publication")

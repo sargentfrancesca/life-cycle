@@ -208,7 +208,6 @@ def postproject():
             form.validate_on_submit():
         tweet = re.sub('[@]', '', form.twitter.data)
         post = Project(title=form.title.data,
-                        urlname=form.urlname.data,
                         full_title=form.full_title.data,
                         synopsis=form.synopsis.data,
                         website=form.website.data,
@@ -217,7 +216,7 @@ def postproject():
                         facebook=form.facebook.data,
                         researchers = [current_user._get_current_object()])
         db.session.add(post)
-        return redirect(url_for('.projnamepage', urlname=post.id))
+        return redirect(url_for('.projnamepage', id=post.id))
     page = request.args.get('page', 1, type=int)
     pagination = Project.query.order_by(Project.timestamp.desc()).paginate(
         page, per_page=current_app.config['FLASKY_POSTS_PER_PAGE'],
@@ -247,7 +246,6 @@ def edit_project(id):
     if form.validate_on_submit():
         tweet = re.sub('[@]', '', form.twitter.data)
         post.title = form.title.data
-        post.urlname = form.urlname.data
         post.full_title = form.full_title.data
         post.synopsis = form.synopsis.data 
         post.website = form.website.data
@@ -260,13 +258,11 @@ def edit_project(id):
 
 
     form.title.data = post.title
-    form.urlname.data = post.urlname
     form.full_title.data = post.full_title
     form.synopsis.data = post.synopsis
     form.website.data = post.website
     form.twitter.data = post.twitter
     form.facebook.data = post.facebook
-    form.urlname.data = post.urlname
 
     ptype = "Project"
     users = User.query.all()
@@ -403,6 +399,17 @@ def publicationpage():
     return render_template('publications.html', posts=posts,
                            pagination=pagination, projects=projects, researchers=users, publications=publications)
 
+@main.route('/publications/project/<int:id>/')
+@login_required
+def projectpublications(id):
+    page = request.args.get('page', 1, type=int)
+    posts = Publication.query.filter_by(project_id=id)
+    users = User.query.all()
+    projects = Project.query.all()
+    publications = Publication.query.filter_by(project_id=id).all()
+    project = Project.query.filter_by(id=id).first()
+    return render_template('project_publication.html', posts=posts, projects=projects, researchers=users, publications=publications, project=project)
+
 @main.route('/publications/post', methods=['GET', 'POST'])
 @login_required
 def postpublication():
@@ -410,9 +417,7 @@ def postpublication():
     if current_user.can(Permission.WRITE_ARTICLES) and \
             form.validate_on_submit():
 
-        post = Publication(title=form.title.data,
-                        urlname=form.urlname.data,
-                        full_title=form.full_title.data,
+        post = Publication(full_title=form.full_title.data,
                         synopsis=form.synopsis.data,
                         website=form.website.data,
                         citation=form.citation.data,
@@ -457,8 +462,6 @@ def edit_publication(id):
     form = PublicationEditForm(user=user)
     if form.validate_on_submit():
 
-        post.title = form.title.data
-        post.urlname = form.urlname.data
         post.full_title = form.full_title.data
         post.synopsis = form.synopsis.data 
         post.website = form.website.data
@@ -468,8 +471,6 @@ def edit_publication(id):
         print post
         flash('The post has been updated.')
         return redirect(url_for('.pubnamepage', id=post.id))
-    form.title.data = post.title
-    form.urlname.data = post.urlname
     form.full_title.data = post.full_title
     form.synopsis.data = post.synopsis
     form.website.data = post.website
