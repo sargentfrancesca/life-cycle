@@ -95,6 +95,8 @@ def edit_profile():
         current_user.twitter_name = tweet
         current_user.linkedin = form.linkedin.data
         current_user.google = form.google.data
+        current_user.google_scholar = form.google_scholar.data
+        current_user.research_gate = form.research_gate.data
         db.session.add(current_user)
         flash('Your profile has been updated.')
         return redirect(url_for('.user', username=current_user.username))
@@ -108,6 +110,8 @@ def edit_profile():
     form.twitter.data = current_user.twitter
     form.linkedin.data = current_user.linkedin
     form.google.data = current_user.google
+    form.google_scholar.data = current_user.google_scholar
+    form.research_gate.data = current_user.research_gate
 
     ptype = "Profile"
     user = current_user.name
@@ -141,6 +145,8 @@ def edit_profile_admin(id):
         user.twitter_name = tweet
         user.linkedin = form.linkedin.data
         user.google = form.google.data
+        user.google_scholar = form.google_scholar.data
+        user.research_gate = form.research_gate.data
         user.tw_confirmed = form.tw_confirmed.data
         user.tw_widget_id = form.tw_widget_id.data
         db.session.add(user)
@@ -160,6 +166,8 @@ def edit_profile_admin(id):
     form.twitter.data = user.twitter
     form.linkedin.data = user.linkedin
     form.google.data = user.google
+    form.google_scholar.data = user.google_scholar
+    form.research_gate.data = user.research_gate
     form.tw_confirmed.data = user.tw_confirmed
     form.tw_widget_id.data = user.tw_widget_id
 
