@@ -256,7 +256,7 @@ def edit_project(id):
         post.facebook = form.facebook.data
         db.session.add(post)
         flash('The post has been updated.')
-        return redirect(url_for('.projnamepage', urlname=post.id))
+        return redirect(url_for('.projnamepage', id=post.id))
 
 
     form.title.data = post.title
