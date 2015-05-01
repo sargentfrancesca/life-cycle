@@ -118,7 +118,7 @@ $( document ).ready(function() {
 <script>
 $( document ).ready(function() {
 
-    $('#project_name').after('</div><p><div class="form-group"><label class="control-label"><b>Researchers Involved</b></label><div id="pubauthorcontrol"></div></div>')
+    $('#citation').after('</div><p><div class="form-group"><label class="control-label"><b>Researchers Involved</b></label><div id="pubauthorcontrol"></div></div>')
 
     $.ajax({
         url: '{{ url_for("main.jsonpub", id=post.id) }}'
