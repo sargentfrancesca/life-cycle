@@ -89,6 +89,7 @@ class User(UserMixin, db.Model):
     tw_widget_id = db.Column(db.String(64))
 
     posts = db.relationship('Project', backref='researcher', lazy='dynamic')
+    bookings = db.relationship('Booking', backref='researcher', lazy='dynamic')
     pages = db.relationship('Page', backref='researcher', lazy='dynamic')
     uploads = db.relationship('Upload', backref='researcher', lazy='dynamic')
 
@@ -327,6 +328,14 @@ class Publication(db.Model):
             tags=allowed_tags, strip=True))
 
 db.event.listen(Publication.synopsis, 'set', Publication.on_changed_body)
+
+class Booking(db.Model):
+    __tablename__ = 'bookings'
+    id = db.Column(db.Integer, primary_key=True)
+    day = db.Column(db.DateTime(), unique=True)
+    available = db.Column(db.Boolean)
+    researcher_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    description = db.Column(db.Text)
 
 class Plant(db.Model):
     __tablename__ = 'plant'

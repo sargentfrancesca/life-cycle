@@ -32,7 +32,26 @@
 	    <h1>Edit {{ post.title }} Publication</h1>
 	    {% endif %}
 
-	{% endif %}
+    {% elif ptype == "Booking" %}
+        {% if current_user.is_administrator() %}
+        <h1>Add Booking </h1>
+        <h4> Day: </h4> {{ post.day }}<br/>
+        <h4> Researcher: </h4> {{ current_user.name }}
+        {% else %}
+        <h1>Add Booking </h1>
+        <h4> Day: </h4> {{ post.day }}<br/>
+        <h4> Researcher: </h4> {{ current_user.name }}
+        {% endif %}
+
+    {% elif ptype == "Booking Admin" %}
+        {% if current_user.is_administrator() %}
+        <h1>Edit Booking Admin </h1>
+        {% else %}
+        <h1>Edit Booking Admin </h1>
+        {% endif %}
+
+
+    {% endif %}
 </div>
 <div class="col-md-12 wtform">
     {{ wtf.quick_form(form) }}

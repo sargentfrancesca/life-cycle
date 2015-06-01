@@ -1,11 +1,11 @@
 from flask.ext.wtf import Form
 from wtforms import StringField, TextAreaField, BooleanField, SelectField,\
-    SubmitField, IntegerField
+    SubmitField, IntegerField, DateTimeField
 from wtforms.ext.sqlalchemy.fields import QuerySelectField
 from wtforms.validators import Required, Length, Email, Regexp
 from flask.ext.pagedown.fields import PageDownField
 from wtforms import ValidationError
-from ..models import Role, User, Publication, Project
+from ..models import Role, User, Publication, Project, Booking
 from markdown import markdown
 import bleach
 
@@ -127,3 +127,20 @@ class PublicationEditForm(Form):
         self.project.choices = [(project.id, project.title)
                              for project in Project.query.order_by(Project.title).all()]
         self.user = user
+
+class BookingForm(Form):
+    description = TextAreaField('Topic of Discussion')
+    submit = SubmitField('Submit')
+
+class BookingFormAdmin(Form):
+    week = DateTimeField('Select Week', validators=[Required()])
+    researcher = SelectField('Researcher', coerce=int)
+    description = TextAreaField('Topic of Discussion')
+    available = BooleanField('Make Available (Delete researcher and description data)')
+    submit = SubmitField("Submit")
+
+    def __init__(self, user, *args, **kwargs):
+        super(BookingFormAdmin, self).__init__(*args, **kwargs)
+        self.researcher.choices = [(researcher.id, researcher.name)
+                             for researcher in User.query.order_by(User.name).all()]
+        # self.user = user

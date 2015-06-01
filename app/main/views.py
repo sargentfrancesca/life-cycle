@@ -2,9 +2,9 @@ from flask import render_template, redirect, url_for, abort, flash, request,\
     current_app, jsonify
 from flask.ext.login import login_required, current_user
 from . import main
-from .forms import EditProfileForm, EditProfileAdminForm, ProjectPostForm, ProjectEditForm, PublicationPostForm, PublicationEditForm
+from .forms import EditProfileForm, EditProfileAdminForm, ProjectPostForm, ProjectEditForm, BookingForm, BookingFormAdmin, PublicationPostForm, PublicationEditForm
 from .. import db
-from ..models import Permission, Role, User, Project, Publication, coauthors
+from ..models import Permission, Role, User, Project, Publication, Booking, coauthors
 from ..decorators import admin_required
 import re
 from jinja2 import evalcontextfilter, Markup, escape
@@ -378,18 +378,84 @@ def add_remove_coauthor_pub():
 
 @main.route('/landing')
 @login_required
+
 def landing():  
     page = request.args.get('page', 1, type=int)
     pagination = Project.query.order_by(Project.timestamp.desc()).paginate(
         page, per_page=current_app.config['FLASKY_POSTS_PER_PAGE'],
         error_out=False)
     posts = pagination.items
+    bookings = Booking.query.all()
+    print bookings
     users = User.query.all()
     projects = Project.query.all()
     publications = Publication.query.all()
     return render_template('landing.html', posts=posts,
-                           pagination=pagination, researchers=users, projects=projects, publications=publications)
+                           pagination=pagination, researchers=users, projects=projects, publications=publications, bookings=bookings)
 
+@main.route('/booking/edit/<int:id>', methods=['GET', 'POST'])
+@login_required
+def edit_booking(id):
+    kwargs = {
+    'id' : id
+    }
+
+    post = Booking.query.filter_by(**kwargs).first_or_404()
+
+    form = BookingForm(user=user)
+    
+    if form.validate_on_submit():
+        post.researcher = current_user._get_current_object()
+        post.description = form.description.data 
+        post.available = 0
+    
+        db.session.add(post)
+        print post
+        flash('The booking has been updated.')
+        return redirect(url_for('.landing'))
+
+    ptype = "Booking"
+    users = User.query.all()
+    projects = Project.query.all()
+    publications = Publication.query.all()
+
+    return render_template('edit_something.html', id=id, post=post, researchers=users, projects=projects, form=form, ptype=ptype, user=user, publications=publications)
+
+@main.route('/booking/edit/admin/<int:id>', methods=['GET', 'POST'])
+@login_required
+@admin_required
+def edit_booking_admin(id):
+    kwargs = {
+    'id' : id
+    }
+
+    post = Booking.query.filter_by(**kwargs).first_or_404()
+
+    form = BookingFormAdmin(user=user)
+    
+    if form.validate_on_submit():
+        post.researcher = User.query.filter_by(id=form.researcher.data).first()
+        post.description = form.description.data 
+        post.available = form.available.data
+    
+        db.session.add(post)
+        print post
+        flash('The booking has been updated.')
+        return redirect(url_for('.landing'))
+
+    form.week.data = post.day
+
+    if post.available == False:
+        
+        form.researcher.data = post.researcher.id
+        form.description.data = post.description
+
+    ptype = "Booking Admin"
+    users = User.query.all()
+    projects = Project.query.all()
+    publications = Publication.query.all()
+
+    return render_template('edit_something.html', id=id, post=post, researchers=users, projects=projects, form=form, ptype=ptype, user=user, publications=publications)
 
 
 # Publications   
