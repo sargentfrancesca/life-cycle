@@ -10,6 +10,7 @@ import re
 from jinja2 import evalcontextfilter, Markup, escape
 from sqlalchemy import *
 from sqlalchemy.ext.declarative import declarative_base
+import csv
 
 @main.route('/')
 def index():
@@ -18,7 +19,49 @@ def index():
     publications = Publication.query.all()
     return render_template('index.html', researchers=users, projects=projects, publications=publications)
 
+def unicode_csv_reader(utf8_data, dialect=csv.excel, **kwargs):
+    csv_reader = csv.reader(utf8_data, dialect=dialect, **kwargs)
+    for row in csv_reader:
+        yield [unicode(cell, 'utf-8') for cell in row]
 
+@main.route('/dave-cite')
+def dave():
+    
+    filename = 'citations.csv'
+    reader = unicode_csv_reader(open(filename))
+    allCitations = []
+    
+    for i, row in enumerate(reader):
+        print row[0]
+        allCitations.append({"authors": row[0], "title": row[1], "publication": row[2], "volume" : row[3], "number" : row[4], "pages" : row[5], "year": row[6], "publisher": row[7]})
+
+    for citation in allCitations:
+        string = citation["authors"][:-2] + ".(" + citation["year"] + "). " + citation["title"] + ". " + citation["publication"]
+        if citation["volume"] != '':
+            string += ", " + citation["volume"]
+        if citation["number"] != '':
+            string += "(" + citation["number"] + ") "
+        if citation["pages"] != '':
+            string += ", " + citation["pages"]
+
+        string += '.'
+
+        
+        try:
+            publication = Publication()
+            publication.other_researchers= str(citation["authors"])
+            publication.full_title = str(citation["title"])
+            publication.citation= string
+            publication.researchers = User.query.get(6)
+
+            db.session.add(publication)
+        except:
+            print string
+            pass
+
+    db.session.commit()
+
+    return "Hi"
 # Researchers
 @main.route('/researchers/')
 @login_required
