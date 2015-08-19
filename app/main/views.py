@@ -19,8 +19,8 @@ def index():
     publications = Publication.query.all()
     return render_template('index.html', researchers=users, projects=projects, publications=publications)
 
-def unicode_csv_reader(utf8_data, dialect=csv.excel, **kwargs):
-    csv_reader = csv.reader(utf8_data, dialect=dialect, **kwargs)
+def unicode_csv_reader(utf8_data, **kwargs):
+    csv_reader = csv.reader(utf8_data, **kwargs)
     for row in csv_reader:
         yield [unicode(cell, 'utf-8') for cell in row]
 
@@ -32,8 +32,9 @@ def dave():
     allCitations = []
     
     for i, row in enumerate(reader):
-        print row[0]
-        allCitations.append({"authors": row[0], "title": row[1], "publication": row[2], "volume" : row[3], "number" : row[4], "pages" : row[5], "year": row[6], "publisher": row[7]})
+        if i != 0:
+            print row[0]
+            allCitations.append({"authors": row[0], "title": row[1], "publication": row[2], "volume" : row[3], "number" : row[4], "pages" : row[5], "year": row[6], "publisher": row[7]})
 
     for citation in allCitations:
         string = citation["authors"][:-2] + ".(" + citation["year"] + "). " + citation["title"] + ". " + citation["publication"]
@@ -47,17 +48,15 @@ def dave():
         string += '.'
 
         
-        try:
-            publication = Publication()
-            publication.other_researchers= str(citation["authors"])
-            publication.full_title = str(citation["title"])
-            publication.citation= string
-            publication.researchers = User.query.get(6)
+        
+        publication = Publication()
+        publication.other_researchers= citation["authors"].encode('ascii', 'ignore')
+        publication.full_title = citation["title"].encode('ascii', 'ignore')
+        publication.citation= string.encode('ascii', 'ignore')
+        publication.researchers = [User.query.get(6)]
 
-            db.session.add(publication)
-        except:
-            print string
-            pass
+        db.session.add(publication)
+
 
     db.session.commit()
 
