@@ -6,9 +6,30 @@
 
 {% block page_content %}
 <div class="banner jumbotron">
-		<h1><span class="lc-icon-lifecycleicon"></span> Life Cycle</h1><br/>
+		<h1><span class="lc-icon-lifecycleicon"></span> Life Cycle</h1>
 		<hr/>
-		<span>The Home of SPANDEX research group</span>
+		<span>The Home of Demographic Research</span>
+		<hr/>
+		<div id="impress">
+			<div id="doris" class="step slide" data-x="-400" data-y="220" data-z="40" data-rotate="40">
+				<div class="label">
+					<span class="lc-icon-lobstericon"></span><span>L</span>
+				</div>
+			</div>
+			<div id="demography" class="step slide" data-x="-230" data-y="250" data-rotate="90">
+				<div class="label">
+					<span class="lc-icon-demography"></span><span>D</span>
+				</div>
+			</div>
+			<div id="spandex" class="step slide" data-x="-210" data-y="-180" data-rotate="130">
+				<div class="label">
+					<span class="lc-icon-delta"></span><span>S</span>
+				</div>
+			</div>
+		</div>
 		<h2><a href="http://www.twitter.com/spand_ex" target="_blank"><span class="socicon">a</span>  Coming Soon</a></h2>
 	</div>
+
+<script src="{{ url_for('static', filename='impress.js') }}"></script>
+<script>impress().init();</script>
 {% endblock %}
