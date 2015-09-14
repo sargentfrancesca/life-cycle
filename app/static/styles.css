@@ -184,7 +184,7 @@ a.sublink {
 
 .banner {
     text-align: center;
-    padding-top: 25%;
+    padding-top: 0%;
 }
 
 .jumbotron {
@@ -346,32 +346,24 @@ div#loading {
 @keyframes spin { 100% { -webkit-transform: rotate(360deg); transform:rotate(360deg); } }
 
 #impress {
-    display: inline-block;
+    display: block !important;
     width: 500px;
     height: 400px;
-    position: relative !important;
-    top: 0% !important;
-    left: 0% !important;
+    position: relative;
+    padding-top: 15%;
 
 }
 
 #impress>div{
-    position: absolute;
-    top: 50% !important;
-    left: 50%;
+    position: relative;
     width: 300px;
     height: 300px;
 }
-/*
-    Now let's style the presentation steps.
-
-    We start with basics to make sure it displays correctly in everywhere ...
-*/
 
 .step {
-    display: inline-block;
-    width: 500px;
-    height: 300px;
+    display: block;
+    width: 0px;
+    height: 0px;
     padding: 40px;
     margin: 20px auto;
 
@@ -402,6 +394,7 @@ div#loading {
     transition:         opacity 1s;
 }
 
+
 .impress-enabled .step.active { opacity: 1 }
 
 /*
@@ -413,7 +406,7 @@ div#loading {
     They cover everything what you see on first three steps of the demo.
 */
 .slide {
-    display: inline-block;
+    display: block;
 
     width: 150px;
     height: 150px;
@@ -460,18 +453,48 @@ div#loading {
 .slide q strong {
     white-space: nowrap;
 }
-
-#demography {
-    position: relative !important;
-
-}
-#doris {
-    position: relative !important;
+#demography:hover,
+#doris:hover,
+#spandex:hover {
+    cursor: pointer;
 }
 
+#demography,
+#doris,
 #spandex {
-     position: relative !important;
+    position: absolute;
 }
 
+#demography:after,
+#doris:after,
+#spandex:after {
+    font-size: 22px; 
+    margin: -25px;
+    font-family: helvetica;
+    -webkit-font-smoothing: antialiased;
+}
+
+#demography:after {
+    content: attr(data-content) 'Demography';
+}
+
+#doris:after {
+    content: attr(data-content) 'Doris Map';
+}
+
+#spandex:after {
+    content: attr(data-content) 'Spandex';
+}
+
+#spandex-info,
+#demography-info,
+#doris-info {
+    position: absolute;
+    top: 200px !important;
+    left: 200px !important;
+    opacity: 0;
+    color: red;
+    z-index: 100;
+}
 
 

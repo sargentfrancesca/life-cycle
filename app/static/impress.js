@@ -281,6 +281,9 @@
                 triggerEvent(step, "impress:stepenter");
                 lastEntered = step;
             }
+            console.log("Enter", step.id)
+            console.log(document.getElementById(step.id+'-info'))
+            document.getElementById(step.id+'-info').style.opacity=1;
         };
         
         // `onStepLeave` is called whenever the step element is left
@@ -291,6 +294,7 @@
                 triggerEvent(step, "impress:stepleave");
                 lastEntered = null;
             }
+            document.getElementById(step.id+'-info').style.opacity=0;
         };
         
         // `initStep` initializes given step element by reading data from its
@@ -444,6 +448,14 @@
                 body.classList.remove("impress-on-" + activeStep.id);
             }
             el.classList.add("active");
+
+            console.log(el.id)
+
+            var infodiv = document.getElementById(el.id+'-info');
+            console.log(infodiv)
+
+            //gay//
+
             
             body.classList.add("impress-on-" + el.id);
             
