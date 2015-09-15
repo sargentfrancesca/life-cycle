@@ -22,7 +22,7 @@ def before_request():
 @auth.route('/unconfirmed')
 def unconfirmed():
     if current_user.is_anonymous() or current_user.confirmed:
-        return redirect(url_for('main.index'))
+        return redirect(url_for('spandex.index'))
     return render_template('auth/unconfirmed.html')
 
 
@@ -33,7 +33,7 @@ def login():
         user = User.query.filter_by(email=form.email.data).first()
         if user is not None and user.verify_password(form.password.data):
             login_user(user, form.remember_me.data)
-            return redirect(request.args.get('next') or url_for('main.landing'))
+            return redirect(request.args.get('next') or url_for('spandex.landing'))
         flash('Invalid username or password.')
     users = User.query.all()
     projects = Project.query.all()
@@ -46,7 +46,7 @@ def login():
 def logout():
     logout_user()
     flash('You have been logged out.')
-    return redirect(url_for('main.index'))
+    return redirect(url_for('spandex.index'))
 
 
 @auth.route('/tandem/', methods=['GET', 'POST'])
@@ -74,12 +74,12 @@ def register():
 @login_required
 def confirm(token):
     if current_user.confirmed:
-        return redirect(url_for('main.index'))
+        return redirect(url_for('spandex.index'))
     if current_user.confirm(token):
         flash('You have confirmed your account. Thanks!')
     else:
         flash('The confirmation link is invalid or has expired.')
-    return redirect(url_for('main.index'))
+    return redirect(url_for('spandex.index'))
 
 
 @auth.route('/confirm')
@@ -89,7 +89,7 @@ def resend_confirmation():
     send_email(current_user.email, 'Confirm Your Account',
                'auth/email/confirm', user=current_user, token=token)
     flash('A new confirmation email has been sent to you by email.')
-    return redirect(url_for('main.index'))
+    return redirect(url_for('spandex.index'))
 
 
 @auth.route('/change-password', methods=['GET', 'POST'])
@@ -101,7 +101,7 @@ def change_password():
             current_user.password = form.password.data
             db.session.add(current_user)
             flash('Your password has been updated.')
-            return redirect(url_for('main.index'))
+            return redirect(url_for('spandex.index'))
         else:
             flash('Invalid password.')
     users = User.query.all()
@@ -113,7 +113,7 @@ def change_password():
 @auth.route('/reset', methods=['GET', 'POST'])
 def password_reset_request():
     if not current_user.is_anonymous():
-        return redirect(url_for('main.index'))
+        return redirect(url_for('spandex.index'))
     form = PasswordResetRequestForm()
     if form.validate_on_submit():
         user = User.query.filter_by(email=form.email.data).first()
@@ -135,17 +135,17 @@ def password_reset_request():
 @auth.route('/reset/<token>', methods=['GET', 'POST'])
 def password_reset(token):
     if not current_user.is_anonymous():
-        return redirect(url_for('main.index'))
+        return redirect(url_for('spandex.index'))
     form = PasswordResetForm()
     if form.validate_on_submit():
         user = User.query.filter_by(email=form.email.data).first()
         if user is None:
-            return redirect(url_for('main.index'))
+            return redirect(url_for('spandex.index'))
         if user.reset_password(token, form.password.data):
             flash('Your password has been updated.')
             return redirect(url_for('auth.login'))
         else:
-            return redirect(url_for('main.index'))
+            return redirect(url_for('spandex.index'))
     users = User.query.all()
     projects = Project.query.all()
     publications = Publication.query.all()
@@ -165,7 +165,7 @@ def change_email_request():
                        user=current_user, token=token)
             flash('An email with instructions to confirm your new email '
                   'address has been sent to you.')
-            return redirect(url_for('main.index'))
+            return redirect(url_for('spandex.index'))
         else:
             flash('Invalid email or password.')
     users = User.query.all()
@@ -181,4 +181,4 @@ def change_email(token):
         flash('Your email address has been updated.')
     else:
         flash('Invalid request.')
-    return redirect(url_for('main.index'))
+    return redirect(url_for('spandex.index'))

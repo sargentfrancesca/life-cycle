@@ -17,7 +17,7 @@ def index():
     users = User.query.all()
     projects = Project.query.all()
     publications = Publication.query.all()
-    return render_template('index.html', researchers=users, projects=projects, publications=publications)
+    return render_template('home.html', researchers=users, projects=projects, publications=publications)
 
 def unicode_csv_reader(utf8_data, **kwargs):
     csv_reader = csv.reader(utf8_data, **kwargs)

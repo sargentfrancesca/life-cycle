@@ -12,8 +12,8 @@
 		<p>Welcome to Life Cycle. This is your Dashboard.</p>
 		<a class="btn btn-default" href="{{ url_for('.user', username=current_user.username) }}">View Profile</a>
 		<a class="btn btn-default" href="{{ url_for('.edit_profile', username=current_user.username) }}">Edit Profile</a></p>
-		<a class="btn btn-default" href="{{ url_for('main.postproject') }}"><span class="glyphicon glyphicon-plus"></span> Add a new Project</a>
-		<a class="btn btn-default" href="{{ url_for('main.postpublication') }}"><span class="glyphicon glyphicon-plus"></span> Add a new Publication</a>
+		<a class="btn btn-default" href="{{ url_for('spandex.postproject') }}"><span class="glyphicon glyphicon-plus"></span> Add a new Project</a>
+		<a class="btn btn-default" href="{{ url_for('spandex.postpublication') }}"><span class="glyphicon glyphicon-plus"></span> Add a new Publication</a>
 		</p>	
 	</div>
 </div>
@@ -36,14 +36,14 @@
 				<tr data-id="{{booking.id}}">
 					<td> {{ booking.day }} </td>
 					{% if booking.available == True %}
-					<td><a href="{{ url_for('main.edit_booking', id=booking.id) }}"><span class="glyphicon glyphicon-plus"></span> Available </a></td>
-					<td><a href="{{ url_for('main.edit_booking', id=booking.id) }}"><span class="glyphicon glyphicon-plus"></span> Available </a></td>
+					<td><a href="{{ url_for('spandex.edit_booking', id=booking.id) }}"><span class="glyphicon glyphicon-plus"></span> Available </a></td>
+					<td><a href="{{ url_for('spandex.edit_booking', id=booking.id) }}"><span class="glyphicon glyphicon-plus"></span> Available </a></td>
 					{% else %}
 					<td> {{ booking.researcher.name }} </td>
 					<td> {{ booking.description }}</td>
 					{% endif %}
 					{% if current_user.is_administrator() %}
-					<td><a href="{{ url_for('main.edit_booking_admin', id=booking.id) }}"><span class="glyphicon glyphicon-pencil"></span></a> </td>
+					<td><a href="{{ url_for('spandex.edit_booking_admin', id=booking.id) }}"><span class="glyphicon glyphicon-pencil"></span></a> </td>
 					{% endif %}
 				</tr>
 				{% endfor %}

@@ -69,7 +69,7 @@ $( document ).ready(function() {
     $('#facebook').after('</div><p><div class="form-group"><label class="control-label"><b>Researchers Involved</b></label><div id="authorcontrol"></div></div>');
 
     $.ajax({
-        url: '{{ url_for("main.json", id=post.id) }}'
+        url: '{{ url_for("spandex.json", id=post.id) }}'
         }).done(function (data) {
 
         	var namesin = data.researchers["in"];
@@ -140,7 +140,7 @@ $( document ).ready(function() {
     $('#citation').after('</div><p><div class="form-group"><label class="control-label"><b>Researchers Involved</b></label><div id="pubauthorcontrol"></div></div>')
 
     $.ajax({
-        url: '{{ url_for("main.jsonpub", id=post.id) }}'
+        url: '{{ url_for("spandex.jsonpub", id=post.id) }}'
         }).done(function (data) {
 
             var namesin = data.researchers["in"];

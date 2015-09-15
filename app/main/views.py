@@ -1,10 +1,10 @@
-# from flask import render_template, redirect, url_for, abort, flash, request,\
-#     current_app, jsonify
-# from flask.ext.login import login_required, current_user
-# from . import main
+from flask import render_template, redirect, url_for, abort, flash, request,\
+    current_app, jsonify
+from flask.ext.login import login_required, current_user
+from . import main
 # from .forms import EditProfileForm, EditProfileAdminForm, ProjectPostForm, ProjectEditForm, BookingForm, BookingFormAdmin, PublicationPostForm, PublicationEditForm
 # from .. import db
-# from ..models import Permission, Role, User, Project, Publication, Booking, coauthors
+from ..spandex.models import Permission, Role, User, Project, Publication, Booking, coauthors
 # from ..decorators import admin_required
 # import re
 # from jinja2 import evalcontextfilter, Markup, escape
@@ -12,12 +12,12 @@
 # from sqlalchemy.ext.declarative import declarative_base
 # import csv
 
-# @main.route('/')
-# def index():
-#     users = User.query.all()
-#     projects = Project.query.all()
-#     publications = Publication.query.all()
-#     return render_template('index.html', researchers=users, projects=projects, publications=publications)
+@main.route('/')
+def index():
+    users = User.query.all()
+    projects = Project.query.all()
+    publications = Publication.query.all()
+    return render_template('index.html', researchers=users, projects=projects, publications=publications)
 
 # def unicode_csv_reader(utf8_data, **kwargs):
 #     csv_reader = csv.reader(utf8_data, **kwargs)
