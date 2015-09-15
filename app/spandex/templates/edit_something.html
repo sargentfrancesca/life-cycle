@@ -1,0 +1,209 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block title %}Life Cycle - Edit {{ ptype }}{% endblock %}
+
+{% block page_content %}
+<div class="page-header">
+	{% if ptype == "Profile" %}
+			{% if current_user.is_administrator() %}
+				{% if user.name == current_user %}
+					<h1>Edit {{ user.name }}'s {{ ptype }}</h1><br/>
+                    <div><p class=" alert alert-info"><span class="socicon">a</span> &nbsp; The Administrator of this website will create a Twitter Widget for you using your Twitter handle. By default, this will be @spand_ex. </p></div>
+				{% else %}
+				<h1>Edit {{ user.name }} Profile <span class="label label-danger">Admin View</span></h1><br/>
+                <div><p class=" alert alert-info"><span class="socicon">a</span> &nbsp; The Administrator of this website will create a Twitter Widget for you using your Twitter handle. By default, this will be @spand_ex. </p></div>		
+				{% endif %}	
+			{% else %}
+			<h1>Edit your {{ ptype }}</h1>
+		    {% endif %}
+	{% elif ptype == "Project" %}
+      {% if current_user.is_administrator() %}
+          <h1>Edit {{ post.title }} Project <span class="label label-danger">Admin View</span></h1><br/>
+       {% else %}
+          <h1>Edit {{ post.title }} Project</h1><br/>
+        {% endif %}
+        <div><p class=" alert alert-info"><span class="socicon">a</span> &nbsp; The Administrator of this website will create a Twitter Widget for your project using your Twitter handle. By default, this will be @spand_ex. </p></div>
+	
+	{% elif ptype == "Publication" %}
+		{% if current_user.is_administrator() %}
+		<h1>Edit {{ post.title }} Publication <span class="label label-danger">Admin View</span></h1>
+		{% else %}
+	    <h1>Edit {{ post.title }} Publication</h1>
+	    {% endif %}
+
+    {% elif ptype == "Booking" %}
+        {% if current_user.is_administrator() %}
+        <h1>Add Booking </h1>
+        <h4> Day: </h4> {{ post.day }}<br/>
+        <h4> Researcher: </h4> {{ current_user.name }}
+        {% else %}
+        <h1>Add Booking </h1>
+        <h4> Day: </h4> {{ post.day }}<br/>
+        <h4> Researcher: </h4> {{ current_user.name }}
+        {% endif %}
+
+    {% elif ptype == "Booking Admin" %}
+        {% if current_user.is_administrator() %}
+        <h1>Edit Booking Admin </h1>
+        {% else %}
+        <h1>Edit Booking Admin </h1>
+        {% endif %}
+
+
+    {% endif %}
+</div>
+<div class="col-md-12 wtform">
+    {{ wtf.quick_form(form) }}
+</div>
+
+{% endblock %}
+
+
+{% block scripts %}
+{{ super() }}
+{% if ptype == "Project" %}
+<script>
+$( document ).ready(function() {
+
+    $('#facebook').after('</div><p><div class="form-group"><label class="control-label"><b>Researchers Involved</b></label><div id="authorcontrol"></div></div>');
+
+    $.ajax({
+        url: '{{ url_for("main.json", id=post.id) }}'
+        }).done(function (data) {
+
+        	var namesin = data.researchers["in"];
+        	var namesout = data.researchers["out"];
+
+        	$(namesin).each(function() {
+        		$('#authorcontrol').append('<div class= "controlin">'+this.name+'</div>')
+        	});
+
+        	$(namesout).each(function() {
+        		$('#authorcontrol').append('<div class= "controlout">'+this.name+'</div>')
+        	});
+        }, function(){
+        	$('div.controlout').bind('click', function() {        	
+        		var nameval = $(this).text();
+        		$.post('/add/', {
+        			id : {{post.id}},
+        			name : nameval
+        		}).done(function() {
+        			console.log("Success");
+
+        			var selectout = $('div.controlout').filter(function () {
+					    return $.trim($(this).text()) === nameval;
+					});
+
+        			$(selectout).removeClass('controlout');
+        			$(selectout).addClass('added');
+
+                    $(selectout).html('<span class="glyphicon glyphicon-ok" aria-hidden="true"></span>&nbsp;' + nameval + ' added');
+                    $(selectout).animate({'visibility' : 'hidden'})
+
+        		}).fail(function() {
+        			console.log("Error - possibly duplicate entry");
+        		})
+        	});
+        }, function() {
+        	$('div.controlin').bind('click', function() {        	
+        		var nameval = $(this).text();
+        		$.post('/delete/', {
+        			id : {{post.id}},
+        			name : nameval
+        		}).done(function() {
+
+        			var selectin = $('div.controlin').filter(function () {
+					    return $.trim($(this).text()) === nameval;
+					});
+
+        			$(selectin).removeClass('controlin');
+        			$(selectin).addClass('deleted');
+                    $(selectin).html('<span class="glyphicon glyphicon-remove" aria-hidden="true"></span>&nbsp;' + nameval + ' removed');
+                    $(selectin).animate({'visibility' : 'hidden'})
+
+
+        		}).fail(function() {
+        			console.log("Error - Possible duplicate entry");
+        		})
+        	});
+        });
+
+});
+
+
+</script>
+{% elif ptype == "Publication" %}
+<script>
+$( document ).ready(function() {
+
+    $('#citation').after('</div><p><div class="form-group"><label class="control-label"><b>Researchers Involved</b></label><div id="pubauthorcontrol"></div></div>')
+
+    $.ajax({
+        url: '{{ url_for("main.jsonpub", id=post.id) }}'
+        }).done(function (data) {
+
+            var namesin = data.researchers["in"];
+            var namesout = data.researchers["out"];
+
+            $(namesin).each(function() {
+                $('#pubauthorcontrol').append('<div class= "controlin">'+this.name+'</div>')
+            });
+
+            $(namesout).each(function() {
+                $('#pubauthorcontrol').append('<div class= "controlout">'+this.name+'</div>')
+            });
+        }, function(){
+            $('div.controlout').bind('click', function() {          
+                var nameval = $(this).text();
+                $.post('/add/publication', {
+                    id : {{post.id}},
+                    name : nameval
+                }).done(function() {
+
+                    var selectout = $('div.controlout').filter(function () {
+                        return $.trim($(this).text()) === nameval;
+                    });
+
+                    $(selectout).removeClass('controlout');
+                    $(selectout).addClass('added');
+
+                    $(selectout).html('<span class="glyphicon glyphicon-ok" aria-hidden="true"></span>&nbsp;' + nameval + ' added');
+                    $(selectout).animate({'visibility' : 'hidden'})
+
+                }).fail(function() {
+                    console.log("Error- Possible duplicate entry");
+                })
+            });
+        }, function() {
+            $('div.controlin').bind('click', function() {           
+                var nameval = $(this).text();
+                $.post('/delete/publication', {
+                    id : {{post.id}},
+                    name : nameval
+                }).done(function() {
+                    console.log("Success");
+
+                    var selectin = $('div.controlin').filter(function () {
+                        return $.trim($(this).text()) === nameval;
+                    });
+
+                    $(selectin).removeClass('controlin');
+                    $(selectin).addClass('deleted');
+
+                    $(selectin).html('<span class="glyphicon glyphicon-remove" aria-hidden="true"></span>&nbsp;' + nameval + ' removed');
+                    $(selectin).animate({'visibility' : 'hidden'})
+
+                }).fail(function() {
+                    console.log("Error - Possible duplicate entry");
+                })
+            });
+        });
+
+});
+
+</script>
+
+{% endif %}
+{{ moment.include_moment() }}
+{% endblock %}

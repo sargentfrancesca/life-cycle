@@ -1,0 +1,7 @@
+<ul class="posts">
+    {% for page in pages %}
+    <li class="post">
+        <h3><a href="{{ url_for('.page', id=page.id) }}">{{page.title}}</a></h3>
+    </li>
+    {% endfor %}
+</ul>

@@ -41,4 +41,7 @@ def create_app(config_name):
     from .eol import eol as eol_blueprint
     app.register_blueprint(eol_blueprint, url_prefix='/eol')
 
+    from .spandex import spandex as spandex_blueprint
+    app.register_blueprint(spandex_blueprint, url_prefix='/spandex')
+
     return app

@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+{% import "_macros.html" as macros %}
+
+{% block title %}Life Cycle{% endblock %}
+
+{% block page_content %}
+<div class="banner jumbotron">
+		<div id="impress">
+			<div id="spandex" class="step slide" data-x="170" data-y="0" data-z="70" data-rotate="0">
+				<div class="label">
+					<span class="lc-icon-delta"></span><span>S</span>
+				</div>
+			</div>
+			<div id="demography" class="step slide" data-x="340" data-y="0" data-z="-100" data-rotate="0">
+				<div class="label">
+					<span class="lc-icon-demography"></span><span>D</span>
+				</div>
+			</div>
+			<div id="doris" class="step slide" data-x="0" data-y="0" data-z="-100" data-rotate="0">
+				<div class="label">
+					<span class="lc-icon-lobstericon"></span><span>L</span>
+				</div>
+			</div>
+			
+		</div>
+
+		<h1><span class="lc-icon-lifecycleicon"></span> Life Cycle</h1>
+		<hr/>
+		<span>The Home of Demographic Research</span>
+		<hr/>
+		<h2><a href="http://www.twitter.com/spand_ex" target="_blank"><span class="socicon">a</span>  Coming Soon</a></h2>
+
+		<div id="spandex-info" class="panel panel-default">
+			<div class="panel-heading">
+		    	<h4 class="panel-title">SPANDEX</h4>
+		  	</div>
+			<div class="panel-body">
+				Coming Soon
+			</div>
+		</div>
+		<div id="doris-info" class="panel panel-default">
+			<div class="panel-heading">
+		    	<h4 class="panel-title">Doris Map</h4>
+		  	</div>
+			<div class="panel-body">
+				Coming Soon
+			</div>
+		</div>
+		<div id="demography-info" class="panel panel-default">
+			<div class="panel-heading">
+		    	<h4 class="panel-title">Demography</h4>
+		  	</div>
+			<div class="panel-body">
+				Coming Soon
+			</div>
+		</div>
+	</div>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script src="{{ url_for('static', filename='impress.js') }}"></script>
+<script>impress().init();
+</script>
+{% endblock %}
+

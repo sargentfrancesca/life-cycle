@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 import os
 from app import create_app, db
-from app.models import User, Role, Permission, Project, Publication, Plant, Species, Booking
+from app.spandex.models import User, Role, Permission, Project, Publication, Booking
+from app.models import Plant, Species
 from flask.ext.script import Manager, Shell
 from flask.ext.migrate import Migrate, MigrateCommand
 

@@ -4,7 +4,8 @@ from flask.ext.login import login_required, current_user
 from . import demography
 from .forms import PageForm
 from .. import db
-from ..models import Permission, Role, User, Project, Publication, Species, Plant, Page, Upload
+from ..spandex.models import Permission, Role, User, Project, Publication
+from ..models import Species, Plant, Page, Upload
 from ..decorators import admin_required
 import re, sys, os
 from jinja2 import evalcontextfilter, Markup, escape

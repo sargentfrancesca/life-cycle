@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+
+{% block title %}Life Cycle{% endblock %}
+
+{% block page_content %}
+<div class="page-header">
+	<img class="img-circle profile-thumbnail" src="{{ current_user.gravatar(size=250) }}">
+	<div class="profile-header">
+		<h1>Hello, {% if current_user.is_authenticated() %}{{ current_user.name }}{% else %}Stranger{% endif %}!</h1>
+		<p>Welcome to Life Cycle. This is your Dashboard.</p>
+		<a class="btn btn-default" href="{{ url_for('.user', username=current_user.username) }}">View Profile</a>
+		<a class="btn btn-default" href="{{ url_for('.edit_profile', username=current_user.username) }}">Edit Profile</a></p>
+		<a class="btn btn-default" href="{{ url_for('main.postproject') }}"><span class="glyphicon glyphicon-plus"></span> Add a new Project</a>
+		<a class="btn btn-default" href="{{ url_for('main.postpublication') }}"><span class="glyphicon glyphicon-plus"></span> Add a new Publication</a>
+		</p>	
+	</div>
+</div>
+<div class="page-header">
+	<h3>Weekly Meeting Presentations/Focus</h3>
+	<table class="table table-striped">
+		<thead>
+			<tr>
+				<th> Week </th>
+				<th> Researcher </th>
+				<th> Topic of Discussion </th>
+				{% if current_user.is_administrator() %}
+				<th> Admin Edit </th>
+				{% endif %}
+			</tr>
+		</thead>
+		<tbody>
+			{% if bookings|length > 0 %}
+				{% for booking in bookings %}
+				<tr data-id="{{booking.id}}">
+					<td> {{ booking.day }} </td>
+					{% if booking.available == True %}
+					<td><a href="{{ url_for('main.edit_booking', id=booking.id) }}"><span class="glyphicon glyphicon-plus"></span> Available </a></td>
+					<td><a href="{{ url_for('main.edit_booking', id=booking.id) }}"><span class="glyphicon glyphicon-plus"></span> Available </a></td>
+					{% else %}
+					<td> {{ booking.researcher.name }} </td>
+					<td> {{ booking.description }}</td>
+					{% endif %}
+					{% if current_user.is_administrator() %}
+					<td><a href="{{ url_for('main.edit_booking_admin', id=booking.id) }}"><span class="glyphicon glyphicon-pencil"></span></a> </td>
+					{% endif %}
+				</tr>
+				{% endfor %}
+			{% else %}
+			No bookings yet
+			{% endif %}
+		</tbody>
+	</table>
+
+</div>
+<div><p class=" alert alert-info"><span class="glyphicon glyphicon-user"></span>&nbsp; Instructions for adding your own Gravatar (profile image, as above) are included with your conformation email. </p></div>
+<div><p class=" alert alert-danger"><span class="glyphicon glyphicon-eye-open"></span>&nbsp; This part of the website is not live, so feel free to experiment with adding information to your profile, add projects and publications. </p></div>
+<div><p class=" alert alert-warning"><span class="glyphicon glyphicon-leaf"></span>&nbsp; For any help or queries, email <a href="mailto:f.sargent@exeter.ac.uk">Francesca (f.sargent@exeter.ac.uk)</a> or open an issue on the webste's <a href= "https://github.com/sargentfrancesca/life-cycle/issues" target="_blank">Github Page</a>.</p></div>
+
+
+<h3>Recently Posted by all users</h3>
+{% include '_posts.html' %}
+
+{% endblock %}

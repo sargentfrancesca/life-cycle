@@ -6,7 +6,7 @@ from wtforms.ext.sqlalchemy.fields import QuerySelectField
 from wtforms.validators import Required, Length, Email, Regexp
 from flask.ext.pagedown.fields import PageDownField
 from wtforms import ValidationError
-from ..models import Role, User, Publication, Project, Page, Upload
+from ..models import Page
 from markdown import markdown
 import bleach
 

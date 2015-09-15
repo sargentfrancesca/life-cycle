@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% import "_macros.html" as macros %}
+
+{% block page_content %}
+
+<h2>All Projects</h2>
+<a class="btn btn-default" href="{{ url_for('main.postproject') }}"><span class="glyphicon glyphicon-plus"></span> Add a new Project</a>
+
+{% include '_posts.html' %}
+{% if pagination %}
+<div class="pagination">
+    {{ macros.pagination_widget(pagination, '.index') }}
+</div>
+{% endif %}
+
+{% endblock %}
+
