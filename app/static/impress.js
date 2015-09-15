@@ -281,9 +281,7 @@
                 triggerEvent(step, "impress:stepenter");
                 lastEntered = step;
             }
-            console.log("Enter", step.id)
-            console.log(document.getElementById(step.id+'-info'))
-            document.getElementById(step.id+'-info').style.opacity=1;
+            document.getElementById(step.id+'-info').style.display="block";           
         };
         
         // `onStepLeave` is called whenever the step element is left
@@ -294,7 +292,7 @@
                 triggerEvent(step, "impress:stepleave");
                 lastEntered = null;
             }
-            document.getElementById(step.id+'-info').style.opacity=0;
+            document.getElementById(step.id+'-info').style.display="none";
         };
         
         // `initStep` initializes given step element by reading data from its

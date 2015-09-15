@@ -465,7 +465,7 @@ div#loading {
     position: absolute;
 }
 
-#demography:after,
+/*#demography:after,
 #doris:after,
 #spandex:after {
     font-size: 22px; 
@@ -484,7 +484,7 @@ div#loading {
 
 #spandex:after {
     content: attr(data-content) 'Spandex';
-}
+}*/
 
 #spandex-info,
 #demography-info,
@@ -492,9 +492,32 @@ div#loading {
     position: absolute;
     top: 200px !important;
     left: 200px !important;
-    opacity: 0;
-    color: red;
+    display: none;
     z-index: 100;
 }
+
+#spandex-info .panel-heading,
+#demography-info .panel-heading,
+#doris-info .panel-heading {
+    background: #fff;
+}
+
+#demography-info {
+    position: absolute;
+    top: 65% !important;
+    left: 60% !important;
+}
+
+#doris-info {
+    position: absolute;
+    top: 65% !important;
+    left: 28% !important;
+}
+
+#spandex-info {
+    top: 65% !important;
+    left: 68% !important;
+}
+
 
 
