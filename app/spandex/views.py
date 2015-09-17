@@ -11,13 +11,57 @@ from jinja2 import evalcontextfilter, Markup, escape
 from sqlalchemy import *
 from sqlalchemy.ext.declarative import declarative_base
 import csv
+import twitter
 
 @spandex.route('/')
 def index():
     users = User.query.all()
     projects = Project.query.all()
     publications = Publication.query.all()
-    return render_template('home.html', researchers=users, projects=projects, publications=publications)
+
+    api = twitter.Api(consumer_key='4G7C729hkGfcpHDI8zCTFZkBA',
+                      consumer_secret='hA67P0DOFE8jISpIMgqp25rAxh2WpEhtrlyEQw6diluaJwdGkm',
+                      access_token_key='23463646-j5rbrfFGlMPmQMK7dsL1IC6f5g8K5GuccwKykU8PK',
+                      access_token_secret='VOsJmHgp7o8gkMxlB5ffMRjeTTD3wIAx2MO2CYLA37O2r')
+
+    twitter_user = "DaveHodgson00"
+    statuses = api.GetUserTimeline(screen_name=twitter_user)
+
+    twitter_statuses = []
+
+    for s in statuses:
+        status = {}
+        status["text"] = s.text
+        status["status_id"] = s.id
+
+        if s.media != []:
+            status["media"] = []
+            for media in s.media:
+                media_item = {}
+                media_item["display_url"] = media["display_url"]
+                media_item["media_url"] = media["media_url"]
+                media_item["type"] = media["type"]
+                status["media"].append(media_item)
+
+
+        status["created_date"] = s.created_at
+        
+        usr = s.user
+        status["user_id"] = usr.id
+        status["user_name"] = usr.name 
+        status["profile_background_color"] = usr.profile_background_color
+        status["profile_background_image_url"] = usr.profile_background_image_url
+        status["profile_image_url"] = usr.profile_image_url
+        status["profile_link_color"] = usr.profile_link_color
+        status["user_url"] = usr.url
+        status["profile_sidebar_fill_color"] = usr.profile_sidebar_fill_color
+        status["user_screen_name"] = usr.screen_name
+
+        twitter_statuses.append(status)
+
+    print twitter_statuses
+
+    return render_template('home.html', researchers=users, projects=projects, publications=publications, tweets=twitter_statuses)
 
 def unicode_csv_reader(utf8_data, **kwargs):
     csv_reader = csv.reader(utf8_data, **kwargs)

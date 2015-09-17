@@ -519,5 +519,9 @@ div#loading {
     left: 68% !important;
 }
 
+.twitimg {
+    display: block;
+    width: 425%;
+}
 
 
