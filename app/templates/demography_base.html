@@ -1,0 +1,106 @@
+{% extends "bootstrap/base.html" %}
+
+{% block title %}Demography{% endblock %}
+
+{% block head %}
+{{ super() }}
+<link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
+<link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='demography_styles.css') }}">
+{% endblock %}
+
+{% block navbar %}
+<div class="navbar navbar-inverse" role="navigation">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand absleft" href="#"><span class="glyphicon glyphicon-th-list"></span></a>
+            <a class="navbar-brand" href="{{ url_for('demography.map') }}"><span class="glyphicon glyphicon-leaf"></span> Demography</a>
+        </div>
+        <div class="navbar-collapse collapse">
+            <ul class="nav navbar-nav">
+                <li><a href="{{ url_for('demography.map') }}">Map View</a></li>
+            {% if current_user.is_authenticated() %}
+                {% for project in current_user.projects %}
+                    {% if project.urlname == 'demography' %}
+                    <li><a href="{{ url_for('demography.pages') }}">All Pages</a></li>
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <ul class= "nav navbar-nav">
+                        <li><a href="{{ url_for('main.index') }}"><span class="glyphicon glyphicon-refresh"></span> Life Cycle</a></li>
+                    </ul>
+                </li>
+               
+            </ul>
+        </div>
+    </div>
+</div>
+
+<div class="navbar navbar-left"></div>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    {% for message in get_flashed_messages() %}
+    <div class="alert alert-warning">
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+        {{ message }}
+    </div>
+    {% endfor %}
+
+    {% block page_content %}{% endblock %}
+</div>
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+
+<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+
+<script>
+    $(document).ready(function(){
+        $('.absleft').click(function(){
+            $('.navbar-left').toggle(function(){
+                $(this).removeClass('slideout');
+                $(this).addClass('slidein');
+                $('.navbar-inverse').animate({
+                    'border' : '2px solid rgb(255, 171, 6)'
+                })
+            });
+        })
+    })
+</script>
+
+
+<script type="text/javascript">
+$(function() {
+    $('#upload-file').after('<div class="up_image"></div>')
+    $('#upload-file-btn').click(function() {
+        var form_data = new FormData($('#upload-file')[0]);
+        console.log(form_data);
+        $.ajax({
+            type: 'POST',
+            url: '{{ url_for('demography.upload') }}',
+            data: form_data,
+            contentType: false,
+            cache: false,
+            processData: false,
+            async: false,
+            success: function(data) {
+                console.log('success!')
+            },
+        });
+    });
+});
+</script>
+{{ moment.include_moment() }}
+{{ pagedown.include_pagedown() }}
+{% endblock %}

@@ -267,7 +267,8 @@ class Project(db.Model):
     pages = db.relationship('Page', backref='projects', lazy='dynamic')
     tw_confirmed = db.Column(db.Boolean(), default=False)
     tw_widget_id = db.Column(db.String(64))
-    status = db.Column(db.Boolean(), default=False)
+    active = db.Column(db.Boolean(), default=False)
+    image = db.Column(db.String(100))
 
 
 
