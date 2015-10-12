@@ -524,4 +524,7 @@ div#loading {
     width: 425%;
 }
 
+.welcome p {
+    font-size: 18px;
+}
 

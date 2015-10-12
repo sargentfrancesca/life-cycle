@@ -2,22 +2,22 @@
 {% import "bootstrap/wtf.html" as wtf %}
 {% import "_macros.html" as macros %}
 
-{% block title %}Life Cycle{% endblock %}
+{% block title %}SPANDEX{% endblock %}
 
 {% block page_content %}
-<div class="banner jumbotron">
+<div class="banner jumbotron welcome">
 
-		<h1><span class="lc-icon-delta"></span> Spandex</h1>
+		<h1>SP<span class="lc-icon-delta"></span>NDEX</h1>
 		<hr/>
 		<span>The Home of Demographic Research</span>
 		<hr/>
+		<p align="justify">SPANDEX (Statistical, Population, Applied, Natural and Demographic Ecology at eXeter) is a research group dedicated to the improved understanding of ecological dynamics. We research fundamental and applied ecological questions, create and test theory, develop and apply mathematical and statistical tools, and celebrate biodiversity in all its forms. Here you will find links to group members and our wider collaborative network; links to our current and past research projects; links to our publications and grants; and links to social media and the impact of our research. Associated pages link to biodiversity databases and outreach materials that we host or mirror. We operate under the broader banner of <a href="http://lifecycle.ex.ac.uk">“Life Cycle”</a>, to reflect the themes of demography and life history evolution in all of our research. Welcome, and we hope you enjoy and benefit from your visit.</p>
 </div>
 
 <h3>Recent Updates</h3>
 <div id="tweets" class="row">
-{% for tweet in tweets %}
-	<div class="col-xs-2"></div>
-	<div class="tweetweet col-xs-12 col-lg-3 col-md-3" style="padding: 10px 5px 5px 10px; margin: 10px 5px 5px 10px; background: #ecf0f1">
+{% for tweet in tweets[-6:] %}
+	<div class="tweetweet col-xs-12 col-lg-5 col-md-3" style="padding: 10px 5px 5px 10px; margin: 10px 5px 5px 10px; background: #ecf0f1">
 		<div class="row">
 			<div class="{% if tweet.media %}col-xs-6{% else %}col-xs-12{% endif %}">
 				<p>"{{ tweet.text }}"</p>

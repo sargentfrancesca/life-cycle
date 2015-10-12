@@ -1,0 +1,24 @@
+{% extends "demography_base.html" %}
+
+{% block page_content %}
+
+<h2> {{ plant.name }} </h2>
+
+<div id="svgContainer"></div>
+
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<script>
+plant_id = '{{ plant.id }}';
+xhr = new XMLHttpRequest();
+xhr.open("GET","{{ url_for('static', filename='images/dot/matrix_') }}" + plant_id + "_dot.svg",false);
+// Following line is just to be on the safe side;
+// not needed if your server delivers SVG with correct MIME type
+xhr.overrideMimeType("image/svg+xml");
+xhr.send("");
+
+$('#svgContainer').html(xhr.responseXML.documentElement)
+</script>
+{% endblock %}

@@ -13,6 +13,101 @@ class Plant(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(64))
     matrixnumber = db.Column(db.Integer, unique=True, index=True)
+    matrix_a = db.Column(db.Text)
+    matrix_u = db.Column(db.Text)
+    matrix_f = db.Column(db.Text)
+    matrix_c = db.Column(db.Text)
+    dimension = db.Column(db.Integer)
+    matrixclassnumber = db.Column(db.Integer)
+    matrixclassorganised = db.Column(db.String(64))
+    matrixsplit = db.Column(db.String(64))
+    classnames = db.Column(db.Text)
+    observation = db.Column(db.String(250))
+    matrixcomposite = db.Column(db.String(64))
+    matrixtreatment = db.Column(db.String(84))
+    matrixcaptivity = db.Column(db.String(10))
+    matrixstartyear = db.Column(db.Integer)
+    matrixstartseason = db.Column(db.String(10))
+    matrixstartmonth = db.Column(db.String(64))
+    matrixendyear = db.Column(db.String(64))
+    matrixendseason = db.Column(db.String(64))
+    matrixendmonth = db.Column(db.String(16))
+    matrixfec = db.Column(db.String(64))
+    studiedsex = db.Column(db.String(4))
+    population = db.Column(db.String(64))
+    ecoregion = db.Column(db.String(64))
+    latdeg = db.Column(db.Integer)
+    latmin = db.Column(db.Integer)
+    latsec = db.Column(db.Integer)
+    latns = db.Column(db.String(64))
+    londeg = db.Column(db.Integer)
+    lonmin = db.Column(db.Integer)
+    lonsec = db.Column(db.Integer)
+    lonwe = db.Column(db.String(64))
+    latitudedec = db.Column(db.Integer)
+    longitudedec = db.Column(db.Integer)
+    annualperiodicity = db.Column(db.String(64))
+    altitude = db.Column(db.Integer)
+    country = db.Column(db.String(64))
+    continent = db.Column(db.String(64))
+    criteriasize = db.Column(db.String(64))
+    criteriaontogeny = db.Column(db.String(64))
+    authors = db.Column(db.String(64))
+    journal = db.Column(db.String(64))
+    yearpublication = db.Column(db.Integer)
+    doiisbn = db.Column(db.String(64))
+    additionalsource = db.Column(db.String(200))
+    enteredby = db.Column(db.String(64))
+    entereddate = db.Column(db.String(64))
+    source = db.Column(db.String(100))
+    statusstudy = db.Column(db.String(64))
+    statusstudyref = db.Column(db.String(64))
+    statuselsewhere = db.Column(db.String(64))
+    statuselsewhereref = db.Column(db.String(64))
+
+    species_id = db.Column(db.Integer, db.ForeignKey("species.id"))
+
+
+    def __repr__(self):
+        return '<Plant %r>' % self.id
+    
+
+class Species(db.Model):
+    __tablename__ = 'species'
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(64))
+    speciesauthor = db.Column(db.String(64))
+    authority = db.Column(db.Text())
+    taxonomy = db.Column(db.String(64))
+    tplversion = db.Column(db.String(64))
+    intraspecificaccepted = db.Column(db.String(64))
+    speciesepithetaccepted = db.Column(db.String(64))
+    genusaccepted = db.Column(db.String(64))
+    kingdom = db.Column(db.String(64))
+    phylum = db.Column(db.String(64))
+    angiogymno = db.Column(db.String(64))
+    dicotmonoc = db.Column(db.String(64))
+    _class = db.Column(db.String(64))
+    _order = db.Column(db.String(64))
+    family = db.Column(db.String(64))
+    genus = db.Column(db.String(64))
+    growthtype = db.Column(db.String(64))    
+    planttype = db.Column(db.String(64))
+    commonname = db.Column(db.String(64))
+    originalimageurl = db.Column(db.String(64))
+    localimageurl = db.Column(db.String(64))
+    originalpageurl = db.Column(db.String(200))
+
+    plants = db.relationship("Plant", backref="species")
+
+    def __repr__(self):
+        return '<Species %r>' % self.name
+
+class OldPlant(db.Model):
+    __tablename__ = 'oldplant'
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(64))
+    matrixnumber = db.Column(db.Integer, unique=True, index=True)
     matrix = db.Column(db.Text)
     dimension = db.Column(db.Integer)
     matrixclassnumber = db.Column(db.Integer)
@@ -57,7 +152,7 @@ class Plant(db.Model):
     statuselsewhere = db.Column(db.String(64))
     statuselsewhereref = db.Column(db.String(64))
 
-    species_id = db.Column(db.Integer, db.ForeignKey("species.id"))
+    species_id = db.Column(db.Integer, db.ForeignKey("oldspecies.id"))
 
     def __init__(self, name, matrixnumber, matrix, dimension, matrixclassnumber, matrixclassorganised, matrixsplit, classnames, observation, matrixcomposite, matrixtreatment, matrixcaptivity, matrixstartyear, matrixstartseason, matrixstartmonth, matrixendyear, matrixendseason, matrixendmonth, studiedsex, population, latdeg, latmin, latsec, londeg, lonmin, lonsec, latitudedec, longitudedec, altitude, country, continent, criteriasize, criteriaontogeny, authors, journal, yearpublication, doiisbn, additionalsource, enteredby, entereddate, source, statusstudy, statusstudyref, statuselsewhere, statuselsewhereref):
         """"""
@@ -109,11 +204,11 @@ class Plant(db.Model):
 
 
     def __repr__(self):
-        return '<Plant %r>' % self.matrixnumber
+        return '<OldPlant %r>' % self.matrixnumber
     
 
-class Species(db.Model):
-    __tablename__ = 'species'
+class OldSpecies(db.Model):
+    __tablename__ = 'oldspecies'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(64))
     speciesauthor = db.Column(db.String(64))
@@ -135,7 +230,7 @@ class Species(db.Model):
     localimageurl = db.Column(db.String(64))
     originalpageurl = db.Column(db.String(200))
 
-    plants = db.relationship("Plant", backref="species")
+    plants = db.relationship("OldPlant", backref="species")
 
     def __init__(self, name, speciesauthor, kingdom, phylum, angiogymno, dicotmonoc, _class, _order, family, genus, ecoregion, growthtype, growthformraunkiaer, annualperiodicity, planttype, commonname, originalimageurl):
         """"""
@@ -160,7 +255,7 @@ class Species(db.Model):
         self.originalpageurl = originalpageurl
 
     def __repr__(self):
-        return '<Species %r>' % self.name
+        return '<OldSpecies %r>' % self.name
 
 class Page(db.Model):
     __tablename__ = 'page'

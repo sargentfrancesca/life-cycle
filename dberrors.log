@@ -1,0 +1,6 @@
+WARNING:py.warnings:/Library/Python/2.7/site-packages/sqlalchemy/engine/default.py:324: Warning: Truncated incorrect DOUBLE value: 'NA'
+  cursor.execute(statement, parameters)
+
+WARNING:py.warnings:/Library/Python/2.7/site-packages/sqlalchemy/engine/default.py:324: Warning: Truncated incorrect DOUBLE value: 'NA'
+  cursor.execute(statement, parameters)
+
