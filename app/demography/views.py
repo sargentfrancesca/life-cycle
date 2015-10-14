@@ -526,7 +526,7 @@ def matrix():
 @login_required
 def matrixresult():
 	classnames = classNamesFromText(request.form['classnames'])
-	species = Species(request.form['species'])
+	species = OldSpecies(request.form['species'])
 	matrix = stringFromText(request.form['matrix'])
 	m = OldPlant.query.order_by(Plant.id.desc()).first()
 	matrixnumber = int(m.matrixnumber) + 1
@@ -631,10 +631,7 @@ def matrix_table(id, which):
 	n = pydot.Node('"nodey"', label="<<TABLE border='1' cellspacing='0' cellpadding='2'>"+ cells +"</TABLE>>", shape="none")
 	graph.add_node(n)
 
-	svg = graph.write_svg("app/static/images/dot/matrix_"+ str(plant.id) +"_dot.svg", prog='dot')	
-
-	print svg
-
+	svg = graph.write_svg("app/static/images/dot/matrix_"+ str(plant.id) +"_dot.svg", prog='dot')
 
 	return render_template('matrix_svg.html', plant=plant, svg=svg)
 
