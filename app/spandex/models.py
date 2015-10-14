@@ -317,7 +317,7 @@ class Publication(db.Model):
     other_researchers = db.Column(db.String(100))
     project_id = db.Column(db.String(100), db.ForeignKey('projects.id'))
     citation = db.Column(db.Text)
-    status = db.Column(db.Boolean(), default=False)
+    active = db.Column(db.Boolean(), default=False)
 
     @staticmethod
     def on_changed_body(target, value, oldvalue, initiator):

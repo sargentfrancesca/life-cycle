@@ -1,8 +1,10 @@
 <ul class="posts">
     {% for publication in publications %}
     <li class="post">
-
-        <div class="post-content">
+        <div class="post-content" style="{% if publication.active != True %}background: #ecf0f1;{% endif %}">
+            {% if publication.active != True %}
+                <span class="badge">Not Public</span>
+            {% endif %}
             <h5><a href="{{ url_for('.pubnamepage', id=publication.id) }}">{{publication.full_title}}</h5></a>
             <div class="post-author"><b>Researchers</b>: <span class="researcher_list">{% for researcher in publication.researchers %}
                         <img class="img-circle" src="{{ researcher.gravatar(size=20) }}"> <a href="{{ url_for('.user', username=researcher.username) }}" ><a href="{{ url_for('.user', username=researcher.username) }}" class="sublink">{{ researcher.name }}</a></span>{% endfor %}<br/>

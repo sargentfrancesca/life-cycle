@@ -1,8 +1,12 @@
 <ul class="posts">
     {% for post in posts %}
-    <li class="post projects col-md-3">
-
-        <div class="post-content">
+    <li class="post projects col-md-12">
+        <script>var active = '{{ post.active }}';
+                console.log(active)</script>
+        <div class="post-content" style="{% if post.active != True %}background: #ecf0f1;{% endif %}">
+            {% if post.active != True %}
+                <span class="badge">Not Public</span>
+            {% endif %}
             <h3>{{post.title}}</h3>
             <h5><a href="{{ url_for('.projnamepage', id=post.id) }}">{{post.full_title}}</a></h5>
             {% if post.website %}<b>Website: </b><a href="{{ url_for('.projnamepage', id=post.id) }}" target="_blank">{{post.website}}</a>{% endif %}<br/>

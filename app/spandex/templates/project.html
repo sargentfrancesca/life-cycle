@@ -3,7 +3,10 @@
 
 {% block page_content %}
 
-<div class="post-content">
+<div class="post-content" style="{% if post.active != True %}background: #ecf0f1;{% endif %}">
+    {% if post.active != True %}
+        <span class="badge">Not Public</span>
+    {% endif %}
     <h3>{{post.title}}</h3>
     <h4><em><strong>{{post.full_title}}</strong></em></h4>
     <div class="post-author">Researchers: {% for researcher in post.researchers %}

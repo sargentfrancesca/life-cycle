@@ -13,12 +13,28 @@ from sqlalchemy.ext.declarative import declarative_base
 import csv
 import twitter
 
+
+
+def anon_view(model):
+    # For anon users, show only active objects
+    if current_user.is_authenticated():
+        objects = model.query.order_by(model.active.desc()).all()
+    else:
+        objects = model.query.filter_by(active=True).all()
+
+    return objects
+
+def nav_init():
+    # List all navigation items
+    nav = { 'researchers' : '', 'projects' : '', 'publications' : ''}
+    nav['researchers'] = User.query.order_by(User.name.asc()).all()
+    nav['projects'] = anon_view(Project)
+    nav['publications'] = anon_view(Publication)
+
+    return nav
+
 @spandex.route('/')
 def index():
-    users = User.query.all()
-    projects = Project.query.all()
-    publications = Publication.query.all()
-
     api = twitter.Api(consumer_key='4G7C729hkGfcpHDI8zCTFZkBA',
                       consumer_secret='hA67P0DOFE8jISpIMgqp25rAxh2WpEhtrlyEQw6diluaJwdGkm',
                       access_token_key='23463646-j5rbrfFGlMPmQMK7dsL1IC6f5g8K5GuccwKykU8PK',
@@ -59,9 +75,7 @@ def index():
 
         twitter_statuses.append(status)
 
-    print twitter_statuses
-
-    return render_template('home.html', researchers=users, projects=projects, publications=publications, tweets=twitter_statuses)
+    return render_template('home.html', nav=nav_init(), tweets=twitter_statuses)
 
 def unicode_csv_reader(utf8_data, **kwargs):
     csv_reader = csv.reader(utf8_data, **kwargs)
@@ -77,7 +91,6 @@ def dave():
     
     for i, row in enumerate(reader):
         if i != 0:
-            print row[0]
             allCitations.append({"authors": row[0], "title": row[1], "publication": row[2], "volume" : row[3], "number" : row[4], "pages" : row[5], "year": row[6], "publisher": row[7]})
 
     for citation in allCitations:
@@ -105,43 +118,31 @@ def dave():
     db.session.commit()
 
     return "Hi"
+
 # Researchers
 @spandex.route('/researchers/')
-@login_required
 def researcherpage():
     page = request.args.get('page', 1, type=int)
     pagination = User.query.order_by(User.name.desc()).paginate(
         page, per_page=current_app.config['FLASKY_POSTS_PER_PAGE'],
         error_out=False)
     posts = pagination.items
-    users = User.query.all()
-    projects = Project.query.all()
-    publications = Publication.query.all()
-    return render_template('researchers.html', posts=posts,
-                           pagination=pagination, projects=projects, researchers=users, publications=publications)
+    users = User.query.order_by(User.name.asc()).all()
+    return render_template('researchers.html', nav=nav_init(), researchers=users)
 
 @spandex.route('/researchers/<username>')
-@login_required
 def user(username):
     user = User.query.filter_by(username=username).first_or_404()
 
     posts = user.projects.order_by(Project.timestamp.desc())
 
-
-    users = User.query.all()
-    projects = Project.query.all()
-
     if user.publications:
         publications = user.publications.order_by(Publication.timestamp.desc())
 
 
-    print posts
-    print publications 
-
-    return render_template('user.html', user=user, researchers=users, posts=posts, publications=publications)
+    return render_template('user.html', nav=nav_init(), user=user, posts=posts, publications=publications)
 
 @spandex.route('/researchers/<user>/projects')
-@login_required
 def user_projects(user):
     user = User.query.filter_by(username=user).first() 
     if user is None:
@@ -150,16 +151,12 @@ def user_projects(user):
     page = request.args.get('page', 1, type=int)
     posts = user.posts.order_by(Project.timestamp.desc()).all
 
-    pagination = Project.query.order_by(Project.timestamp.desc()).paginate(
+    pagination = anon_view(Project).paginate(
         page, per_page=current_app.config['FLASKY_POSTS_PER_PAGE'],
         error_out=False)
     posts = pagination.items
-
-    users = User.query.all()
-    projects = Project.query.all()
-    publications = Publication.query.all()
     ptype = "Project"
-    return render_template('projects.html', user=user, researchers=users, posts=posts, projects=projects, ptype=ptype, publications=publications)
+    return render_template('projects.html', user=user, posts=posts, ptype=ptype, nav=nav_init())
 
 
 # Profile Editing
@@ -201,10 +198,7 @@ def edit_profile():
 
     ptype = "Profile"
     user = current_user.name
-    users = User.query.all()
-    projects = Project.query.all()
-    publications = Publication.query.all()
-    return render_template('edit_something.html', researchers=users, user=user, form=form, ptype=ptype, projects=projects, publications=publications)
+    return render_template('edit_something.html', user=user, form=form, ptype=ptype, nav=nav_init())
 
 
 @spandex.route('/edit-profile/<int:id>', methods=['GET', 'POST'])
@@ -258,39 +252,39 @@ def edit_profile_admin(id):
     form.tw_widget_id.data = user.tw_widget_id
 
     ptype = "Profile"
-    users = User.query.all()
-    projects = Project.query.all()
-    publications = Publication.query.all()
-    return render_template('edit_something.html', researchers=users, form=form, user=user, ptype=ptype, projects=projects, publications=publications)
+    return render_template('edit_something.html', form=form, user=user, ptype=ptype, nav=nav_init())
 
 # Projects
 @spandex.route('/projects/')
-@login_required
 def projectpage():
     page = request.args.get('page', 1, type=int)
-    pagination = Project.query.order_by(Project.timestamp.desc()).paginate(
+    pagination = Project.query.filter_by(active=True).order_by(Project.active.desc()).paginate(
         page, per_page=current_app.config['FLASKY_POSTS_PER_PAGE'],
         error_out=False)
     posts = pagination.items
-    users = User.query.all()
-    projects = Project.query.all()
-    publications = Publication.query.all()
+   
+    projects = Project.query.filter_by(active=True).order_by(Project.title.desc()).all()
+
     return render_template('projects.html', posts=posts,
-                           pagination=pagination, projects=projects, researchers=users, publications=publications)
+                           pagination=pagination, projects=projects, nav=nav_init())
 
 @spandex.route('/projects/<int:id>')
-@login_required 
 def projnamepage(id):
     kwargs = {
     'id' : id
     }
 
+
     post = Project.query.filter_by(**kwargs).first_or_404()
 
-    users = User.query.all()
-    projects = Project.query.all()
-    publications = Publication.query.all()
-    return render_template('project.html', researchers=users, projects=projects, post=post, id=id, publications=publications)
+    if post.active == True:
+        return render_template('project.html', post=post, id=id, nav=nav_init())
+       
+    else:
+        if current_user.is_authenticated():
+            return render_template('project.html', post=post, id=id, nav=nav_init())
+        else:
+            return redirect(url_for('.index'))
 
 
 
@@ -308,6 +302,7 @@ def postproject():
                         twitter=form.twitter.data,
                         twitter_name = tweet,
                         facebook=form.facebook.data,
+                        actice = form.active.data,
                         researchers = [current_user._get_current_object()])
         db.session.add(post)
         return redirect(url_for('.projnamepage', id=post.id))
@@ -317,11 +312,8 @@ def postproject():
         error_out=False)
     posts = pagination.items
     ptype = "Project"
-    users = User.query.all()
-    projects = Project.query.all()
-    publications = Publication.query.all()
-    return render_template('post_something.html', form=form, researchers=users, posts=posts,
-                           pagination=pagination, ptype=ptype, projects=projects, publications=publications)
+    return render_template('post_something.html', form=form, posts=posts,
+                           pagination=pagination, ptype=ptype, nav=nav_init())
 
 
 @spandex.route('/projects/edit/<int:id>', methods=['GET', 'POST']) 
@@ -346,6 +338,7 @@ def edit_project(id):
         post.twitter = form.twitter.data
         post.twitter_name = tweet
         post.facebook = form.facebook.data
+        post.active = form.active.data
         db.session.add(post)
         flash('The post has been updated.')
         return redirect(url_for('.projnamepage', id=post.id))
@@ -357,12 +350,10 @@ def edit_project(id):
     form.website.data = post.website
     form.twitter.data = post.twitter
     form.facebook.data = post.facebook
+    form.active.data = post.active
 
     ptype = "Project"
-    users = User.query.all()
-    projects = Project.query.all()
-    publications = Publication.query.all()
-    return render_template('edit_something.html', id=id, post=post, researchers=users, projects=projects, form=form, ptype=ptype, user=user, publications=publications)
+    return render_template('edit_something.html', id=id, post=post, form=form, ptype=ptype, user=user, nav=nav_init())
 
 
 @spandex.route('/delete/', methods=['POST'])
@@ -426,7 +417,6 @@ def add_remove_coauthor():
         'name' : name,
     }
 
-    print name
 
     project = Project.query.filter_by(**stuff).first()
     newpost = [User.query.filter_by(**kwargs).first()]
@@ -452,7 +442,6 @@ def add_remove_coauthor_pub():
         'name' : name,
     }
 
-    print name
 
     publication = Publication.query.filter_by(**stuff).first()
     newpost = [User.query.filter_by(**kwargs).first()]
@@ -472,12 +461,8 @@ def landing():
         error_out=False)
     posts = pagination.items
     bookings = Booking.query.all()
-    print bookings
-    users = User.query.all()
-    projects = Project.query.all()
-    publications = Publication.query.all()
     return render_template('landing.html', posts=posts,
-                           pagination=pagination, researchers=users, projects=projects, publications=publications, bookings=bookings)
+                           pagination=pagination, nav=nav_init(), bookings=bookings)
 
 @spandex.route('/booking/edit/<int:id>', methods=['GET', 'POST'])
 @login_required
@@ -496,16 +481,12 @@ def edit_booking(id):
         post.available = 0
     
         db.session.add(post)
-        print post
         flash('The booking has been updated.')
         return redirect(url_for('.landing'))
 
     ptype = "Booking"
-    users = User.query.all()
-    projects = Project.query.all()
-    publications = Publication.query.all()
 
-    return render_template('edit_something.html', id=id, post=post, researchers=users, projects=projects, form=form, ptype=ptype, user=user, publications=publications)
+    return render_template('edit_something.html', id=id, post=post, form=form, ptype=ptype, user=user, nav=nav_init())
 
 @spandex.route('/booking/edit/admin/<int:id>', methods=['GET', 'POST'])
 @login_required
@@ -525,7 +506,6 @@ def edit_booking_admin(id):
         post.available = form.available.data
     
         db.session.add(post)
-        print post
         flash('The booking has been updated.')
         return redirect(url_for('.landing'))
 
@@ -537,38 +517,30 @@ def edit_booking_admin(id):
         form.description.data = post.description
 
     ptype = "Booking Admin"
-    users = User.query.all()
-    projects = Project.query.all()
-    publications = Publication.query.all()
 
-    return render_template('edit_something.html', id=id, post=post, researchers=users, projects=projects, form=form, ptype=ptype, user=user, publications=publications)
+    return render_template('edit_something.html', id=id, post=post, form=form, ptype=ptype, user=user, nav=nav_init())
 
 
 # Publications   
 @spandex.route('/publications/')
-@login_required
 def publicationpage():
     page = request.args.get('page', 1, type=int)
     pagination = Publication.query.order_by(Publication.timestamp.desc()).paginate(
         page, per_page=current_app.config['FLASKY_POSTS_PER_PAGE'],
         error_out=False)
     posts = pagination.items
-    users = User.query.all()
-    projects = Project.query.all()
-    publications = Publication.query.all()
+    publications = anon_view(Publication)
+
     return render_template('publications.html', posts=posts,
-                           pagination=pagination, projects=projects, researchers=users, publications=publications)
+                           pagination=pagination, publications=publications, nav=nav_init())
 
 @spandex.route('/publications/project/<int:id>/')
-@login_required
 def projectpublications(id):
     page = request.args.get('page', 1, type=int)
     posts = Publication.query.filter_by(project_id=id)
-    users = User.query.all()
-    projects = Project.query.all()
     publications = Publication.query.filter_by(project_id=id).all()
     project = Project.query.filter_by(id=id).first()
-    return render_template('project_publication.html', posts=posts, projects=projects, researchers=users, publications=publications, project=project)
+    return render_template('project_publication.html', posts=posts, publications=publications, project=project, nav=nav_init())
 
 @spandex.route('/publications/post', methods=['GET', 'POST'])
 @login_required
@@ -582,6 +554,7 @@ def postpublication():
                         website=form.website.data,
                         citation=form.citation.data,
                         project_id = form.project.data,
+                        active = form.active.data,
                         researchers = [current_user._get_current_object()])
         db.session.add(post)
         return redirect(url_for('.publicationpage'))
@@ -591,24 +564,25 @@ def postpublication():
         error_out=False)
     posts = pagination.items
     ptype = "Publication"
-    users = User.query.all()
-    projects = Project.query.all()
-    publications = Publication.query.all()
-    return render_template('post_something.html', form=form, researchers=users, posts=posts,
-                           pagination=pagination, ptype=ptype, projects=projects, publications=publications)
+    return render_template('post_something.html', form=form, posts=posts,
+                           pagination=pagination, ptype=ptype, nav=nav_init())
 
 
 @spandex.route('/publications/<int:id>') 
-@login_required
 def pubnamepage(id):
     kwargs = {
     'id' : id
     }
     post = Publication.query.filter_by(**kwargs).first_or_404()
-    users = User.query.all()
-    projects = Project.query.all()
-    publications = Publication.query.all()
-    return render_template('publication.html', researchers=users, projects=projects, post=post, id=id, publications=publications)
+
+    if post.active == True:
+        return render_template('publication.html', post=post, id=id, nav=nav_init())
+       
+    else:
+        if current_user.is_authenticated():
+            return render_template('publication.html', post=post, id=id, nav=nav_init())
+        else:
+            return redirect(url_for('.index'))
 
 @spandex.route('/publications/edit/<int:id>', methods=['GET', 'POST']) 
 @login_required
@@ -627,8 +601,8 @@ def edit_publication(id):
         post.website = form.website.data
         post.citation = form.citation.data
         post.project_id = form.project.data
+        post.active = form.active.data
         db.session.add(post)
-        print post
         flash('The post has been updated.')
         return redirect(url_for('.pubnamepage', id=post.id))
     form.full_title.data = post.full_title
@@ -636,26 +610,22 @@ def edit_publication(id):
     form.website.data = post.website
     form.citation.data = post.citation
     form.project.data = post.project_id
+    form.active.data = post.active
 
 
     ptype = "Publication"
-    users = User.query.all()
-    projects = Project.query.all()
-    publications = Publication.query.all()
 
-    return render_template('edit_something.html', id=id, post=post, researchers=users, projects=projects, form=form, ptype=ptype, user=user, publications=publications)
+    return render_template('edit_something.html', id=id, post=post, form=form, ptype=ptype, user=user, nav=nav_init())
 
 
 
 # JSON fun
 @spandex.route('/researchersjson')
-@login_required
 def researchersjson():
     researchers = [(u.name) for u in User.query.all()]
     return jsonify(json_list=researchers) 
 
 @spandex.route('/json/<int:id>')
-@login_required
 def json(id):
     kwargs = {
         'id' : id
@@ -672,7 +642,6 @@ def json(id):
     for research in rs:
         inproject.append(research.name) 
 
-    print inproject
 
     researchers = {
     'in' : [],
@@ -685,10 +654,8 @@ def json(id):
         allresearchers.append(researcher.name)
 
 
-    print allresearchers
 
     for researcher in alls:
-        print researcher.name
         if researcher.name in inproject:
             ins = {
             'name' : researcher.name
@@ -700,14 +667,12 @@ def json(id):
             'name' : researcher.name
             }
 
-            print out
             researchers["out"].append(out)
 
 
     return jsonify(researchers=researchers) 
 
 @spandex.route('/jsonpub/<int:id>')
-@login_required
 def jsonpub(id):
     kwargs = {
         'id' : id
@@ -724,7 +689,6 @@ def jsonpub(id):
     for research in rs:
         inproject.append(research.name) 
 
-    print inproject
 
     researchers = {
     'in' : [],
@@ -737,10 +701,7 @@ def jsonpub(id):
         allresearchers.append(researcher.name)
 
 
-    print allresearchers
-
     for researcher in alls:
-        print researcher.name
         if researcher.name in inproject:
             ins = {
             'name' : researcher.name
@@ -752,14 +713,12 @@ def jsonpub(id):
             'name' : researcher.name
             }
 
-            print out
             researchers["out"].append(out)
 
 
     return jsonify(researchers=researchers) 
 
 @spandex.route('/projectsjson')
-@login_required
 def projectsjson():
     projects = [(p.urlname) for p in Project.query.all()]
     return jsonify(json_list=projects) 

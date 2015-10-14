@@ -8,6 +8,23 @@ from ..email import send_email
 from .forms import LoginForm, RegistrationForm, ChangePasswordForm,\
     PasswordResetRequestForm, PasswordResetForm, ChangeEmailForm
 
+def anon_view(model):
+    # For anon users, show only active objects
+    if current_user.is_authenticated():
+        objects = model.query.order_by(model.active.desc()).all()
+    else:
+        objects = model.query.filter_by(active=True).all()
+
+    return objects
+
+def nav_init():
+    # List all navigation items
+    nav = { 'researchers' : '', 'projects' : '', 'publications' : ''}
+    nav['researchers'] = User.query.order_by(User.name.asc()).all()
+    nav['projects'] = anon_view(Project)
+    nav['publications'] = anon_view(Publication)
+
+    return nav
 
 @auth.before_app_request
 def before_request():
@@ -35,10 +52,7 @@ def login():
             login_user(user, form.remember_me.data)
             return redirect(request.args.get('next') or url_for('spandex.landing'))
         flash('Invalid username or password.')
-    users = User.query.all()
-    projects = Project.query.all()
-    publications = Publication.query.all()
-    return render_template('auth/login.html', form=form, researchers=users, projects=projects, publications=publications)
+    return render_template('auth/login.html', form=form, nav=nav_init())
 
 
 @auth.route('/logout')
@@ -64,10 +78,7 @@ def register():
                    'auth/email/confirm', user=user, token=token)
         flash('A confirmation email has been sent to you by email.')
         return redirect(url_for('auth.login'))
-    users = User.query.all()
-    projects = Project.query.all()
-    publications = Publication.query.all()
-    return render_template('auth/register.html', form=form, researchers=users, projects=projects, publications=publications)
+    return render_template('auth/register.html', form=form, nav=nav_init())
 
 
 @auth.route('/confirm/<token>')
@@ -104,10 +115,7 @@ def change_password():
             return redirect(url_for('spandex.index'))
         else:
             flash('Invalid password.')
-    users = User.query.all()
-    projects = Project.query.all()
-    publications = Publication.query.all()
-    return render_template("auth/change_password.html", form=form, researchers=users, projects=projects, publications=publications)
+    return render_template("auth/change_password.html", form=form, nav=nav_init())
 
 
 @auth.route('/reset', methods=['GET', 'POST'])
@@ -126,10 +134,7 @@ def password_reset_request():
         flash('An email with instructions to reset your password has been '
               'sent to you.')
         return redirect(url_for('auth.login'))
-    users = User.query.all()
-    projects = Project.query.all()
-    publications = Publication.query.all()
-    return render_template('auth/reset_password.html', form=form, researchers=users, projects=projects, publications=publications)
+    return render_template('auth/reset_password.html', form=form, nav=nav_init())
 
 
 @auth.route('/reset/<token>', methods=['GET', 'POST'])
@@ -146,10 +151,7 @@ def password_reset(token):
             return redirect(url_for('auth.login'))
         else:
             return redirect(url_for('spandex.index'))
-    users = User.query.all()
-    projects = Project.query.all()
-    publications = Publication.query.all()
-    return render_template('auth/reset_password.html', form=form, researchers=users, projects=projects, publications=publications)
+    return render_template('auth/reset_password.html', form=form, nav=nav_init())
 
 
 @auth.route('/change-email', methods=['GET', 'POST'])
@@ -168,10 +170,7 @@ def change_email_request():
             return redirect(url_for('spandex.index'))
         else:
             flash('Invalid email or password.')
-    users = User.query.all()
-    projects = Project.query.all()
-    publications = Publication.query.all()
-    return render_template("auth/change_email.html", form=form, researchers=users, projects=projects)
+    return render_template("auth/change_email.html", form=form, nav=nav_init())
 
 
 @auth.route('/change-email/<token>')

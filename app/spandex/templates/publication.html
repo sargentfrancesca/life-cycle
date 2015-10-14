@@ -2,7 +2,10 @@
 
 {% block page_content %}
 
-<div class="post-content">
+<div class="post-content" style="{% if post.active != True %}background: #ecf0f1;{% endif %}">
+    {% if post.active != True %}
+        <span class="badge">Not Public</span>
+    {% endif %}
     <h4><em><strong>{{post.full_title}}</strong></em></h4>
     <div class="post-author">Researchers: <span class="researcher_list">{% for researcher in post.researchers %}
                 <a href="{{ url_for('.user', username=researcher.username) }}">{{ researcher.name }}</a>,</span>{% endfor %}<br/>

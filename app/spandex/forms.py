@@ -74,6 +74,7 @@ class ProjectPostForm(Form):
     website = StringField('Project Website', validators=[Length(0,64)])
     twitter = StringField('Project Twitter Handle (including @) - if none, use @spand_ex', default="@spand_ex", validators=[Length(0,64), Regexp('(?<=^|(?<=[^a-zA-Z0-9-_\.]))@([A-Za-z]+[A-Za-z0-9]+)', 0, 'Twitter handle must be valid, and include leading @')])
     facebook = StringField('Project Facebook', validators=[Length(0,64)])
+    active = BooleanField('Make Public?')
     submit = SubmitField('Submit')
 
 
@@ -85,6 +86,7 @@ class ProjectEditForm(Form):
     twitter = StringField('Project Twitter Handle (including @) - if none, use @spand_ex', validators=[Length(0,64), Regexp('(?<=^|(?<=[^a-zA-Z0-9-_\.]))@([A-Za-z]+[A-Za-z0-9]+)', 0, 'Twitter handle must be valid, and include leading @')])
     facebook = StringField('Project Facebook', validators=[Length(0,64)])
     other_researchers = StringField('Other Researchers involved (not part of SPANDEX/yet)', validators=[Length(0,100)])
+    active = BooleanField('Make Public?')
     submit = SubmitField('Submit')
 
 class ProjectEditFormAdmin(Form):
@@ -95,6 +97,7 @@ class ProjectEditFormAdmin(Form):
     twitter = StringField('Project Twitter Handle (including @) - if none, use @spand_ex', validators=[Length(0,64), Regexp('(?<=^|(?<=[^a-zA-Z0-9-_\.]))@([A-Za-z]+[A-Za-z0-9]+)', 0, 'Twitter handle must be valid, and include leading @')])
     facebook = StringField('Project Facebook', validators=[Length(0,64)])
     other_researchers = StringField('Other Researchers involved (not part of SPANDEX/yet)', validators=[Length(0,100)])
+    active = BooleanField('Make Public?')
     submit = SubmitField('Submit')
 
 
@@ -105,6 +108,7 @@ class PublicationPostForm(Form):
     website = StringField('Publication Website', validators=[Length(0,200)])
     citation = StringField('Citation')
     project = SelectField('Project', coerce=int)
+    active = BooleanField('Make Public?')
     submit = SubmitField('Submit')
 
     def __init__(self, user, *args, **kwargs):
@@ -120,6 +124,7 @@ class PublicationEditForm(Form):
     website = StringField('Publication Website', validators=[Length(0,200)])
     citation = StringField('Citation')
     project = SelectField('Project', coerce=int)
+    active = BooleanField('Make Public?')
     submit = SubmitField('Submit')
 
     def __init__(self, user, *args, **kwargs):
