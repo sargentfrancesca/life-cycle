@@ -1,0 +1,29 @@
+<ul class="posts">
+    {% for post in posts %}
+    <li class="post user-projects">
+
+        <div class="post-content">
+            <h3>{{post.title}}</h3>
+            <h5><a href="{{ url_for('.projnamepage', id=post.id) }}">{{post.full_title}}</a></h5>
+            <div class="post-author"><b>Researchers</b>: {% for researcher in post.researchers %}
+                <img class="img-circle" src="{{ researcher.gravatar(size=20) }}"> <a href="{{ url_for('.user', username=researcher.username) }}">{{ researcher.name }}</a>{% endfor %}</div>
+            </p>
+            {% if post.brief_synopsis %}
+            <p class="post-body">{{ post.brief_synopsis }}</p>
+            {% endif %}
+           <a class="btn btn-default" href="{{ url_for('.projnamepage', id=post.id) }}"><span class="glyphicon glyphicon-eye-open"></span> View</a>
+           {% for researcher in post.researchers %}
+                {% if current_user == researcher  %}
+                <a class="btn btn-primary" href="{{ url_for('.edit_project', id=post.id) }}"><span class="glyphicon glyphicon-pencil"></span> Edit</a>
+                 {% endif %}
+                {% endfor %}
+            {% if current_user.is_administrator() %}
+            <a class="btn btn-danger" href="{{ url_for('.edit_project', id=post.id) }}"><span class="glyphicon glyphicon-pencil"></span> Edit [Admin]</a>
+            {% endif %}
+
+            </div>
+             </p>
+        </li>
+        {% endfor %}
+</ul>
+

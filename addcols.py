@@ -3,14 +3,14 @@ from sqlalchemy import create_engine, exc
 import sqlalchemy.exc
 from sqlalchemy.orm import sessionmaker
 from flask import current_app
-from app.models import Plant, Species
+from app.models import OldPlant, OldSpecies
 import unicodecsv
 import sys
 
 reload(sys)  # Reload does the trick!
 sys.setdefaultencoding('UTF8')
 
-engine = create_engine('mysql://root:jeh5t@localhost/lifecycle', echo=False)
+engine = create_engine('mysql://lifecycle:sitl3015@localhost/lifecycle', echo=False)
 
 logging.basicConfig(level=logging.DEBUG, filename='dberrors.log')
  
@@ -35,11 +35,11 @@ def submitSpecies(species):
 	print speciesname
 
 
-	if session.query(Species).filter_by(name=speciesname).first() is None:
+	if session.query(OldSpecies).filter_by(name=speciesname).first() is None:
 		
 		print "Entering new data", speciesname
 
-		n_species = Species()
+		n_species = OldSpecies()
 		n_species.name = species['speciesaccepted']
 		n_species.speciesauthor = species['speciesauthor']
 		n_species.authority = str(species['authority'])
@@ -70,7 +70,7 @@ def submitSpecies(species):
 
 def submitPlant(plant):
 	plantname = plant['speciesaccepted']
-	speciesname = session.query(Species).filter_by(name=plantname).first()
+	speciesname = session.query(OldSpecies).filter_by(name=plantname).first()
 
 	print plantname
 
@@ -83,10 +83,10 @@ def submitPlant(plant):
 		mat = plant['matrix_a']
 		comp = plant['matrixcomposite']
 
-		cn = session.query(Plant).filter_by(matrixcomposite=comp, matrix_a=mat).first()
+		cn = session.query(OldPlant).filter_by(matrixcomposite=comp, matrix_a=mat).first()
 		
 		if cn is None :
-			newplant = [Plant()]
+			newplant = [OldPlant()]
 
 			newplant[0].name = plant['speciesaccepted']
 			newplant[0].matrix_a = plant['matrix_a']
@@ -256,4 +256,5 @@ def importCSV():
 
 
 importCSV()
+
 
