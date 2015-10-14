@@ -723,3 +723,22 @@ def projectsjson():
     projects = [(p.urlname) for p in Project.query.all()]
     return jsonify(json_list=projects) 
 
+@spandex.route('/migrateyears')
+def migrate_year():
+    publications = Publication.query.all()
+    for p in publications:
+        group = re.findall(r"\D(\d{4})\D", p.citation)
+        try:
+            year = int(group[0])
+        except:
+            year = 0001
+        finally:
+            if year > 1900:
+                p.year_published = year
+                db.session.add(p)
+                db.session.commit()
+    return "Done"
+            
+     
+
+

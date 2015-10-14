@@ -1,3 +1,4 @@
 migrations/
 migrations/*
 config.py
+/config.py

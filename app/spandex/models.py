@@ -317,6 +317,7 @@ class Publication(db.Model):
     other_researchers = db.Column(db.String(100))
     project_id = db.Column(db.String(100), db.ForeignKey('projects.id'))
     citation = db.Column(db.Text)
+    year_published = db.Column(db.Integer())
     active = db.Column(db.Boolean(), default=False)
 
     @staticmethod
