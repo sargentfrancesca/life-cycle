@@ -504,7 +504,7 @@ def dotGraph(classnames, matrix, matrixnumber, dimension, species):
 			if v > 0:
 				graph.add_edge(pydot.Edge(colClassName, rowClassName, label=str(v)))
 
-	graph.write_svg('app/static/images/dot/'+str(species)+'_dot.svg', prog='dot')
+	graph.write_svg('static/images/dot/'+str(species)+'_dot.svg', prog='dot')
 	return graph
 
 def Species(string):
@@ -631,9 +631,14 @@ def matrix_table(id, which):
 	n = pydot.Node('"nodey"', label="<<TABLE border='1' cellspacing='0' cellpadding='2'>"+ cells +"</TABLE>>", shape="none")
 	graph.add_node(n)
 
-	svg = graph.write_svg("app/static/images/dot/matrix_"+ str(plant.id) +"_dot.svg", prog='dot')
+	filename = "app/static/images/dot/matrix"+ str(plant.id) +"_dot.svg"
+	dir = os.path.dirname(filename)
+	if not os.path.exists(dir):
+		os.makedirs(dir)
+	svg = graph.write_svg(filename, prog='dot')	
 
-	return render_template('matrix_svg.html', plant=plant, svg=svg)
+
+	return render_template('matrix_svg.html', plant=plant)
 
 @demography.route('/add/uploads/<filename>')
 def uploaded_file(filename):
