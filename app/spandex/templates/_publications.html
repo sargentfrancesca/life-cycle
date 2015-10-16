@@ -9,7 +9,7 @@
             <div class="post-author"><b>Researchers</b>: <span class="researcher_list">{% for researcher in publication.researchers %}
                         <img class="img-circle" src="{{ researcher.gravatar(size=20) }}"> <a href="{{ url_for('.user', username=researcher.username) }}" ><a href="{{ url_for('.user', username=researcher.username) }}" class="sublink">{{ researcher.name }}</a></span>{% endfor %}<br/>
                 {% if publication.other_researchers %}
-                <b>Author List: </b> {{ publication.other_researchers }}
+                <b>Author List: </b> {{ publication.other_researchers }} <br/>
                 {% endif %}
                 {% if publication.projects %}
                         <b>Project</b>: <a href="{{ url_for('.projnamepage', id=publication.id) }}" class="sublink"><span class="text-capitalize">{{ publication.projects.title }}</span></a></div>

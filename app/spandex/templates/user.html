@@ -83,14 +83,14 @@
 <div class="row">
     <div class="col-sm-6">
             <h3>Projects</h3>   
-    {% include '_posts.html' %}
+    {% include '_mini_proj.html' %}
 </div>
 {% endif %}
 
-{% if user.publications.count() >= 1 %}
+{% if user.publications.count() > 0 %}
     <div class="col-sm-6">
             <h3>Publications</h3>   
-    {% include '_publications.html' %}
+    {% include '_mini_pubs.html' %}
 </div>
 {% endif %}
 

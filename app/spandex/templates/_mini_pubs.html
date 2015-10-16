@@ -1,0 +1,17 @@
+<ul class="posts">
+    {% if publications %}
+        {% for publication in publications %}
+        <li class="post">
+            <div class="post-title" style="{% if publication.active != True %}background: #ecf0f1;{% endif %}">
+                {% if publication.active != True %}
+                    <span class="badge">Not Public</span>
+                {% endif %}
+                <h5><a href="{{ url_for('.pubnamepage', id=publication.id) }}">{{publication.full_title}} [{{publication.year_published}}]</h5></a>
+            </div>
+            </li>
+            {% endfor %}
+        <li class="post">
+            <a href="{{ url_for('spandex.userpublications', id=user.id) }}"> View All </a>
+        </li>
+    {% endif %}
+</ul>

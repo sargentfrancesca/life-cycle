@@ -145,7 +145,7 @@ def user(username):
     posts = user.projects.order_by(Project.timestamp.desc())
 
     if user.publications:
-        publications = user.publications.filter_by(active=True).order_by(Publication.year_published.desc())
+        publications = user.publications.filter_by(active=True).order_by(Publication.year_published.desc())[:5]
 
 
     return render_template('user.html', nav=nav_init(), user=user, posts=posts, publications=publications)
@@ -157,13 +157,14 @@ def user_projects(user):
         abort(404)
 
     page = request.args.get('page', 1, type=int)
-    posts = user.posts.order_by(Project.timestamp.desc()).all
 
-    pagination = anon_view(Project).paginate(
+    pagination = Project.query.filter(Project.researchers.any(id=user.id)).paginate(
         page, per_page=current_app.config['FLASKY_POSTS_PER_PAGE'],
         error_out=False)
     posts = pagination.items
+
     ptype = "Project"
+
     return render_template('projects.html', user=user, posts=posts, ptype=ptype, nav=nav_init())
 
 
@@ -272,6 +273,20 @@ def projectpage():
     posts = pagination.items
    
     projects = Project.query.filter_by(active=True).order_by(Project.title.desc()).all()
+
+    return render_template('projects.html', posts=posts,
+                           pagination=pagination, projects=projects, nav=nav_init())
+
+@spandex.route('/projects/user/<int:id>')
+def userprojectpage(id):
+    page = request.args.get('page', 1, type=int)
+    pagination = Project.query.filter_by(active=True).order_by(Project.active.desc()).paginate(
+        page, per_page=current_app.config['FLASKY_POSTS_PER_PAGE'],
+        error_out=False)
+    posts = pagination.items
+   
+    projects = Project.query.filter(Project.researchers.any(id=id)).all()
+
 
     return render_template('projects.html', posts=posts,
                            pagination=pagination, projects=projects, nav=nav_init())
@@ -539,8 +554,10 @@ def publicationpage():
     posts = pagination.items
     publications = Publication.query.order_by(Publication.year_published.desc(), Publication.active.desc()).all()
 
+    title = "All Publications"
+
     return render_template('publications.html', posts=posts,
-                           pagination=pagination, publications=publications, nav=nav_init())
+                           pagination=pagination, publications=publications, title=title, nav=nav_init())
 
 @spandex.route('/publications/project/<int:id>/')
 def projectpublications(id):
@@ -549,6 +566,23 @@ def projectpublications(id):
     publications = Publication.query.filter_by(project_id=id).all()
     project = Project.query.filter_by(id=id).first()
     return render_template('project_publication.html', posts=posts, publications=publications, project=project, nav=nav_init())
+
+@spandex.route('/publications/user/<int:id>/')
+def userpublications(id):
+    user = User.query.filter_by(id=id).first_or_404()
+    page = request.args.get('page', 1, type=int)
+    pagination = Publication.query.filter_by(researcher_id=id).order_by(Publication.year_published.desc()).paginate(
+        page, per_page=current_app.config['FLASKY_POSTS_PER_PAGE'],
+        error_out=False)
+    posts = pagination.items
+
+    publications = Publication.query.filter(Publication.researchers.any(id=id)).order_by(Publication.year_published.desc(), Publication.active.desc()).all()
+    
+    title = "All Publications by "+ user.name
+
+    print title
+    return render_template('publications.html', posts=posts,
+                           pagination=pagination, publications=publications, title=title, nav=nav_init())
 
 @spandex.route('/publications/post', methods=['GET', 'POST'])
 @login_required
