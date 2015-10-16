@@ -18,9 +18,17 @@ import twitter
 def anon_view(model):
     # For anon users, show only active objects
     if current_user.is_authenticated():
-        objects = model.query.order_by(model.active.desc()).all()
+        if model == Publication:
+            objects = model.query.order_by(model.year_published.desc(), model.active.desc()).all()
+        else:
+            objects = model.query.order_by(model.active.desc()).all()
     else:
-        objects = model.query.filter_by(active=True).all()
+        if model == Publication:
+            objects = model.query.order_by(model.year_published.desc()).filter_by(active=True).all()
+        else:
+            objects = model.query.filter_by(active=True).all()
+
+
 
     return objects
 
@@ -137,7 +145,7 @@ def user(username):
     posts = user.projects.order_by(Project.timestamp.desc())
 
     if user.publications:
-        publications = user.publications.order_by(Publication.timestamp.desc())
+        publications = user.publications.filter_by(active=True).order_by(Publication.year_published.desc())
 
 
     return render_template('user.html', nav=nav_init(), user=user, posts=posts, publications=publications)
@@ -525,11 +533,11 @@ def edit_booking_admin(id):
 @spandex.route('/publications/')
 def publicationpage():
     page = request.args.get('page', 1, type=int)
-    pagination = Publication.query.order_by(Publication.timestamp.desc()).paginate(
+    pagination = Publication.query.order_by(Publication.year_published.desc()).paginate(
         page, per_page=current_app.config['FLASKY_POSTS_PER_PAGE'],
         error_out=False)
     posts = pagination.items
-    publications = anon_view(Publication)
+    publications = Publication.query.order_by(Publication.year_published.desc(), Publication.active.desc()).all()
 
     return render_template('publications.html', posts=posts,
                            pagination=pagination, publications=publications, nav=nav_init())
