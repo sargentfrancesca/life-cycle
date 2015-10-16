@@ -13,13 +13,20 @@
                 Project: <a href="{{ url_for('.projnamepage', id=post.id) }}">{{ post.project_name }}</a></div>
                 {% endif %}
     {% if post.other_researchers %}
-        <div class="post-author">
-            Author List: {{ other_researchers }}<br/>
-        </div>
+        {% if post.other_researchers|length > 0 %}
+            <div class="post-author">
+                Author List: {{ post.other_researchers }}<br/>
+            </div>
+        {% endif %}
     {% endif %}
     <div class="post-author">
     </div>
+    {% if post.synopsis %}
     <p class="post-body">{% if post.synopsis_html %}{{ post.synopsis | safe }}{% else %}{{ post.synopsis }}{% endif %}</p>
+    {% endif %}
+    {% if post.projects %}
+            <b>Project</b>: <a href="{{ url_for('.projnamepage', id=post.id) }}" class="sublink"><span class="text-capitalize">{{ post.projects.title }}</span></a></div>
+    {% endif %}
     <div class="post-author">
         <p>Citation: {{post.citation}}</p>
         {% if post.website %}

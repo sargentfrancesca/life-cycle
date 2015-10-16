@@ -85,7 +85,7 @@ $( document ).ready(function() {
         }, function(){
         	$('div.controlout').bind('click', function() {        	
         		var nameval = $(this).text();
-        		$.post('/add/', {
+        		$.post('{{ url_for("spandex.add_remove_coauthor") }}', {
         			id : {{post.id}},
         			name : nameval
         		}).done(function() {
@@ -108,7 +108,7 @@ $( document ).ready(function() {
         }, function() {
         	$('div.controlin').bind('click', function() {        	
         		var nameval = $(this).text();
-        		$.post('/delete/', {
+        		$.post('{{ url_for("spandex.delete_user") }}', {
         			id : {{post.id}},
         			name : nameval
         		}).done(function() {
@@ -156,7 +156,7 @@ $( document ).ready(function() {
         }, function(){
             $('div.controlout').bind('click', function() {          
                 var nameval = $(this).text();
-                $.post('/add/publication', {
+                $.post('{{ url_for("spandex.add_remove_coauthor_pub") }}', {
                     id : {{post.id}},
                     name : nameval
                 }).done(function() {
@@ -178,7 +178,7 @@ $( document ).ready(function() {
         }, function() {
             $('div.controlin').bind('click', function() {           
                 var nameval = $(this).text();
-                $.post('/delete/publication', {
+                $.post('{{ url_for("spandex.delete_user_pub") }}', {
                     id : {{post.id}},
                     name : nameval
                 }).done(function() {

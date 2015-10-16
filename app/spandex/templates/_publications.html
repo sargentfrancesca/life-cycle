@@ -11,8 +11,8 @@
                 {% if publication.other_researchers %}
                 <b>Author List: </b> {{ publication.other_researchers }}
                 {% endif %}
-                {% if publication.project_name %}
-                        <b>Project</b>: <a href="{{ url_for('.projnamepage', id=publication.id) }}" class="sublink"><span class="text-capitalize">{{ publication.project_name }}</span></a></div>
+                {% if publication.projects %}
+                        <b>Project</b>: <a href="{{ url_for('.projnamepage', id=publication.id) }}" class="sublink"><span class="text-capitalize">{{ publication.projects.title }}</span></a></div>
                 {% endif %}
             <div class="post-author">
                 <p><b>Citation</b>: {{publication.citation}}</p>

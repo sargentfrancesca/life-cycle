@@ -19,12 +19,12 @@ def anon_view(model):
     # For anon users, show only active objects
     if current_user.is_authenticated():
         if model == Publication:
-            objects = model.query.order_by(model.year_published.desc(), model.active.desc()).all()
+            objects = model.query.order_by(model.title.asc(), model.year_published.desc(), model.active.desc()).all()
         else:
             objects = model.query.order_by(model.active.desc()).all()
     else:
         if model == Publication:
-            objects = model.query.order_by(model.year_published.desc()).filter_by(active=True).all()
+            objects = model.query.order_by(model.title.asc(), model.year_published.desc()).filter_by(active=True).all()
         else:
             objects = model.query.filter_by(active=True).all()
 
