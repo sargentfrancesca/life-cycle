@@ -16,8 +16,12 @@
                 <b>External Researchers: </b> {{ post.other_researchers }}
                 {% endif %}
                 {% if post.publications.count() >= 1 %}
-                <b>Associated Publications:</b> {% for publication in post.publications %}
-                <a href="{{ url_for('.pubnamepage', id=publication.id) }}">{{ publication.title }}</a>{% endfor %}
+                <b>Associated Publications:</b> <ul>
+                    {% for publication in post.publications %}
+                        <li><a href="{{ url_for('.pubnamepage', id=publication.id) }}">{{ publication.title }}</a></li>
+                    {% endfor %}
+                </ul>
+                
                 {% endif %}
 
             </p>

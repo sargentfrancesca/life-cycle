@@ -608,13 +608,20 @@ def postpublication():
     if current_user.can(Permission.WRITE_ARTICLES) and \
             form.validate_on_submit():
 
-        post = Publication(full_title=form.full_title.data,
-                        synopsis=form.synopsis.data,
-                        website=form.website.data,
-                        citation=form.citation.data,
-                        project_id = form.project.data,
-                        active = form.active.data,
-                        researchers = [current_user._get_current_object()])
+        
+
+        post = Publication() 
+
+        post.full_title=form.full_title.data
+        post.synopsis=form.synopsis.data
+        post.website=form.website.data
+        post.citation=form.citation.data
+        
+        if form.project.data != 1000001:
+            post.project_id = form.project.data
+        post.active = form.active.data
+        post.researchers = [current_user._get_current_object()]
+
         db.session.add(post)
         return redirect(url_for('.publicationpage'))
     page = request.args.get('page', 1, type=int)
@@ -623,8 +630,8 @@ def postpublication():
         error_out=False)
     posts = pagination.items
     ptype = "Publication"
-    return render_template('post_something.html', form=form, posts=posts,
-                           pagination=pagination, ptype=ptype, nav=nav_init())
+    return render_template('post_something.html', form=form, #posts=posts, pagination=pagination, 
+                                ptype=ptype, nav=nav_init())
 
 
 @spandex.route('/publications/<int:id>') 
@@ -659,7 +666,8 @@ def edit_publication(id):
         post.synopsis = form.synopsis.data 
         post.website = form.website.data
         post.citation = form.citation.data
-        post.project_id = form.project.data
+        if form.project.data != 1000001:
+            post.project_id = form.project.data
         post.active = form.active.data
         db.session.add(post)
         flash('The post has been updated.')

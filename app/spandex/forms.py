@@ -115,6 +115,8 @@ class PublicationPostForm(Form):
         super(PublicationPostForm, self).__init__(*args, **kwargs)
         self.project.choices = [(project.id, project.title)
                              for project in Project.query.order_by(Project.title).all()]
+        self.project.choices.insert(0, (1000001, ''))
+
         self.user = user
 
 class PublicationEditForm(Form):
@@ -131,6 +133,7 @@ class PublicationEditForm(Form):
         super(PublicationEditForm, self).__init__(*args, **kwargs)
         self.project.choices = [(project.id, project.title)
                              for project in Project.query.order_by(Project.title).all()]
+        self.project.choices.insert(0, (1000001, ''))
         self.user = user
 
 class BookingForm(Form):
