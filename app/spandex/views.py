@@ -325,10 +325,10 @@ def postproject():
                         twitter=form.twitter.data,
                         twitter_name = tweet,
                         facebook=form.facebook.data,
-                        actice = form.active.data,
+                        active = form.active.data,
                         researchers = [current_user._get_current_object()])
         db.session.add(post)
-        return redirect(url_for('.projnamepage', id=post.id))
+        return redirect(url_for('spandex.projectpage'))
     page = request.args.get('page', 1, type=int)
     pagination = Project.query.order_by(Project.timestamp.desc()).paginate(
         page, per_page=current_app.config['FLASKY_POSTS_PER_PAGE'],
@@ -364,7 +364,7 @@ def edit_project(id):
         post.active = form.active.data
         db.session.add(post)
         flash('The post has been updated.')
-        return redirect(url_for('.projnamepage', id=post.id))
+        return redirect(url_for('spandex.projectpage', id=post.id))
 
 
     form.title.data = post.title
