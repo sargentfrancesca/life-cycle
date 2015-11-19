@@ -36,8 +36,8 @@
 				<tr data-id="{{booking.id}}">
 					<td> {{ booking.day }} </td>
 					{% if booking.available == True %}
-					<td><a href="{{ url_for('spandex.edit_booking', id=booking.id) }}"><span class="glyphicon glyphicon-plus"></span> Available </a></td>
-					<td><a href="{{ url_for('spandex.edit_booking', id=booking.id) }}"><span class="glyphicon glyphicon-plus"></span> Available </a></td>
+					<td><a href="{{ url_for('spandex.edit_booking_admin', id=booking.id) }}"><span class="glyphicon glyphicon-plus"></span> Available </a></td>
+					<td><a href="{{ url_for('spandex.edit_booking_admin', id=booking.id) }}"><span class="glyphicon glyphicon-plus"></span> Available </a></td>
 					{% else %}
 					<td> {{ booking.researcher.name }} </td>
 					<td> {{ booking.description }}</td>

@@ -511,6 +511,23 @@ def edit_booking(id):
 
     return render_template('edit_something.html', id=id, post=post, form=form, ptype=ptype, user=user, nav=nav_init())
 
+@spandex.route('/booking/add', methods=['GET', 'POST'])
+@login_required
+def add_booking():
+    form = BookingFormAdmin(user=user)
+    if current_user.can(Permission.WRITE_ARTICLES) and \
+            form.validate_on_submit():
+        
+        booking = Booking()
+        booking.day = form.week.data
+        booking.researcher = User.query.get_or_404(form.researcher.data)
+        booking.description = form.description.data
+
+        db.session.add(booking)
+        return redirect(url_for('spandex.landing'))
+
+    return render_template('post_something.html', form=form, nav=nav_init())
+
 @spandex.route('/booking/edit/admin/<int:id>', methods=['GET', 'POST'])
 @login_required
 @admin_required
@@ -782,5 +799,8 @@ def migrate_year():
     return "Done"
             
      
-
-
+@spandex.route('/delete_user/<usr>')
+def delete_researcher(usr):
+    user = User.query.filter_by(name=usr).first()
+    db.session.delete(user)
+    return jsonify({ 'hello' : 'there '}) 

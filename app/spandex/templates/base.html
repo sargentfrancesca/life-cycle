@@ -9,6 +9,7 @@
 <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
 <link href="https://fontastic.s3.amazonaws.com/52jGWAx5sbFN9k6xZt7EAZ/icons.css" rel="stylesheet">
 <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='jquery.datetimepicker.css') }}">
 {% endblock %}
 
 {% block navbar %}
@@ -112,6 +113,14 @@
 
 {% block scripts %}
 {{ super() }}
+<script src="https://code.jquery.com/ui/1.11.3/jquery-ui.js"></script>
+<script src="{{ url_for('static', filename='jquery.datetimepicker.min.js') }}"></script>
+<script>
+$.datetimepicker.setLocale('en');
+$('#week').datetimepicker({
+    format:'Y-m-d H:i:s'
+});
+</script>
 <script>
 $( document ).ready(function() {
 
