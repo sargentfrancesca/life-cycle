@@ -48,7 +48,7 @@ def index():
                       access_token_key='23463646-j5rbrfFGlMPmQMK7dsL1IC6f5g8K5GuccwKykU8PK',
                       access_token_secret='VOsJmHgp7o8gkMxlB5ffMRjeTTD3wIAx2MO2CYLA37O2r')
 
-    twitter_user = "DaveHodgson00"
+    twitter_user = "spand_ex"
     statuses = api.GetUserTimeline(screen_name=twitter_user)
 
     twitter_statuses = []
