@@ -18,7 +18,7 @@
                 {% if post.publications.count() >= 1 %}
                 <b>Associated Publications:</b> <ul>
                     {% for publication in post.publications %}
-                        <li><a href="{{ url_for('.pubnamepage', id=publication.id) }}">{{ publication.title }}</a></li>
+                        <li><a href="{{ url_for('.pubnamepage', id=publication.id) }}">{{ publication.full_title }}</a></li>
                     {% endfor %}
                 </ul>
                 
