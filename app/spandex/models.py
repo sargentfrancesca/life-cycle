@@ -92,6 +92,8 @@ class User(UserMixin, db.Model):
     bookings = db.relationship('Booking', backref='researcher', lazy='dynamic')
     pages = db.relationship('Page', backref='researcher', lazy='dynamic')
     uploads = db.relationship('Upload', backref='researcher', lazy='dynamic')
+    
+    # Begin new Database
 
 
     @staticmethod
@@ -227,7 +229,7 @@ class User(UserMixin, db.Model):
             tags=allowed_tags, strip=True))
 
     def __repr__(self):
-        return '<User %r>' % self.username
+        return self.id
 
 
 class AnonymousUser(AnonymousUserMixin):

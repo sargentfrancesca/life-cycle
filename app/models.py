@@ -290,6 +290,32 @@ class Upload(db.Model):
 
 
 
+# Begin new Database trial 
+
+class TheSpecies (db.Model):
+    __tablename__ = 'thespecies'
+    id = db.Column(db.Integer, primary_key=True)
+    species = db.Column(db.String(64), index=True)
+    subspecies = db.Column(db.String(64))
+    family = db.Column(db.String(64))
+    tax_order = db.Column(db.String(64))
+    iucn_status = db.Column(db.Enum('EX', 'EW', 'CR', 'EN', 'VU', 'NT', 'LC', 'DD', 'NE', 'LR/cd', 'LR/nt', 'LR/lc', name='categories'))
+    esa_status = db.Column(db.Enum('EN', 'TH', 'NL', name='categories'))
+    invasive_status = db.Column(db.Boolean())
+    user_created = db.Column(db.Integer, db.ForeignKey('users.id'))
+    user_modified = db.Column(db.Integer, db.ForeignKey('users.id'))
+    timestamp_created = db.Column(db.DateTime, default=datetime.utcnow)
+    timestamp_modified = db.Column(db.DateTime, index=True, default=datetime.utcnow)
+
+    def __repr__(self):
+        return '<Species %r>' % self.id
+
+
+
+
+
+
+
 
 
 
