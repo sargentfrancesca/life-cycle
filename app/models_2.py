@@ -40,6 +40,19 @@ class ESAStatus(db.Model):
         return '<ESA Status %r>' % self.status_code
 ''' End Meta Tables for Species '''
 
+''' Meta Tables for Taxonomy '''
+class TaxonomicStatus(db.Model):
+	__tablename__ = 'taxonomic_statuses'
+	id = db.Column(db.Integer, primary_key=True)
+	status_name = db.Column(db.String(64), index=True)
+	status_description = db.Column(db.Text())
+
+	taxonomies = db.relationship("Taxonomy", backref="taxonomic_status")
+
+	def __repr__(self):
+        return '<Taxonomic Status %r>' % self.id
+''' End Meta Tables for Taxonomy '''
+
 ''' Meta Tables for Plant Traits '''
 class GrowthType(db.Model):
 	__tablename__ = 'growth_types'
@@ -210,6 +223,16 @@ class Periodicity(db.Model):
 	def __repr__(self):
 		return '<Periodicity %r>' % self.id
 
+class Season(db.Model):
+	__tablename__ = 'seasons'
+	id = db.Column(db.Integer, primary_key=True)
+	name = db.Column(db.String(64), index=True)
+
+	matrices = db.relationship("Matrix", backref="season")
+
+	def __repr__(self):
+		return '<Season %r>' % self.id
+
 class StudiedSex(db.Model):
 	__tablename__ = 'studied_sex'
 	id = db.Column(db.Integer, primary_key=True)
@@ -237,25 +260,45 @@ class Captivity(db.Model):
 class Species(db.Model):
     __tablename__ = 'species'
     id = db.Column(db.Integer, primary_key=True)
-    species = db.Column(db.String(64), index=True)
-    subspecies = db.Column(db.String(64))
-    family = db.Column(db.String(64))
-    tax_order = db.Column(db.String(64))
+    # subspecies = db.Column(db.String(64))
     iucn_status = db.Column(db.Integer, db.ForeignKey('iucn_status.id'))
     esa_status = db.Column(db.Integer, db.ForeignKey('esa_status.id'))
     invasive_status = db.Column(db.Boolean())
-    # user keys might be a problem.. or might not.. will implement and find out
-    user_created = db.Column(db.Integer, db.ForeignKey('users.id'))
-    user_modified = db.Column(db.Integer, db.ForeignKey('users.id'))
+    user_created = db.Column(db.Integer, db.ForeignKey('users.id')) # user keys might be a problem.. or might not.. will implement and find out
+    user_modified = db.Column(db.Integer, db.ForeignKey('users.id')) # http://stackoverflow.com/questions/7548033/how-to-define-two-relationships-to-the-same-table-in-sqlalchemy
     timestamp_created = db.Column(db.DateTime, default=datetime.utcnow)
     timestamp_modified = db.Column(db.DateTime, index=True, default=datetime.utcnow)
 
+    taxonomies = db.relationship("Taxonomy", backref="species")
     plant_traits = db.relationship("PlantTrait", backref="species")
     populations = db.relationship("Population", backref="species")
-    stages = db.relationship("Stage", backref="species")
+    stages = db.relationship("Stage", backref="species")    
 
     def __repr__(self):
         return '<Species %r>' % self.id
+
+class Taxonomy(db.Model):
+	__tablename__ = 'taxonomies'
+    id = db.Column(db.Integer, primary_key=True)
+    species_id = db.Column(db.Integer, db.ForeignKey('species.id'))
+    publication_id = db.Column(db.Integer, db.ForeignKey('publications.id'))
+    species_author = db.Column(db.String(64), index=True)
+    species_accepted = db.Column(db.String(64))
+    authority = db.Column(db.Text())
+    taxonomic_status = db.Column(db.Integer, db.ForeignKey('taxonomic_statuses.id'))
+ 	tpl_version = db.Column(db.String(64)) # Currently at 1.0, which could be float, but sometimes releases are 1.0.1 etc, best as string for now?
+ 	infraspecies_accepted = db.Column(db.String(64))
+ 	species_epithet_accepted = db.Column(db.String(64))
+ 	genus_accepted = db.Column(db.String(64))
+ 	genus = db.Column(db.String(64))
+ 	family = db.Column(db.String(64))
+ 	tax_order = db.Column(db.String(64))
+ 	tax_class = db.Column(db.String(64))
+ 	phylum = db.Column(db.String(64))
+ 	kingdom = db.Column(db.String(64))
+
+ 	def __repr__(self):
+        return '<Taxonomy %r>' % self.species_author
 
 
 class PlantTrait(db.Model):
@@ -276,8 +319,7 @@ class Publication(db.Model):
 	__tablename__ = 'publications'
 	id = db.Column(db.Integer, primary_key=True)
 	source_type = db.Column(db.Integer, db.ForeignKey('source_types.id'))
-	# These appear as vectors in Judy's schema, trying to think of the best way to implement this within MySQL and Django/Flask
-	authors = db.Column(db.Text())
+	authors = db.Column(db.Text()) # These appear as vectors in Judy's schema, trying to think of the best way to implement this within MySQL and Django/Flask
 	editors = db.Column(db.Text())
 	pub_title = db.Column(db.Text())
 	journal_book_conf = db.Column(db.Text())
@@ -309,9 +351,27 @@ class Publication(db.Model):
     populations = db.relationship("Population", backref="publication")
     stages = db.relationship("Stage", backref="publication")
     treatments = db.relationship("Treatment", backref="publication")
+    taxonomies = db.relationship("Taxonomy", backref="publication")
+    studies = db.relationship("Study", backref="publication")
 
    	def __repr__(self):
         return '<Publication %r>' % self.id
+
+
+class Study(db.Model):
+	__tablename__ = 'studies'
+	id = db.Column(db.Integer, primary_key=True)
+	publication_id = db.Column(db.Integer, db.ForeignKey('publications.id'))
+	study_duration = db.Column(db.Integer(), index=True)
+	study_start = db.Column(db.Date())
+	study_end = db.Column(db.Date())
+
+	matrices = db.relationship("Matrix", backref="study")
+	populations = db.relationship("Population", backref="study")
+	number_populations = db.Column(db.Integer()) #could verify with populations.count()
+
+	def __repr__(self):
+        return '<Study %r>' % self.id
 
 class AuthorContact(db.Model):
 	__tablename__ = 'author_contacts'
@@ -353,12 +413,13 @@ class Population(db.Model):
 	id = db.Column(db.Integer, primary_key=True)
 	species_id = db.Column(db.Integer, db.ForeignKey('species.id'))
 	publication_id = db.Column(db.Integer, db.ForeignKey('publications.id'))
+	study_id = db.Column(db.Integer, db.ForeignKey('studies.id'))
 	species_author = db.Column(db.String(64))
 	name = db.Column(db.Text(), index=True)
 	ecoregion = db.Column(db.Integer, db.ForeignKey('ecoregions.id'))
 	#Django plugin for country, and generic python package too - we'll be just fine. Unfortunately, unless we download a CSV of this and enter into sep table, will probably be more efficient to do this outside of the database. Further thought reqd!
 	country = db.Column(db.Text())
-	continent = db.Column(db.Integer, db.ForeignKey('continents.id'))
+	continent_id = db.Column(db.Integer, db.ForeignKey('continents.id'))
 	geometries = db.Column(db.Text()) #This needs work once i've decided wether to use Flask or Django - such good cases for both. Databases support point geometry, including altitude.
 
 	matrices = db.relationship("Matrix", backref="population")
@@ -446,22 +507,30 @@ class Matrix(db.Model):
 	treatment_id = db.Column(db.Integer, db.ForeignKey('treatments.id'))
 	matrix_split = db.Column(db.Boolean())
 	matrix_composition = db.Column(db.Integer, db.ForeignKey('matrix_compositions.id'))
+	survival_issue = db.Column(db.Float())
 	n_intervals = db.Column(db.SmallInteger()) # Danny/Jenni/Dave, what are these? Schema says, "Number of transition intervals represented in the matrix - should only be >1 for mean matrices", so 0 or 1 or more? Can it be a float, ie 0.8?
 	periodicity = db.Column(db.Integer, db.ForeignKey('periodicities.id'))
-	relative = db.Column(db.Boolean())
+	# relative = db.Column(db.Boolean()) --> in schema with no description, must confirm with Judy what this relates to, any below?
+	matrix_criteria_size = db.Column(db.Boolean())
+	matrix_criteria_ontogeny = db.Column(db.Boolean())
+	matrix_criteria_age = db.Column(db.Boolean())
+	study_id = db.Column(db.Integer, db.ForeignKey('studies.id'))
 	matrix_start = db.Column(db.Date()) # These will include month, day, etc. Create method to return these - matrix_start.day() matrix_start.year() etc
 	matrix_end = db.Column(db.Date()) # These will include month, day, etc. Create method to return these - matrix_start.day() matrix_start.year() etc
-	# Season?
-	n_plots = db.Column(db.SmallInteger()) # Danny/Jenni/Dave, will need your help with plots too.
+	matrix_start_season_id = db.Column(db.Integer, db.ForeignKey('seasons.id')) # Proto says season used as described in manuscript, maybe not safe to derive this from latdeg, country, date
+	matrix_end_season_id = db.Column(db.Integer, db.ForeignKey('seasons.id')) # Proto says season used as described in manuscript, maybe not safe to derive this from latdeg, country, date
+	matrix_fec = db.Column(db.Boolean())
+	n_plots = db.Column(db.SmallInteger()) # Danny/Jenni/Dave, will need your help with plots too - not quite sure what they are.
 	plot_size = db.Column(db.Float()) # Schema states, 'R convert to m^2'
 	n_individuals = db.Column(db.Integer()) # Schema states, 'total number of individuals observed'
 	studied_sex = db.Column(db.Integer, db.ForeignKey('periodicities.id'))
 	captivity = db.Column(db.Integer, db.ForeignKey('captivities.id'))
-	matrix_stages = db.relationship("MatrixStage", backref="matrix")
-	matrix_values = db.relationship("MatrixValue", backref="matrix")
+	matrix_dimension = db.Column(db.Integer()) # dimension of matrix population A 	
 	observations = db.Column(db.Text())
 
 	intervals = db.relationship("Interval", backref="matrix")
+	matrix_values = db.relationship("MatrixValue", backref="matrix")
+	matrix_stages = db.relationship("MatrixStage", backref="matrix")
 
 	def __repr__(self):
 		return '<Matrix %r>' % self.id
